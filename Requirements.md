@@ -4,39 +4,42 @@
 
 #### Estimates:
 
-Rubric items:
-- [ ] item 1 with description
-- [ ] item 2 with description
 
-Features:
-- [ ] feature 4 with description
-- [ ] feature 5 with description
+- [ ] Get basic project ready
+  - [ ] Get Frontend project ready
+  - [ ] Get Backend API project ready
+  - [ ] Get Docker set up for Frontend
+  - [ ] Get docker set up for Backend 
 
 #### Delivered
 
-Rubric Items:
 
-
-Features:
 
 ---
 ### Checkpoint 2: `Nov. 1, 2025`
 #### Estimates:
 
 Rubric items:
-- [ ] item 1 with description
-- [ ] item 2 with description
+- [ ] CI/CD Pipeline set up
+- [ ] Tests run in pipeline, pipeline aborts if they fail
+- [ ] Linting in pipeline
+- [ ] Authentication and user account support
+- [ ] Authorized pages and public pages
 
 Features:
 - [ ] feature 4 with description
 - [ ] feature 5 with description
 
+Misc:
+- [ ] Up and running on the Kube Cluster
 #### Delivered
 
 Rubric Items:
 
 
 Features:
+
+Misc:
 
 ---
 ### Checkpoint 3: `Nov. 5, 2025`
@@ -44,19 +47,25 @@ Features:
 #### Estimates:
 
 Rubric items:
-- [ ] item 1 with description
-- [ ] item 2 with description
+- [ ] Views (Adding to count)
+- [ ] Laying out ground work for the AI features
 
 Features:
-- [ ] feature 4 with description
-- [ ] feature 5 with description
+- [ ] Introduction page (First time user page)
+- [ ] View Races
+- [ ] View Classes
+- [ ] View Spells
+- [ ] View Character sheet
+
+Misc:
+- [ ] Break down of all functions needed for AI
 
 #### Delivered
 
-Rubric Items:
+Rubric Items: Actions
 
 
-Features:
+Features: Views
 
 ---
 ### Checkpoint 4: `Nov. 8, 2025`
