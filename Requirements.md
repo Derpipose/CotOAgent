@@ -27,8 +27,8 @@ Rubric items:
 - [ ] Authorized pages and public pages
 
 Features:
-- [ ] feature 4 with description
-- [ ] feature 5 with description
+- [ ] User registration and login system
+- [ ] Protected routes for authenticated users
 
 Misc:
 - [ ] Up and running on the Kube Cluster
@@ -73,12 +73,13 @@ Features: Views
 #### Estimates:
 
 Rubric items:
-- [ ] item 1 with description
-- [ ] item 2 with description
+- [ ] Network Calls that read and write data (D&D API integration)
+- [ ] Local storage implementation (save character drafts)
 
 Features:
-- [ ] feature 4 with description
-- [ ] feature 5 with description
+- [ ] Character creation workflow with stat rolling
+- [ ] D&D 5e API integration for races/classes/spells data
+- [ ] Basic character sheet display
 
 #### Delivered
 
@@ -93,12 +94,13 @@ Features:
 #### Estimates:
 
 Rubric items:
-- [ ] item 1 with description
-- [ ] item 2 with description
+- [ ] Client side state stores (character state management)
+- [ ] 3+ generic form input components (stat selector, dropdown, text input)
 
 Features:
-- [ ] feature 4 with description
-- [ ] feature 5 with description
+- [ ] Character revision system
+- [ ] Semi-optimal stat assignment algorithm
+- [ ] Character comparison view
 
 #### Delivered
 
@@ -113,12 +115,13 @@ Features:
 #### Estimates:
 
 Rubric items:
-- [ ] item 1 with description
-- [ ] item 2 with description
+- [ ] Toasts/global notifications for character actions
+- [ ] Error handling for API requests and render errors
 
 Features:
-- [ ] feature 4 with description
-- [ ] feature 5 with description
+- [ ] Discord integration for sharing character sheets
+- [ ] Audit log for character actions
+- [ ] Character gallery (view all characters)
 
 #### Delivered
 
@@ -133,12 +136,12 @@ Features:
 #### Estimates:
 
 Rubric items:
-- [ ] item 1 with description
-- [ ] item 2 with description
+- [ ] 4+ generic layout components (character card, stats panel, spell list, navigation)
 
 Features:
-- [ ] feature 4 with description
-- [ ] feature 5 with description
+- [ ] Character customization
+- [ ] Spell management and filtering
+- [ ] Character export/import functionality
 
 #### Delivered
 
@@ -153,12 +156,13 @@ Features:
 #### Estimates:
 
 Rubric items:
-- [ ] item 1 with description
-- [ ] item 2 with description
+- [ ] Mobile responsive design (all experiences mobile friendly)
+- [ ] 3 instances of element re-ordering on smaller screens
 
 Features:
-- [ ] feature 4 with description
-- [ ] feature 5 with description
+- [ ] Mobile-optimized character creation flow
+- [ ] Touch-friendly stat rolling interface
+- [ ] Responsive character sheet layout
 
 #### Delivered
 
@@ -173,12 +177,13 @@ Features:
 #### Estimates:
 
 Rubric items:
-- [ ] item 1 with description
-- [ ] item 2 with description
+- [ ] Professional, organized and smooth experience
+- [ ] Final view count verification (10+ pages/views)
 
 Features:
-- [ ] feature 4 with description
-- [ ] feature 5 with description
+- [ ] UI/UX polish and refinement
+- [ ] Performance optimization
+- [ ] User onboarding improvements
 
 #### Delivered
 
@@ -193,12 +198,13 @@ Features:
 #### Estimates:
 
 Rubric items:
-- [ ] item 1 with description
-- [ ] item 2 with description
+- [ ] Final testing and bug fixes
+- [ ] Documentation completion
 
 Features:
-- [ ] feature 4 with description
-- [ ] feature 5 with description
+- [ ] AI agent behavior refinement
+- [ ] Final Discord integration testing
+- [ ] Character validation and error handling
 
 #### Delivered
 
@@ -213,12 +219,12 @@ Features:
 #### Estimates:
 
 Rubric items:
-- [ ] item 1 with description
-- [ ] item 2 with description
+- [ ] Final project submission and presentation
+- [ ] Complete rubric compliance verification
 
 Features:
-- [ ] feature 4 with description
-- [ ] feature 5 with description
+- [ ] Final testing and deployment
+- [ ] Project demonstration preparation
 
 #### Delivered
 
