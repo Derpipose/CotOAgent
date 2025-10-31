@@ -1,0 +1,41 @@
+version: '3.8'
+
+services:
+  backend:
+    build:
+      context: ./CotOAgent-Back
+      dockerfile: Dockerfile.dev
+    container_name: cotoagent-backend-dev
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./CotOAgent-Back:/app
+      - /app/node_modules
+    environment:
+      - NODE_ENV=development
+    networks:
+      - cotoagent-network
+    restart: unless-stopped
+
+  frontend:
+    build:
+      context: ./CotOAgent-Front
+      dockerfile: Dockerfile.dev
+    container_name: cotoagent-frontend-dev
+    ports:
+      - "5173:5173"
+    volumes:
+      - ./CotOAgent-Front:/app
+      - /app/node_modules
+    environment:
+      - NODE_ENV=development
+      - VITE_API_URL=http://localhost:3000
+    networks:
+      - cotoagent-network
+    depends_on:
+      - backend
+    restart: unless-stopped
+
+networks:
+  cotoagent-network:
+    driver: bridge
