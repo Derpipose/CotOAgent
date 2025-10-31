@@ -5,14 +5,13 @@
 #### Estimates:
 
 
-- [ ] Get basic project ready
+- [x] Get basic project ready
   - [x] Get Frontend project ready
-  - [ ] Get Backend API project ready
-  - [ ] Get Docker set up for Frontend
-  - [ ] Get docker set up for Backend 
+  - [x] Get Backend API project ready
 
 #### Delivered
-
+Got the front end project created
+Got the backend project created
 
 
 ---
@@ -21,10 +20,10 @@
 
 Rubric items:
 - [ ] CI/CD Pipeline set up
+- [x] Get Docker set up for Frontend
+- [x] Get docker set up for Backend 
 - [ ] Tests run in pipeline, pipeline aborts if they fail
 - [ ] Linting in pipeline
-- [ ] Authentication and user account support
-- [ ] Authorized pages and public pages
 
 Features:
 - [ ] User registration and login system
@@ -35,7 +34,7 @@ Misc:
 #### Delivered
 
 Rubric Items:
-
+Got docker both dev and prod up and running. 
 
 Features:
 
@@ -49,6 +48,8 @@ Misc:
 Rubric items:
 - [ ] Views (Adding to count)
 - [ ] Laying out ground work for the AI features
+- [ ] Authentication and user account support
+- [ ] Authorized pages and public pages
 
 Features:
 - [ ] Introduction page (First time user page)
