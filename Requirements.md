@@ -6,7 +6,7 @@
 
 
 - [ ] Get basic project ready
-  - [ ] Get Frontend project ready
+  - [x] Get Frontend project ready
   - [ ] Get Backend API project ready
   - [ ] Get Docker set up for Frontend
   - [ ] Get docker set up for Backend 
