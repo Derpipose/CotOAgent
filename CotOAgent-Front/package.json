@@ -12,8 +12,10 @@
     "test": "vitest run"
   },
   "dependencies": {
+    "keycloak-js": "^26.2.1",
     "react": "^19.1.1",
     "react-dom": "^19.1.1",
+    "react-router-dom": "^7.9.5",
     "vitest": "^4.0.6"
   },
   "devDependencies": {

@@ -24,6 +24,10 @@ services:
     build:
       context: ./CotOAgent-Front
       dockerfile: Dockerfile
+      args:
+        - VITE_KEYCLOAK_URL=${VITE_KEYCLOAK_URL}
+        - VITE_KEYCLOAK_REALM=${VITE_KEYCLOAK_REALM}
+        - VITE_KEYCLOAK_CLIENT_ID=${VITE_KEYCLOAK_CLIENT_ID}
     container_name: cotoagent-frontend-prod
     ports:
       - "80:80"
