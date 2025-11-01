@@ -1,74 +1,74 @@
-# name: Build and Push Docker Images
+name: Build and Push Docker Images
 
-# on:
-#   push:
-#     branches:
-#       - main
-#   pull_request:
-#     branches:
-#       - main
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
 
-# jobs:
-#   build_and_push_backend_to_dockerhub:
-#     runs-on: self-hosted
-#     steps:
-#     - name: Check out the code
-#       uses: actions/checkout@v4
+jobs:
+  build_and_push_backend_to_dockerhub:
+    runs-on: self-hosted
+    steps:
+    - name: Check out the code
+      uses: actions/checkout@v4
 
-#     - name: Login to Docker Hub
-#       uses: docker/login-action@v3
-#       with:
-#         username: ${{ vars.DOCKER_CONTAINER_USERNAME }}
-#         password: ${{ secrets.DOCKER_CONTAINER_TOKEN3 }}
+    - name: Login to Docker Hub
+      uses: docker/login-action@v3
+      with:
+        username: ${{ vars.DOCKER_CONTAINER_USERNAME }}
+        password: ${{ secrets.DOCKER_CONTAINER_TOKEN3 }}
           
-#     - name: Build and push API to DockerHub
-#       run: |
-#         docker build \
-#           -f ./app/Dockerfile.backend \
-#           -t ${{ vars.DOCKER_CONTAINER_USERNAME }}/aichat-api:${{ github.run_number }}.${{ github.run_attempt }} \
-#           ./app
+    - name: Build and push API to DockerHub
+      run: |
+        docker build \
+          -f ./CotOAgent-Back/Dockerfile \
+          -t ${{ vars.DOCKER_CONTAINER_USERNAME }}/cotoagent-api:${{ github.run_number }}.${{ github.run_attempt }} \
+          ./CotOAgent-Back
 
-#         docker push -q ${{ vars.DOCKER_CONTAINER_USERNAME }}/aichat-api:${{ github.run_number }}.${{ github.run_attempt }}
+        docker push -q ${{ vars.DOCKER_CONTAINER_USERNAME }}/cotoagent-api:${{ github.run_number }}.${{ github.run_attempt }}
   
   
-#   build_and_push_frontend_to_dockerhub:
-#     runs-on: self-hosted
-#     steps:
-#     - name: Check out the code
-#       uses: actions/checkout@v4
+  build_and_push_frontend_to_dockerhub:
+    runs-on: self-hosted
+    steps:
+    - name: Check out the code
+      uses: actions/checkout@v4
       
-#     - name: Login to Docker Hub
-#       uses: docker/login-action@v3
-#       with:
-#         username: ${{ vars.DOCKER_CONTAINER_USERNAME }}
-#         password: ${{ secrets.DOCKER_CONTAINER_TOKEN3 }}
+    - name: Login to Docker Hub
+      uses: docker/login-action@v3
+      with:
+        username: ${{ vars.DOCKER_CONTAINER_USERNAME }}
+        password: ${{ secrets.DOCKER_CONTAINER_TOKEN3 }}
 
-#     - name: Build and push Web to DockerHub
-#       run: |
-#         docker build \
-#           -f ./app/Dockerfile.frontend \
-#           -t ${{ vars.DOCKER_CONTAINER_USERNAME }}/aichat-web:${{ github.run_number }}.${{ github.run_attempt }} \
-#           --build-arg VITE_API_URL="${{ vars.VITE_API_URL }}" \
-#           ./app
+    - name: Build and push Web to DockerHub
+      run: |
+        docker build \
+          -f ./CotOAgent-Front/Dockerfile \
+          -t ${{ vars.DOCKER_CONTAINER_USERNAME }}/cotoagent-web:${{ github.run_number }}.${{ github.run_attempt }} \
+          --build-arg VITE_API_URL="${{ vars.VITE_API_URL }}" \
+          ./CotOAgent-Front
 
-#         docker push -q ${{ vars.DOCKER_CONTAINER_USERNAME }}/aichat-web:${{ github.run_number }}.${{ github.run_attempt }}
+        docker push -q ${{ vars.DOCKER_CONTAINER_USERNAME }}/cotoagent-web:${{ github.run_number }}.${{ github.run_attempt }}
 
-#   deploy_to_kubernetes:
-#     needs: [build_and_push_backend_to_dockerhub, build_and_push_frontend_to_dockerhub]
-#     runs-on: self-hosted
-#     steps:
-#     - name: Check out the code. 
-#       uses: actions/checkout@v4
+  # deploy_to_kubernetes:
+  #   needs: [build_and_push_backend_to_dockerhub, build_and_push_frontend_to_dockerhub]
+  #   runs-on: self-hosted
+  #   steps:
+  #   - name: Check out the code. 
+  #     uses: actions/checkout@v4
  
-#     - name: deploy to kubernetes
-#       run: |
-#         export KUBECONFIG=$HOME/.kube/config
-#         kubectl apply -f kube/namespace.yml
-#         export CONTAINER_VERSION=${{ github.run_number }}.${{ github.run_attempt }}
-#         export AI_SERVER=${{ vars.AI_SERVER }}
-#         export JWK_URI=${{ vars.JWK_URL }}
-#         export AI_Token=${{ secrets.AI_TOKEN }}
-#         for FILE in "kube"/*
-#         do
-#           cat "$FILE" | envsubst | kubectl apply -f -
-#         done
+  #   - name: deploy to kubernetes
+  #     run: |
+  #       export KUBECONFIG=$HOME/.kube/config
+  #       kubectl apply -f kube/namespace.yml
+  #       export CONTAINER_VERSION=${{ github.run_number }}.${{ github.run_attempt }}
+  #       export AI_SERVER=${{ vars.AI_SERVER }}
+  #       export JWK_URI=${{ vars.JWK_URL }}
+  #       export AI_Token=${{ secrets.AI_TOKEN }}
+  #       for FILE in "kube"/*
+  #       do
+  #         cat "$FILE" | envsubst | kubectl apply -f -
+  #       done
