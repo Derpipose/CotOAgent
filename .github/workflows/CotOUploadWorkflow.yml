@@ -33,6 +33,9 @@ jobs:
     - name: Run tests
       run: cd CotOAgent-Back && pnpm run test
 
+    - name: Run lint
+      run: cd CotOAgent-Back && pnpm run lint
+
   test_frontend:
     runs-on: self-hosted
     steps:
@@ -56,6 +59,9 @@ jobs:
 
     - name: Run tests
       run: cd CotOAgent-Front && pnpm run test
+
+    - name: Run lint
+      run: cd CotOAgent-Front && pnpm run lint
 
   build_and_push_backend_to_dockerhub:
     needs: [test_backend]

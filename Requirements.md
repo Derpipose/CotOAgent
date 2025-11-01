@@ -23,19 +23,21 @@ Rubric items:
 - [x] Get Docker set up for Frontend
 - [x] Get docker set up for Backend 
 - [x] Tests run in pipeline, pipeline aborts if they fail
-- [ ] Linting in pipeline
+- [x] Linting in pipeline
 
 Features:
 - [ ] User registration and login system
 - [ ] Protected routes for authenticated users
 
 Misc:
-- [ ] Up and running on the Kube Cluster
+- [x] Up and running on the Kube Cluster
 #### Delivered
 
 Rubric Items:
 Got docker both dev and prod up and running. 
 Got the CI/CD pipeline working with docker containers
+Got testing done in pipeline
+Got linting done in the pipeline as well
 
 Features:
 
