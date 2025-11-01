@@ -103,22 +103,22 @@ jobs:
 
         docker push -q ${{ vars.DOCKER_CONTAINER_USERNAME }}/cotoagent-web:${{ github.run_number }}.${{ github.run_attempt }}
 
-  # deploy_to_kubernetes:
-  #   needs: [build_and_push_backend_to_dockerhub, build_and_push_frontend_to_dockerhub]
-  #   runs-on: self-hosted
-  #   steps:
-  #   - name: Check out the code. 
-  #     uses: actions/checkout@v4
+  deploy_to_kubernetes:
+    needs: [build_and_push_backend_to_dockerhub, build_and_push_frontend_to_dockerhub]
+    runs-on: self-hosted
+    steps:
+    - name: Check out the code. 
+      uses: actions/checkout@v4
  
-  #   - name: deploy to kubernetes
-  #     run: |
-  #       export KUBECONFIG=$HOME/.kube/config
-  #       kubectl apply -f kube/namespace.yml
-  #       export CONTAINER_VERSION=${{ github.run_number }}.${{ github.run_attempt }}
-  #       export AI_SERVER=${{ vars.AI_SERVER }}
-  #       export JWK_URI=${{ vars.JWK_URL }}
-  #       export AI_Token=${{ secrets.AI_TOKEN }}
-  #       for FILE in "kube"/*
-  #       do
-  #         cat "$FILE" | envsubst | kubectl apply -f -
-  #       done
+    - name: deploy to kubernetes
+      run: |
+        export KUBECONFIG=$HOME/.kube/config
+        kubectl apply -f kube/namespace.yml
+        export CONTAINER_VERSION=${{ github.run_number }}.${{ github.run_attempt }}
+        export AI_SERVER=${{ vars.AI_SERVER }}
+        export JWK_URI=${{ vars.JWK_URI }}
+        export AI_Token=${{ secrets.AI_TOKEN }}
+        for FILE in "kube"/*
+        do
+          cat "$FILE" | envsubst | kubectl apply -f -
+        done

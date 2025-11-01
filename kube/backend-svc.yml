@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: cotoagent-api-svc
+  namespace: cotoagent
+spec:
+  selector:
+    app: cotoagent-api
+  ports:
+    - protocol: TCP
+      port: 4000 
+      targetPort: 4000
