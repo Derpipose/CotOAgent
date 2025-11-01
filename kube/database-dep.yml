@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cotoagent-db-dep
+  namespace: cotoagent
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: cotoagent-db
+
+  template:
+    metadata:
+      labels:
+        app: cotoagent-db
+    spec:
+      volumes:
+      - name: schema-init
+        configMap:
+          name: cotoagent-db-init-sql
+      containers:
+      - name: cotoagent-postgres
+        volumeMounts:
+        - mountPath: /docker-entrypoint-initdb.d/init.sql
+          subPath: init.sql
+          name: schema-init
+        image: postgres:18-alpine3.22
+        ports:
+        - containerPort: 5432
+        env:
+        - name: POSTGRES_USER
+          value: "cotoagentuser"
+        - name: POSTGRES_PASSWORD
+          value: "cotoagentpassword"
+        - name: POSTGRES_DB
+          value: "cotoagentdb"

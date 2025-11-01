@@ -1,0 +1,24 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: cotoagent-frontend-ingress
+  namespace: cotoagent
+  annotations:
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+spec:
+  ingressClassName: nginx
+  tls:
+  - hosts:
+    - cotoagent.duckdns.org
+    secretName: cotoagent-tls
+  rules:
+    - host: cotoagent.duckdns.org
+      http:
+        paths:
+        - path: /
+          pathType: Prefix
+          backend:
+            service:
+              name: cotoagent-frontend-svc
+              port:
+                number: 80

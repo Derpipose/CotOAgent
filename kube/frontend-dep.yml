@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cotoagent-frontend-dep
+  namespace: cotoagent
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: cotoagent-frontend
+
+  template:
+    metadata:
+      labels:
+        app: cotoagent-frontend
+    spec:
+      containers:
+      - name: cotoagent-frontend-container
+        image: derpipose/cotoagent-web:$CONTAINER_VERSION
+        ports:
+        - containerPort: 80

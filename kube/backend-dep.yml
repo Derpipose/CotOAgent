@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cotoagent-dep
+  namespace: cotoagent
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: cotoagent
+
+  template:
+    metadata:
+      labels:
+        app: cotoagent
+    spec:
+      containers:
+      - name: cotoagent-container
+        image: derpipose/cotoagent-api:$CONTAINER_VERSION
+        env:
+        - name: PORT
+          value: "4000"
+        - name: DATABASE_URL
+          value: "postgres://cotoagentuser:cotoagentpassword@cotoagent-db-svc:5432/cotoagentdb"
+        - name: AI_SERVER_URL
+          value: $AI_SERVER
+        - name: AIToken
+          value: $AI_Token
+        - name: JWK_URI
+          value: $JWK_URI
+        ports:
+        - containerPort: 4000

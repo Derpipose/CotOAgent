@@ -1,0 +1,21 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: cotoagent-db-init-sql
+  namespace: cotoagent
+data:
+  init.sql: |
+    CREATE TABLE IF NOT EXISTS user (
+        id SERIAL PRIMARY KEY,
+        user_email VARCHAR(50) UNIQUE NOT NULL,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    );
+
+    CREATE TABLE IF NOT EXISTS admin_user (
+        id SERIAL PRIMARY KEY,
+        admin_email VARCHAR(50) UNIQUE NOT NULL,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    );
+
+    INSERT INTO admin_user (admin_email) VALUES ('derpipose@gmail.com') 
+    ON CONFLICT (admin_email) DO NOTHING;
