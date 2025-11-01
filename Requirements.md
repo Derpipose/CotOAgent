@@ -19,10 +19,10 @@ Got the backend project created
 #### Estimates:
 
 Rubric items:
-- [ ] CI/CD Pipeline set up
+- [x] CI/CD Pipeline set up
 - [x] Get Docker set up for Frontend
 - [x] Get docker set up for Backend 
-- [ ] Tests run in pipeline, pipeline aborts if they fail
+- [x] Tests run in pipeline, pipeline aborts if they fail
 - [ ] Linting in pipeline
 
 Features:
@@ -35,6 +35,7 @@ Misc:
 
 Rubric Items:
 Got docker both dev and prod up and running. 
+Got the CI/CD pipeline working with docker containers
 
 Features:
 

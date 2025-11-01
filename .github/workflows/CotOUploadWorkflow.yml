@@ -9,7 +9,56 @@ on:
       - main
 
 jobs:
+  test_backend:
+    runs-on: self-hosted
+    steps:
+    - name: Check out the code
+      uses: actions/checkout@v4
+
+    - name: Setup pnpm
+      uses: pnpm/action-setup@v4
+      with:
+        version: 10
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+        cache: 'pnpm'
+        cache-dependency-path: ./CotOAgent-Back/pnpm-lock.yaml
+
+    - name: Install dependencies
+      run: cd CotOAgent-Back && pnpm install --frozen-lockfile
+
+    - name: Run tests
+      run: cd CotOAgent-Back && pnpm run test
+
+  test_frontend:
+    runs-on: self-hosted
+    steps:
+    - name: Check out the code
+      uses: actions/checkout@v4
+
+    - name: Setup pnpm
+      uses: pnpm/action-setup@v4
+      with:
+        version: 10
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+        cache: 'pnpm'
+        cache-dependency-path: ./CotOAgent-Front/pnpm-lock.yaml
+
+    - name: Install dependencies
+      run: cd CotOAgent-Front && pnpm install --frozen-lockfile
+
+    - name: Run tests
+      run: cd CotOAgent-Front && pnpm run test
+
   build_and_push_backend_to_dockerhub:
+    needs: [test_backend]
     runs-on: self-hosted
     steps:
     - name: Check out the code
@@ -32,6 +81,7 @@ jobs:
   
   
   build_and_push_frontend_to_dockerhub:
+    needs: [test_frontend]
     runs-on: self-hosted
     steps:
     - name: Check out the code
