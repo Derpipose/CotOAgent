@@ -26,8 +26,7 @@ Rubric items:
 - [x] Linting in pipeline
 
 Features:
-- [ ] User registration and login system
-- [ ] Protected routes for authenticated users
+- [x] User can login
 
 Misc:
 - [x] Up and running on the Kube Cluster
@@ -40,8 +39,11 @@ Got testing done in pipeline
 Got linting done in the pipeline as well
 
 Features:
+Users can log in and they are remembered for a time
 
 Misc:
+I'm up on the Kube Cluster!!
+cotoagent.duckdns.org
 
 ---
 ### Checkpoint 3: `Nov. 5, 2025`
@@ -49,13 +51,14 @@ Misc:
 #### Estimates:
 
 Rubric items:
-- [ ] Views (Adding to count)
+- [ ] Views (5/10)
+- [ ] Introduction page (First time user page)
+- [ ] Protected routes for authenticated users
 - [ ] Laying out ground work for the AI features
 - [ ] Authentication and user account support
 - [ ] Authorized pages and public pages
 
 Features:
-- [ ] Introduction page (First time user page)
 - [ ] View Races
 - [ ] View Classes
 - [ ] View Spells

@@ -30,3 +30,4 @@ dist-server/
 
 
 ProsAndCons.md
+*.env
