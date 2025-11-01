@@ -1,5 +1,5 @@
 // Health check script for backend
-const http = require('http');
+import http from 'http';
 
 const options = {
   hostname: 'localhost',
