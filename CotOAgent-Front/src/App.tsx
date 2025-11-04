@@ -18,8 +18,9 @@ function App() {
     keycloak
       .init({ 
         onLoad: 'check-sso',
-        silentCheckSsoRedirectUri: window.location.origin + '/silent-check-sso.html',
-        checkLoginIframe: false
+        checkLoginIframe: false,
+        messageReceiveTimeout: 10000,
+        enableLogging: true
       })
       .then((auth) => {
         setAuthenticated(auth)
