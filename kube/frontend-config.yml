@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: cotoagent-frontend-config
+  namespace: cotoagent
+data:
+  VITE_KEYCLOAK_URL: "https://auth-dev.snowse.io"
+  VITE_KEYCLOAK_REALM: "DevRealm"
+  VITE_KEYCLOAK_CLIENT_ID: "DerpCotO"

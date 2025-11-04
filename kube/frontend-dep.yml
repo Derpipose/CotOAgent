@@ -19,3 +19,6 @@ spec:
         image: derpipose/cotoagent-web:$CONTAINER_VERSION
         ports:
         - containerPort: 80
+        envFrom:
+        - configMapRef:
+            name: cotoagent-frontend-config
