@@ -4,6 +4,7 @@ import cors from 'cors';
 import helmet from 'helmet';
 import morgan from 'morgan';
 import dotenv from 'dotenv';
+import { setupRoutes } from './routes/index.js';
 
 // Load environment variables
 dotenv.config();
@@ -31,6 +32,9 @@ app.get('/health', (req, res) => {
 app.get('/api', (req, res) => {
   res.json({ message: 'Welcome to CotOAgent API' });
 });
+
+// Setup additional routes
+setupRoutes(app);
 
 // 404 handler
 app.use((req: Request, res: Response) => {

@@ -53,19 +53,18 @@ cotoagent.duckdns.org
 Rubric items:
 - [ ] Views (5/10)
 - [ ] Introduction page (First time user page)
-- [ ] Protected routes for authenticated users
 - [ ] Laying out ground work for the AI features
-- [ ] Authentication and user account support
-- [ ] Authorized pages and public pages
 
 Features:
+- [ ] Introduction page (First time user page)
 - [ ] View Races
 - [ ] View Classes
 - [ ] View Spells
 - [ ] View Character sheet
 
 Misc:
-- [ ] Break down of all functions needed for AI
+- [x] Break down of all functions needed for AI
+- [ ] Get embeddings done for Class, Race and Spells
 
 #### Delivered
 
@@ -82,6 +81,9 @@ Features: Views
 Rubric items:
 - [ ] Network Calls that read and write data (D&D API integration)
 - [ ] Local storage implementation (save character drafts)
+- [ ] Protected routes for authenticated users
+- [ ] Authentication and user account support
+- [ ] Authorized pages and public pages
 
 Features:
 - [ ] Character creation workflow with stat rolling
