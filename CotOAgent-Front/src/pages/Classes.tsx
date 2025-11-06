@@ -16,14 +16,42 @@ export default function Classes() {
   useEffect(() => {
     const fetchClasses = async () => {
       try {
-        const response = await fetch(`${import.meta.env.VITE_API_URL}/api/classes`);
-        if (!response.ok) {
-          throw new Error('Failed to fetch classes');
+        // Construct API URL intelligently based on environment
+        let apiUrl = import.meta.env.VITE_API_URL;
+        
+        // If VITE_API_URL is not set or is localhost (Docker), try to use the hostname
+        if (!apiUrl || apiUrl.includes('localhost')) {
+          // In Kubernetes, use the service name; in Docker, localhost works
+          const protocol = window.location.protocol;
+          const host = window.location.hostname;
+          
+          // If we're in Kubernetes (hostname is not localhost), construct service URL
+          if (host !== 'localhost' && host !== '127.0.0.1') {
+            apiUrl = `${protocol}//cotoagent-api-svc:3000`;
+          } else {
+            // Otherwise use localhost (Docker environment)
+            apiUrl = `${protocol}//localhost:3000`;
+          }
         }
+        
+        console.log(`[Classes] Fetching from: ${apiUrl}/api/classes`);
+        
+        const response = await fetch(`${apiUrl}/api/classes`);
+        
+        if (!response.ok) {
+          const contentType = response.headers.get('content-type');
+          if (contentType?.includes('text/html')) {
+            throw new Error(`Backend returned HTML (${response.status}). Check if the backend URL is correct.`);
+          }
+          throw new Error(`Failed to fetch classes: ${response.status} ${response.statusText}`);
+        }
+        
         const data = await response.json();
         setClasses(data);
       } catch (err) {
-        setError(err instanceof Error ? err.message : 'An error occurred');
+        const errorMessage = err instanceof Error ? err.message : 'An error occurred';
+        console.error('[Classes] Error:', errorMessage);
+        setError(errorMessage);
       } finally {
         setLoading(false);
       }
