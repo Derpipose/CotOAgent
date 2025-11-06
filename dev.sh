@@ -4,6 +4,6 @@
 echo "🚀 Starting CotOAgent Development Environment..."
 
 # Build and start development containers
-docker-compose -f docker-compose.dev.yml up --build
+docker-compose -f docker-compose.dev.yml up --build -d
 
-echo "✅ Development environment stopped."
+echo "✅ Development environment started."
