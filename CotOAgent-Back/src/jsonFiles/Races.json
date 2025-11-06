@@ -1,0 +1,785 @@
+[
+  {
+    "Campaign": "Fantasy",
+    "SubType": "Ancient",
+    "Name": "Aedir",
+    "Description": "Aedir are angelfolk that are descendants from the great Justice herself. In modern times it is near impossible to find one unless some strange circumstance happened that somehow displaced them from their time. They were around during the time of the Fjordians.",
+    "Starter": "No",
+    "Special": "Holy Children: start with Celestia and healing",
+    "Pinterest_Inspo_Board": ""
+  },
+  {
+    "Campaign": "Fantasy",
+    "SubType": "Ancient",
+    "Name": "Sauran",
+    "Description": "One of the oldest and most historic races of the world, the Suran or Trogs as they’ve been called, are one of the predecessor races. They are the only still living race that wears that title, they are few in number and are spread thin. They cling to the wild untamed jungles, these monsters of strength and brute force in ages past made mockeries of mages and magic through sheer brute strength and power. Though eras and ages have passed they remain, as a living reminder that Strength can fight magic.",
+    "Starter": "No",
+    "Special": "Sauran Resilience, + 3 to one save and they take one dice less bleeding damage",
+    "Pinterest_Inspo_Board": "https://pin.it/y8czP8tsB"
+  },
+  {
+    "Campaign": "Fantasy",
+    "SubType": "Ancient",
+    "Name": "Steppes Elf",
+    "Description": "Of all the Elven races The steppes Elves were once the most hardy capable of drinking ale as much as a dwarf, or withstanding foul poisons. These adventurous elves dominated the adventuring guilds and halls, until they embarked on a grand expedition and for the most part completely disappeared. No one knows if they live or have become another elven group lost to cruel fate. Some of them remained in the populated lands, and constitute the rarest group of elves.",
+    "Starter": "No",
+    "Special": "Adventurous Spirit: +1 quirk feat",
+    "Pinterest_Inspo_Board": ""
+  },
+  {
+    "Campaign": "Fantasy",
+    "SubType": "Avian",
+    "Name": "Aarakocra",
+    "Description": "The noble aarakocra. These avians descend from the true avians in the world as you know it. There is every bird under the sun that the aarakocra can wear the feathers of. These birds are equipped with flight but usually can’t fight. Their hollow bones allow for flight but in return, they are easily broken. There are some exceptions to this and those are the hawks and eagles who are usually protectors and defenders. Another thing to note is they tend to adhere to a hierarchy where the more noble birds, owls and eagles, lead, showy birds and songbirds follow. Along the bottom of the barrel corvids rank highest followed by vultures and finally the lowest of the birds, as far as the aarakocra are concerned, the pigeons and seagulls, sky rats. Although some of the aarakocra don’t care about this code, the highest avians see themselves as better than the rest.",
+    "Starter": "Yes",
+    "Special": "Hollow bones mean that you should avoid combat, unless you are a raptor species. Melee will see your bones broken.",
+    "Pinterest_Inspo_Board": "https://pin.it/2VYZlDwxG"
+  },
+  {
+    "Campaign": "Fantasy",
+    "SubType": "Beastial",
+    "Name": "Dragonborn",
+    "Description": "A noble race famed for their kinship with the Dragons, no one knows exactly how the dragonborn came to be but they persist and survive despite the world's constant tumultuous periods. They are one of the toughest races, and are blessed with wings or dragon breath, and in very rare cases both. They are a race that seeks to help the other nations of the world, rarely enough dragonborn around to have their own civilization. They tend to have one of two naming schemes. The first is reserved for nobles. Roll a D20 and come up with that many middle names that have some meaning to you or your family. These are your ancestors leading up to you. When writing your name, it is your first name, your parent's name and then your last name. If you are not noble, you only need one name. It can be very simple, like John or Millie.",
+    "Starter": "Yes",
+    "Special": "Dragonkin: Dragonbreath & resistance",
+    "Pinterest_Inspo_Board": ""
+  },
+  {
+    "Campaign": "Fantasy",
+    "SubType": "Beastial",
+    "Name": "Houndsman",
+    "Description": "As feline as the Kay’asa are, Houndsman are just as canid. The Houndsmen are large dog people, averaging 6ft. The domesticated breeds of dog are quite common. You are loyal to any you deem a friend and will stick with them until they send you on your way. You are equipped with a great sense of smell and a good sense of hearing. Usually town guards, the Houndsmen are usually defenders and have very good charisma. You are also adept in a weapon of your choice, having been trained by your elders in the ways of martial combat. The dog breed you choose will determine an extra boon but for the most part it is just your coat pattern.",
+    "Starter": "Yes",
+    "Special": "Dogs of Honor: All houndsmen have martial weapons training and start with one extra weapon & diplomacy skill",
+    "Pinterest_Inspo_Board": "https://pin.it/2dNzN9SKP"
+  },
+  {
+    "Campaign": "Fantasy",
+    "SubType": "Beastial",
+    "Name": "Kay'asa",
+    "Description": "Kay’asa has wares, if you have coin. Fully feline humanoid, Kay’asa have six forms depending on which of the six stars they were born under. Each of the six stars align with the six stats on your character sheet. The star you are born under determines a stat boon and physical attribute about your feline form. Under the strength star, you are more muscular and larger than your standard kin. Under the dexterity star, you are more agile and lean, maybe a little smaller too. Another thing you are equipped with, is a natural weapon, claws. Your melee damage does a devastating amount of damage since you are liable to extend your claws on impact. The breed of cat you choose, will mainly only affect your coat and maybe another boon.",
+    "Starter": "Yes",
+    "Special": "Star Touched: born under specific star drastically changes stats",
+    "Pinterest_Inspo_Board": "https://pin.it/5U8j1H9ct"
+  },
+  {
+    "Campaign": "Fantasy",
+    "SubType": "Beastial",
+    "Name": "Kobold",
+    "Description": "These little guys, usually standing at no more than 5 ft, are crafters. They hoard and gather their shiny objects and use them to trade. Their ingenuity and tinkering spirit drive them to build complex traps and mechanisms. They have a wonderful curiosity and affinity for magic, some Kobold tribes favor magic heavily enough their entire culture’s based around magic.",
+    "Starter": "Yes",
+    "Special": "Tinkerous Bastards: Gains Trap crafting skill, also color of scales provide elemental resistance of 4.",
+    "Pinterest_Inspo_Board": "https://pin.it/U9CMPudrM"
+  },
+  {
+    "Campaign": "Fantasy",
+    "SubType": "Beastial",
+    "Name": "Strathund",
+    "Description": "You’re probably familiar with the Strathund’s cousin, the Kobold. These are the dog kobolds you would likely have seen in the early versions of DND. They are curious little bipedal hounds and love learning and messing with others. The main thing with the Strathund is that they wear masks that hide their eyes. Black where the white should be and glowing pupils mean that they spooked most people that they came into contact with. As a way to interact with society they adopted the visors and turned them into a way to express themselves by picking runes to adorn the sides of the visors. With a smaller stature, you are able to get into places otherwise inaccessible by other races, much like the kobolds. Depending on the era, you might be entitled to a bit of dark vision too. You have a fairly decent sniffer at the end of your snout along with large ears to be able to hear a good bit too.",
+    "Starter": "Yes",
+    "Special": "Pasta Heritage: Gain the ability to cook pasta and use it in unconventional ways. Need an axe repaired? Pasta! Need to fix a pipe? Pasta! The fixes might not last long, but they'll do.",
+    "Pinterest_Inspo_Board": ""
+  },
+  {
+    "Campaign": "Fantasy",
+    "SubType": "Beastial",
+    "Name": "Ulfgar",
+    "Description": "Ulfgar are the wolven cousins of the houndsmen. They are often brutish and tend to be more barbaric than the other races. They honestly couldn’t care more about what crosses their path, they’d gladly take it out and use their bones as a nice chew toy. Their demeanor tends to trend more towards viking culture than anything else. It’s rare to have a socialized and friendly ulfgar.",
+    "Starter": "No",
+    "Special": "Olfrins Children: gain +2 chances, and natural intimidation, but vulnerability to fire.",
+    "Pinterest_Inspo_Board": ""
+  },
+  {
+    "Campaign": "Fantasy",
+    "SubType": "Dwarven",
+    "Name": "Canyon Dwarf",
+    "Description": "The hardy canyon dwarves make themselves a bastion for dwarven kind, they guard the paths to the mountains keeping orcs, and other beasts away. They are the tallest and they heft the mighty Crax or Swaxe in defense of their fellow dwarves and are excellent warriors.",
+    "Starter": "Yes",
+    "Special": "Sentry: Starts with Sentry Profession, and Sentry Feat and Swaxe weapon.",
+    "Pinterest_Inspo_Board": ""
+  },
+  {
+    "Campaign": "Fantasy",
+    "SubType": "Dwarven",
+    "Name": "Chasm Dwarf",
+    "Description": "The thin and lithe Chasm dwarves, they are the dextrous miners and delvers of their kin, descending into the deepest reaches of the world, to find ore and gems. Armed with a chain ax to defend themselves they are a force to be reckoned with, despite being a simple ‘miner’.",
+    "Starter": "Yes",
+    "Special": "Miner: Starts With Acrobatics Skill and Miner Feat, also starts with Chain Axe.",
+    "Pinterest_Inspo_Board": ""
+  },
+  {
+    "Campaign": "Fantasy",
+    "SubType": "Dwarven",
+    "Name": "Mountain Dwarf",
+    "Description": "One of the oldest and most stalwart races, The dwarves have roamed the mines and mountains for eons, they are the sons and Daughters of Turvin the first dwarf. They are strong smiths forging their beloved Stone Mauls, a signature weapon of the Mountain dwarves, all of dwarvenkind has a type of weapon that they call their own.",
+    "Starter": "Yes",
+    "Special": "Smith: Starts with Smithing Profession & Crafting or Appraisal skill, also gets Stone Maul.",
+    "Pinterest_Inspo_Board": ""
+  },
+  {
+    "Campaign": "Fantasy",
+    "SubType": "Elven",
+    "Name": "Desert Elf",
+    "Description": "The Strongest of the Elven races, The desert Elves are clad in turbans and armor, to protect from their harsh environment but are skilled warriors and smiths, whose jewelry and blades marvel the world. They strive for excellence in strength of arms instead of magic, They survived by claiming the harshest cruelest land for themselves which no one else wanted. They often made large structures to show Their Power over their domain and land, which is why so many tombs scattered the sandy dunes.",
+    "Starter": "Yes",
+    "Special": "Traveler's Luck: Bonus Survival Skill, and the ability to reroll Foraging dice.",
+    "Pinterest_Inspo_Board": ""
+  },
+  {
+    "Campaign": "Fantasy",
+    "SubType": "Elven",
+    "Name": "Forest Elf",
+    "Description": "The Forest elves are one of the most iconic groups of elves, Claiming wild forests, their homes and cities, they patrol them hunting monsters, and bandits with their trusted bows. These Elves have struggled to adapt with time but they’ve endured through sheer skill and Courage.",
+    "Starter": "Yes",
+    "Special": "Forest Walkers: Gains proficiency in most bow type weapons. Gains Hunting & Nature Skills.",
+    "Pinterest_Inspo_Board": ""
+  },
+  {
+    "Campaign": "Fantasy",
+    "SubType": "Elven",
+    "Name": "High Elf",
+    "Description": "Of all elven kinds the most powerful mages to have walked the world come from the high elves, their immense natural magic reserves make them more than capable of unleashing volleys of spells constantly. They have survived and molded the environment to suit themselves, instead of changing themselves to their environment. It’s said no other race is blessed with such intelligence or magical prowess. While physically weaker than their brethren, the sheer power of their magic can’t be contested or trifled with.",
+    "Starter": "Yes",
+    "Special": "Mana Children: Bonus 2 magic books, and Prof in Arcana & Spellcraft.",
+    "Pinterest_Inspo_Board": ""
+  },
+  {
+    "Campaign": "Fantasy",
+    "SubType": "Elven",
+    "Name": "Ocean Elf",
+    "Description": "The ocean elves, silver tongued sailors and pirates, born to sail the seas and to rule its waves, are known for their profound beauty and charm. Though make no mistake they are magical just like their kin, and will send you to the depths if you underestimate their mischievous tactics and ploys. They occupy coastal towns, floating cities and even the occasional City ship.",
+    "Starter": "Yes",
+    "Special": "Ocean's Chosen: Gain mariner proficiencies like acrobatics to climb ropes, Swimming, and one more of your choosing that makes sense on a ship.",
+    "Pinterest_Inspo_Board": ""
+  },
+  {
+    "Campaign": "Fantasy",
+    "SubType": "Elven",
+    "Name": "Plains Elf",
+    "Description": "The Plains elf is the simplest easy going and most friendly kind of elves, having persevered the test of time through friendly negotiations with other races, namely with dwarves, humans, dragonborn, and just about anyone else willing to eat their produce. Plains elves are natural farmers and have a way with growing herbs and crops most people assume to be a type of magic. In all reality most plains elves are just born with green thumbs, not all are some tend to get into alchemy instead of growing plants.",
+    "Starter": "Yes",
+    "Special": "Farmer's Nature: Bonus prof with simple weapons, Gains Prof in Foraging & Persuade.",
+    "Pinterest_Inspo_Board": ""
+  },
+  {
+    "Campaign": "Fantasy",
+    "SubType": "Elven",
+    "Name": "Winter Elf",
+    "Description": "The Winter elves Known for their innate winter magic, and their tolerance for the cold. Thrive in the coldest places, using their wisdom to guide and preserve their clans through toil and strive, they keep old tomes of history and wisdom to remind themselves of who they are, and what other races before them have tried and failed.",
+    "Starter": "Yes",
+    "Special": "Children of Winter: Starts with Winter book, and Handle animal & Mythos Skills.",
+    "Pinterest_Inspo_Board": ""
+  },
+  {
+    "Campaign": "Fantasy",
+    "SubType": "Human",
+    "Name": "Beastman",
+    "Description": "A race that branched off of humanity many, many years ago, they are mostly human with animal features that adorn their bodies, tails ears, stripes, wings, claws etc. They are humans who have an animal spirit bonded to them and it shows. They can be any land mammal, avian and rarely reptile and are just as capable as humans are, but their animal likeness gives them some benefits that normal humans don’t have. They do have an issue with a disease that only targets their race, known as the Feral syndrome, which forces them to fight the animal they’re bonded with. It's a painful brutal process and most come out of it fine. Though, some lose themselves and become feral beastfolk.",
+    "Starter": "Yes",
+    "Special": "Animal Nature; Gains traits based on what animal they are.",
+    "Pinterest_Inspo_Board": "https://pin.it/30zMZqGFw"
+  },
+  {
+    "Campaign": "Fantasy",
+    "SubType": "Human",
+    "Name": "Half-elf",
+    "Description": "Half-elves are hybrids between elves and other races, some take various forms since elves are capable of having children with nearly any other race, though their own genes take a back seat in the long term, eventually breeding out and leaving the other races genes. They get to have a piece of both their parents, stats or abilities",
+    "Starter": "Yes",
+    "Special": "Half Breed: Gains the special ability of one parent and the physical stats of the other.",
+    "Pinterest_Inspo_Board": ""
+  },
+  {
+    "Campaign": "Fantasy",
+    "SubType": "Human",
+    "Name": "Half-human",
+    "Description": "Half humans are hybrid between humans and other races, some take various forms since humans are capable of having children with nearly any other race, though their own genes take a back seat in the long term, eventually breeding out and leaving the other races genes. They get to have a piece of both their parents, stats or abilities",
+    "Starter": "Yes",
+    "Special": "Half Breed: Gains the special ability of one parent and the physical stats of the other.",
+    "Pinterest_Inspo_Board": ""
+  },
+  {
+    "Campaign": "Fantasy",
+    "SubType": "Human",
+    "Name": "Human",
+    "Description": "Standard, basic but not really. Humans are versatile and adaptive. One of the greatest things about them is the fact that they adapt and change to whatever situation they find themselves in. They are highly proficient with spears, and can use them as if it was second nature to them, they have several special spears they've made and use; Glaives,, Boar Spears, and Longspears. Each has their own uses but all are deadly in the hands of a human who’s put the time and effort into mastering them.",
+    "Starter": "Yes",
+    "Special": "Primal weapon; Gains proficiency with spears and is allowed to start with either a Glaive, a Longspear, or a Boarspear. They also get to pick a region for their culture which diversifies them.",
+    "Pinterest_Inspo_Board": ""
+  },
+  {
+    "Campaign": "Fantasy",
+    "SubType": "Human",
+    "Name": "Tiefling",
+    "Description": "Much like the Dragonborns, Tieflings are divided into two groups, noble and not noble tieflings. The noble Tieflings are usually quite polite, though they can be fairly snooty if they want to be.",
+    "Starter": "Yes",
+    "Special": "Fiendish Heritage; gets to pick 3 fiendish spells from a list provided by the DM.",
+    "Pinterest_Inspo_Board": "https://pin.it/49rI6tl44"
+  },
+  {
+    "Campaign": "Fantasy",
+    "SubType": "Lizardfolk Greater",
+    "Name": "Feathered",
+    "Description": "Feathered lizardfolk are some of the most regal of the lizardfolk. These are often trained in magery as they have a large surplus of mana and pick up on spells quickly. They are adorned with feathers all over, tucked between scale patches. They usually have a colorful array of feathers.",
+    "Starter": "No",
+    "Special": "Feathered Landing: Feathered lizardfolk can use their copious amounts of feathers to slow themselves mid-fall reducing fall damage greatly.",
+    "Pinterest_Inspo_Board": "https://pin.it/2wACcJBfb"
+  },
+  {
+    "Campaign": "Fantasy",
+    "SubType": "Lizardfolk Greater",
+    "Name": "Runetail",
+    "Description": "Runetails are by far the most magically aligned of the lizardfolk. They range in appearance in their standard form from mostly human to mostly lizardfolk. The thing that they all have in common is a large mana filled flat lizard tail. Because of the amount of mana that flows through them, they are able to magically change their entire dna at will, meaning that they are excellent shape shifters, where their only limit is their imagination. It takes time for them to gain certain shifting skills though, upwards of 300 years, so make sure you ask the DM what you can and can not do beforehand. As a runetail, there is an unsatiated curiosity that instills their mind. They want to learn as much as they can. They also constantly have an itch to shift as they constantly fear that they will be caught and sniffed out if they stay in one form for too long.",
+    "Starter": "No",
+    "Special": "Magic Born: Magic infused shape shifting allows Runetail's to shape shift into any sentient race they've encountered or read about. Bigger races are excluded until they gain enough experience in shifting. Also shifting into another gender will be rather uncomfortable until they get used to it.",
+    "Pinterest_Inspo_Board": ""
+  },
+  {
+    "Campaign": "Fantasy",
+    "SubType": "Lizardfolk Lesser",
+    "Name": "Black Lizardfolk",
+    "Description": "Black scales are incredibly hearty, large and brutish. They might not be super intelligent but they can back their hissing with a powerful punch. They are known for their strength and resilience in battle. They are cousins to the nigh impenetrable iron scales, just larger and often more cunning.",
+    "Starter": "Yes",
+    "Special": "Brute Lifestyle; Black Scaled lizardfolk are massive tanky beasts. They gain a large bonus to HP and CON, at the penalty of INT. +25 HP",
+    "Pinterest_Inspo_Board": "https://pin.it/2wACcJBfb"
+  },
+  {
+    "Campaign": "Fantasy",
+    "SubType": "Lizardfolk Lesser",
+    "Name": "Blue Lizardfolk",
+    "Description": "Blue Lizardfolk are the swimmers of the Lizardfolk. There’s jet Lizardfolk that can shoot jets of water so they can travel faster in the water.",
+    "Starter": "Yes",
+    "Special": "Sea Bound: They gain a 40 ft swim speed and get expertise in Fishing",
+    "Pinterest_Inspo_Board": "https://pin.it/2wACcJBfb"
+  },
+  {
+    "Campaign": "Fantasy",
+    "SubType": "Lizardfolk Lesser",
+    "Name": "Green Lizardfolk",
+    "Description": "Green Lizardfolk are the most basic but the most diverse. They have so many more variants than any other lesser Lizardfolk. There are Axetails, whose tails are sharp and bony with what looks like an axe head made of bone. Frilled Lizardfolk that look like frilled lizards who have a hood they can raise to increase intimidation and give a free soft fall, allowing survival from extreme heights. Whiptails have long slender tails that can be whipped to deal a little more ranged damage. Sickleclaws have long front claws that can act like blades when it comes to combat.",
+    "Starter": "Yes",
+    "Special": "Scales of Fury: Gain natural weapons of a bite 1d10 & two claws 1d6 each.",
+    "Pinterest_Inspo_Board": "https://pin.it/2wACcJBfb"
+  },
+  {
+    "Campaign": "Fantasy",
+    "SubType": "Lizardfolk Lesser",
+    "Name": "Red Lizardfolk",
+    "Description": "Red Lizardfolk are fire resistant. They can melt things in their mouth from sheer heat. They are great smiths as they can refine their own metals and work with them immediately.",
+    "Starter": "Yes",
+    "Special": "Scales of Magma: +6 fire resistance, and they gain an extra dice of damage for their bite attack.",
+    "Pinterest_Inspo_Board": "https://pin.it/2wACcJBfb"
+  },
+  {
+    "Campaign": "Fantasy",
+    "SubType": "Lizardfolk Lesser",
+    "Name": "White Lizardfolk",
+    "Description": "White Scales are also known as Albino Lizardfolk, they have a peculiar resilience to lightning and are capable of channeling it in a very unique capacity. Their body has the capacity to conduct and flow electricity through it, though are incapable of generating the power themselves, so must rely on exterior sources, such as lightning or Sparks magic to use their abilities.",
+    "Starter": "Yes",
+    "Special": "Scales of Storms: gains sparks absorption 6, and they can store up to 60 points of it, but it will fade after two days if unused. They can expend these sparks points to unleash powers mimicking spells.",
+    "Pinterest_Inspo_Board": "https://pin.it/2wACcJBfb"
+  },
+  {
+    "Campaign": "Fantasy",
+    "SubType": "Rare",
+    "Name": "Anubi",
+    "Description": "The Anubi, a regal race of jackals who prowl the deserts. They pride themselves on their knowledge and their skill in manipulating precious metals into something magical. Standing about the height of a tall human these Beastfolk adorn themselves in gold and silk, and build monuments to outlive the world. They have gained notoriety in their time as the builders of wonders, makers of artifacts, and the oracles of the future. Though this all comes at a cost, their nobility has led them to be shortsighted in terms of war, and have had many unnecessary losses over the years they’ve reigned the deserts, leaving them few in number.",
+    "Starter": "Yes",
+    "Special": "Magitech Offerings: The anubi are closely associated with their beloved creation, magitech. and if they are found will almost certainly have a piece of magitech equipment on hand.",
+    "Pinterest_Inspo_Board": "https://pin.it/3Gf9ndM3H"
+  },
+  {
+    "Campaign": "Fantasy",
+    "SubType": "Rare",
+    "Name": "Changeling",
+    "Description": "Changelings are mostly made, not born. There are several ways to become a changeling, some more dangerous than others, but each of them have one thing in common. A changeling is a conglomeration of souls with only one vessel, or body. A changeling can’t just become anything they want. They must have a soul of what they want to become and even then, they can only take on the original form of that soul. For instance, if a changeling has a soul of an ulfgar, they can’t look like any random ulfgar they’d like, they can only look like the ulfgar soul they acquired.",
+    "Starter": "Yes",
+    "Special": "Many Forms: You have absorbed 1D6 souls and have their forms. Come up with those 1D6 characters, but don't lose track of the original",
+    "Pinterest_Inspo_Board": ""
+  },
+  {
+    "Campaign": "Fantasy",
+    "SubType": "Rare",
+    "Name": "Goliath",
+    "Description": "The children of the giants and humanity, they live in the reaches far away from the populated places, they don’t want to deal with the many people staring at their tremendous height for their tribes are few in number and large groups of people tend to frighten them. They associate with Winter elves and fight against Ulfgar constantly, having a friendly rivalry with the wolf men. Occasionally a goliath will leave their tribe and wander among the other races, making it known that the goliaths still walk the mountains and far reaches.",
+    "Starter": "Yes",
+    "Special": "Giantkin: These massive people can use their ancestry to achieve immense feats of strength, thrice a day they can double their strength modifier on any relevant check.",
+    "Pinterest_Inspo_Board": ""
+  },
+  {
+    "Campaign": "Fantasy",
+    "SubType": "Rare",
+    "Name": "Half Orc",
+    "Description": "",
+    "Starter": "Yes",
+    "Special": "Half Breed: Gains the special ability of one parent and the physical stats of the other.",
+    "Pinterest_Inspo_Board": ""
+  },
+  {
+    "Campaign": "Fantasy",
+    "SubType": "Avian",
+    "Name": "Kenku",
+    "Description": "These avians lack the ability to fly, with the lack of wings, but they are covered in feathers and take appearances from corvids. Kenku are often much shorter than aarakocra, around 4.5-5.5 foot tall. They love their shiny things and often can let that distract them from their work.",
+    "Starter": "Yes",
+    "Special": "Flutterfall + Perform: You have the equivalent of a built in featherfall for yourself.  You also gain a natural proficiency in performance.",
+    "Pinterest_Inspo_Board": ""
+  },
+  {
+    "Campaign": "Oriental",
+    "SubType": "Civilized",
+    "Name": "Alvi",
+    "Description": "Korea. Best smiths in the land. Elven in appearance",
+    "Starter": "Yes",
+    "Special": "",
+    "Pinterest_Inspo_Board": ""
+  },
+  {
+    "Campaign": "Oriental",
+    "SubType": "Civilized",
+    "Name": "Cakukin",
+    "Description": "China. Caste system but reverse and most numerous. Builders. Apes of the land.",
+    "Starter": "Yes",
+    "Special": "",
+    "Pinterest_Inspo_Board": ""
+  },
+  {
+    "Campaign": "Oriental",
+    "SubType": "Civilized",
+    "Name": "Fusoan",
+    "Description": "Japan. The main tinkerers of the east. Don’t fuck with. Very similar to beastman mixed with elves.",
+    "Starter": "Yes",
+    "Special": "",
+    "Pinterest_Inspo_Board": ""
+  },
+  {
+    "Campaign": "Oriental",
+    "SubType": "Civilized",
+    "Name": "Hobgoblin",
+    "Description": "Mongolia. Brawn of the East but a pain in the ass.",
+    "Starter": "Yes",
+    "Special": "",
+    "Pinterest_Inspo_Board": ""
+  },
+  {
+    "Campaign": "Oriental",
+    "SubType": "Civilized",
+    "Name": "Jinko",
+    "Description": "A reclusive amazonian race of tigresses who are often overlooked as they keep to their monasteries to study and channel Ki. Jinko are one of the only races in the world who are given more Ki than other races, making them excellent Monks, Acolytes, and Sages. They seldomly leave their lands, but it’s not unheard of to see one in the west, often mistaken as a tiger beastman. Though their wisdom and patience make them brushed by comments from people who don’t know who they are. Many jinko try to pass on the teachings of Ki to others, to make more people aware of its influence in a person’s life.",
+    "Starter": "Yes",
+    "Special": "",
+    "Pinterest_Inspo_Board": ""
+  },
+  {
+    "Campaign": "Oriental",
+    "SubType": "Civilized",
+    "Name": "Kapsa",
+    "Description": "Turtle folk. Long lived scholars",
+    "Starter": "Yes",
+    "Special": "",
+    "Pinterest_Inspo_Board": ""
+  },
+  {
+    "Campaign": "Oriental",
+    "SubType": "Civilized",
+    "Name": "Kitsune",
+    "Description": "Multi tailed fox folk. They can be fox folk or beastman like.",
+    "Starter": "Yes",
+    "Special": "Multiplicative Mana: These fox demons gain 20 mana per tail they have.",
+    "Pinterest_Inspo_Board": ""
+  },
+  {
+    "Campaign": "Oriental",
+    "SubType": "Civilized",
+    "Name": "Okami",
+    "Description": "The honorable Warrior clans of the Okami fight as warriors for the feudal lords of Fuso, a cousin of the ulfgar and houndsmen these honor revered warriors give their lives in the service of their lords and their duty. They aren’t as tall as their ulfgar cousins but the eastern wolf men are far tamer and manageable, those without lords wander the land as swordsmen fighting bandits and monsters wherever they go.",
+    "Starter": "Yes",
+    "Special": "",
+    "Pinterest_Inspo_Board": ""
+  },
+  {
+    "Campaign": "Oriental",
+    "SubType": "Civilized",
+    "Name": "Oniri",
+    "Description": "Mountain dwelling ogres.",
+    "Starter": "Yes",
+    "Special": "",
+    "Pinterest_Inspo_Board": ""
+  },
+  {
+    "Campaign": "Oriental",
+    "SubType": "Civilized",
+    "Name": "Tanuki",
+    "Description": "Racoonfolk. Goblins of East. Pests most of the time.",
+    "Starter": "Yes",
+    "Special": "",
+    "Pinterest_Inspo_Board": ""
+  },
+  {
+    "Campaign": "Oriental",
+    "SubType": "Civilized",
+    "Name": "Tengu",
+    "Description": "Bandits. Big angry Aarakocra but stronger.",
+    "Starter": "Yes",
+    "Special": "",
+    "Pinterest_Inspo_Board": ""
+  },
+  {
+    "Campaign": "Scifi",
+    "SubType": "Alien",
+    "Name": "Araka",
+    "Description": "The Araka are very war-like and are more often than not pirates. The civilized houses still value strength however. The Araka families are organized in different houses: Gears, Thunder, Twilight, Remnants, Light (not playable), Inferno (not playable), Devils, Kings, Exiles, Winter, Wolves, and Judgement.",
+    "Starter": "Yes",
+    "Special": "",
+    "Pinterest_Inspo_Board": ""
+  },
+  {
+    "Campaign": "Scifi",
+    "SubType": "Alien",
+    "Name": "Divaren",
+    "Description": "A short squat bearded race similar to humans but, with a load of genetic differences, namely that the Divaren’s have an acute reliance for a minor poisonous chemical, AKA alcohol. They drink alcohol in vast quantities and gain numerous benefits from constantly drinking. They have a deep love of their traditions and their ‘ways’ from mining, to black smithing, to masonry. They actively keep ancient traditions around to ensure stability when something has to be removed for a period for extended maintenance and routine overhauling.",
+    "Starter": "Yes",
+    "Special": "",
+    "Pinterest_Inspo_Board": ""
+  },
+  {
+    "Campaign": "Scifi",
+    "SubType": "Alien",
+    "Name": "Eel'a-Siek-Cha'za",
+    "Description": "Squid-like race that values science above all else. They’re inquisitive, they’re smart, and they have very big brains. The Chaza was the race that made it to space first and invented the currency system by impressing the toilers. The currency system uses coral found only on their planet that changes color when it is broken. Different colors represent different values. The coral is called Ava-ruu’skoral-li. The Chaza eventually started finding other races on planets, and watched them develop into their own space age, and waited until the race got to space to introduce themselves, as they didn’t wish to interfere with the natural progression of other races. The Chaza have been in galactic politics since the beginning, and have the most advanced tech of all the races despite what the Quin-Val or humans or Ashen would say.",
+    "Starter": "Yes",
+    "Special": "",
+    "Pinterest_Inspo_Board": ""
+  },
+  {
+    "Campaign": "Scifi",
+    "SubType": "Alien",
+    "Name": "Enno-Aru",
+    "Description": "A Warrior race with an honorbound warrior culture. A mostly avian race but without the wings, they use their large fourth finger to agile maneuver their blades with ease. It’s hard to sneak up on Ennu-Aru as they have sensory feathers on the back of their head and neck that alerts them to flanking attacks. Because of this, they don’t have disadvantage like other races when it comes to being flanked.",
+    "Starter": "Yes",
+    "Special": "",
+    "Pinterest_Inspo_Board": ""
+  },
+  {
+    "Campaign": "Scifi",
+    "SubType": "Alien",
+    "Name": "Idrid",
+    "Description": "Idrids are a plant-like race that comes from the planet that the Ensin adapted to. They are individual hive-minds. The idrids are ruled by the 'great one' which is a collection of idrids that combine into one massive idrid, and it functions like a massive council to rule and lead their relatively small race.",
+    "Starter": "Yes",
+    "Special": "",
+    "Pinterest_Inspo_Board": ""
+  },
+  {
+    "Campaign": "Scifi",
+    "SubType": "Alien",
+    "Name": "Illalial",
+    "Description": "Males are blind, deaf, and rare. Females are tall. The race is militaristic in nature, to defend the males that are born. Because of the rarity and how the females are dedicated to keeping them alive, male Illalial have fantastically long lives. The race as a whole tends to be fairly shy as far as galactic matters go, preferring to mind their own business and maintain what they have. As a result, their ties and alliances with other races are tenuous at best, and nonexistent at worst. They have a friendly rivalry with the Sundri.",
+    "Starter": "Yes",
+    "Special": "",
+    "Pinterest_Inspo_Board": ""
+  },
+  {
+    "Campaign": "Scifi",
+    "SubType": "Alien",
+    "Name": "Nilbog",
+    "Description": "Space goblins. They go for any kind of title/niche/gimmick they can. Biggest family, smallest family, most notorious pirate, least notorious pirate. Any kind of title. The Nilbogs are very numerous, reproducing faster than humans, and spreading faster too. Their role in the galaxy ranges from merchants to mechanics to pirates. They not only are numerous but have two subtypes that have stemmed from them. Nilbog-boh, and Raeb-Gub. The Boh, and the Gub, came from the adaptation of the nilbog race on other planets. Boh are born on planets that lack the high gravity of their homeworld, and also can be born in space. They are much taller than their smaller brethren, and easily stand as tall as a human. Gub, are a race of nilbog that colonised a frozen planet, and grew thick amounts of fur. They are the strongest of the family, but get overheated a lot on warmer planets and stations",
+    "Starter": "Yes",
+    "Special": "",
+    "Pinterest_Inspo_Board": ""
+  },
+  {
+    "Campaign": "Scifi",
+    "SubType": "Alien",
+    "Name": "Ohmoud",
+    "Description": "The Ohmoud are a proud race that prides elegance and refinement over politics, money and war. They have a long history of artists, thinkers, philosophers and other kinds of artistic types. As a race that values finery, one would think that they’d get along with merchants and ways to connect them with the finery they desire. One would be wrong; they hate the quinval and generally detest merchants in general. A historical weapon of the Ohmoud would be similar to a glaive, and the honor guard carry these weapons to this day.Part of the Ohmoud culture is a strict caste system divided by skin tone and profession. The hierarchy goes: the red/military caste, then the yellow/ruling caste, and the most respected blue/artisan caste. The castes are considered equal in the respect that there is little to no discrimination between ohmoud castes, but an ohmoud generally does not marry outside a caste with exceptions to marry to and from the ruling caste. Red Ohmoud and blue Ohmoud cannot reproduce because it is a cultural taboo however. The origin of this taboo is when the ohmoud were four factions, the red, yellow, and blue had to group together in order to defeat the purple Ohmoud, which are stronger, faster, smarter, and far more bloodthirsty. Purple Ohmoud are always bloodthirsty warmongers regardless of how good their childhood is, and since they only come from unions of red/blue or purple/purple, modern Ohmoud enforce the marriage taboo. Since the caste system is dictated by skin color, an ohmoud cannot change castes unless they prove to be truly exemplary in the skills of a different caste, and even then they are not considered members of that caste because they become part of the small and unofficial “mentor caste”. No Ohmoud is born into the mentor caste, as the skills of a parent don’t always come to a child. The sole job of the mentor caste is to teach young ohmoud their trades and to keep the traditions of the castes going from generation to generation.",
+    "Starter": "Yes",
+    "Special": "",
+    "Pinterest_Inspo_Board": ""
+  },
+  {
+    "Campaign": "Scifi",
+    "SubType": "Alien",
+    "Name": "Quinval",
+    "Description": "The Quinval are a race that is trying to claw its way to the top. They come from a world where dominance and power is everything, and once they attained that, they went to the stars with some of their underling races only to discover that they are very much not alone and not the “top dog” either. The Quinval now attempt to acquire power through political and economic scheming and backstabbing. Unfortunately because of their lust for power and prestige, the Quinval have rough relations with some races such as the Ohmoud and the Ashen.They regard all races as lower than them, but recognise that those races may not have realized it yet. Most quinval regard money as the only way to be remembered in history, as it is an integral part of Quinval culture. One of the schemes the Quinval have tried was to create AIs to take care of menial tasks for them such as maintenance, manufacturing, agriculture, and war. This scheme backfired horrendously, as the AIs decided they didn’t want to work for the Quinval and went renegade, earning their name. The Quinval have not tried to work with advanced AI since. They do however still use automated machinery for menial tasks.",
+    "Starter": "Yes",
+    "Special": "",
+    "Pinterest_Inspo_Board": ""
+  },
+  {
+    "Campaign": "Scifi",
+    "SubType": "Alien",
+    "Name": "Suundri",
+    "Description": "Basically the Space Roman empire at its Peak. Get along with Quinval, a friendly rival to the Illaliala. The Suundri come in different colors/head-tail amounts depending on what sort of biome they come from. In addition, the Suundri have a penchant for swords and seemingly obsolete weaponry, as tradition dictates that leaders must use them. Capital punishment is not only legal, but public as well. They also celebrate and broadcast gladiatorial matches throughout the galaxy. It is often looked on as a rite of passage, and it is how centurions are selected. The Suundri, despite enjoying peace, also refuse to disband/disarm their army “just in case”.",
+    "Starter": "Yes",
+    "Special": "",
+    "Pinterest_Inspo_Board": ""
+  },
+  {
+    "Campaign": "Scifi",
+    "SubType": "Alien",
+    "Name": "Tasawi",
+    "Description": "A race of elementals, and they can’t leave their homeworld except with a special suit that keeps them from dissolving. They are peacekeepers between the races, and technically the second to space. They are incredibly nervous about the whole Ashen situation. They have a very flowing type of garment on their homeworld, and they don’t like to be burdened by their suits. On occasion the Tasawi like to go to the cores of gas giants to just be alone for a time without their suits. There are multiple types of Tasawi, and they correspond to the used energy types that are often used in weaponry today.",
+    "Starter": "Yes",
+    "Special": "",
+    "Pinterest_Inspo_Board": ""
+  },
+  {
+    "Campaign": "Scifi",
+    "SubType": "Alien",
+    "Name": "Urait",
+    "Description": "The Urait were found by accident, though since their discovery, they’ve been the ‘muscle’ of the Galactic council since. The Chaza and Tasawi both rely on these hulking crustacean tankers to handle some of the more Militant areas of the council’s affairs. The Urait species is unique in that their ‘shell’ are vehicles and temporary abodes that they reside in they each build them themselves and adjust them to their liking. These crabs aren’t nearly as common as they once were, many thousands died during the great war. They do have a cousin species that they aren’t particularly fond of, the Cl’rawdah, who lack ‘vehicle’ shells but are well nigh immortal to aging or disease. (and also the size of a metropolitan bus)",
+    "Starter": "Yes",
+    "Special": "",
+    "Pinterest_Inspo_Board": ""
+  },
+  {
+    "Campaign": "Scifi",
+    "SubType": "Alien",
+    "Name": "Zih-Zih",
+    "Description": "Short in stature, and have no home planet. The Zih-Zih are nomads, living aboard massive carrier ships and specializing in flight. Every Zih-Zih has a personal fighter, and they have the biggest ‘fleet’ in the known galaxy. Because the Zih-Zih are small, they are very fragile and can’t use large arms. As a result, they’ve worked on revolvers to be better, and most Zih-Zih weaponry has almost no recoil.",
+    "Starter": "Yes",
+    "Special": "",
+    "Pinterest_Inspo_Board": ""
+  },
+  {
+    "Campaign": "Scifi",
+    "SubType": "Animalistic",
+    "Name": "Caytan",
+    "Description": "One of the few races that had been monitored by the council as they grew and developed, they reached it to space and have a weirdly archaic culture, as they have a distinct title in their society which revolves around how much they’ve managed to do, their world is covered in grand monuments of science and grandeur, the caytan that made them Regarded as a Ph’aroaha. Basically an elected king, who joins the council that leads their race. Caytan can vary in fur colorations but mostly are spotted or striped, regardless of color.",
+    "Starter": "Yes",
+    "Special": "",
+    "Pinterest_Inspo_Board": ""
+  },
+  {
+    "Campaign": "Scifi",
+    "SubType": "Animalistic",
+    "Name": "Kroxsaur",
+    "Description": "Very strength orientated, they operate off a predator, and prey logic weak being enemies, strong being allies. They have a seat on the attempted council of races simply because they’re prevalent and one of the biggest races to date in the Galactic scene. They repelled tens of thousands of enemies with only a few hundred or so, and lost almost no soldiers. They value strength and agility, they’re patient as hell. Can go for a very long time without food.Scars are a show of power.",
+    "Starter": "No",
+    "Special": "",
+    "Pinterest_Inspo_Board": ""
+  },
+  {
+    "Campaign": "Scifi",
+    "SubType": "Animalistic",
+    "Name": "Protis",
+    "Description": "These are a doglike race that are more than obsessed with technology. Their houndlike demeanor gives them a dog’s features including a tail, ears and fur. One of the most distinctive things that is visible with the Protis is their visors. They have a black visor that covers their entire face that kinda looks like their snout. It acts as a display screen for both those looking at the Protis and the Protis themself. For the Protis, the visor acts like a small personal computer that they can use like a HUD, with a basic scanner, minor data base or other such uses. Their love of technology doesn’t stop there though. They will constantly augment themselves with different stat augments. Some choose to have mobility upgrades that enhance their movement and speed, others will have intelligence augments that increase their memory and recall ability. The last thing about the Protis is that they choose a symbol, like a rune. Usually it is something simple that has some meaning to the pup in question. They very rarely change it after they pick it when they are younger, mid to late teens.",
+    "Starter": "Yes",
+    "Special": "",
+    "Pinterest_Inspo_Board": ""
+  },
+  {
+    "Campaign": "Scifi",
+    "SubType": "Animalistic",
+    "Name": "Ulfrend",
+    "Description": "The ulfrend are a barbaric newcomer race that has recently shown itself to the galaxy, luckily it wasn’t a hostile interaction, namely due to the Ulfrend being a near perfect predator race. They are very blood thirsty and have a capacity for war unlike any other species. Their arrival while worrying also brought great relief to the council, as an untouched armada of soldiers has been in sore need for the constant pirate raids and sieges happening to the core. While their brutish and primitive nature makes them ‘less civilized’ it makes them ideal for handling. Any sort of violent problems Ulfrend are strange biologically, their distinctive biological cybernetics that are organic and grow with the Ulfrend as they age. Also there’s two types of Ulfrend; biologically bred and Spawn pit Ulfrend. Most of their race are born and raised in essentially horrific Spawn chambers, where they are built/grown. They all see each other as family and are incredibly loyal.",
+    "Starter": "No",
+    "Special": "",
+    "Pinterest_Inspo_Board": ""
+  },
+  {
+    "Campaign": "Scifi",
+    "SubType": "Humanoid",
+    "Name": "Ashen",
+    "Description": "Honor and strength based, distrusted except by Eliksni and Kroxsaurs. Not considered human. Need Ash in food, water, and air to live properly. The ashen are darn near impossible to kill, and their culture is very Knight-esque. This comes from a regression that happened to them technology wise when their colony ships crashed on a hostile volcano world: Cinis. One of the factions of Ashen scavenged all the helpful tech they could from the remains after seeing the infighting and leaving the other colonists. As a result, the two main factions: the knights; who are far more militaristic and crusader-esque, and the rogues; who adapted to be quick hunters and ingenious survivors, were created. There are four kinds of Ashen: the Knights, the Rogues, the Monks, and the Exiled. The exiled are not regarded as Ashen and are forbidden to use that term for themselves, despite the rest of the galaxy calling them Ashen. An Ashen becomes an Exile when they either take the title on themselves as a test of strength, or by dishonoring themselves or the Ashen race. Monks are a newer faction of the Ashen that are a combination of Knights and Rogues. The Monks are not a playable kind of Ashen. The Ashen will at times adventure to keep knowledge of the galaxy and their reputation as a race, when they do so they adopt different names: Paladins, Rangers, and Exiles.",
+    "Starter": "No",
+    "Special": "These aren't the technical stats because ashen have racial limitations, so this is just in the place of stuff",
+    "Pinterest_Inspo_Board": ""
+  },
+  {
+    "Campaign": "Scifi",
+    "SubType": "Humanoid",
+    "Name": "Beastra",
+    "Description": "Demi Human Race was created as a science experiment, but still treated as actual humans. They tend to mistrust humans, but are generally not hostile towards them. They were sent to these beautiful almost perfect worlds as colonists. They were sent the best gear, they had escorts, they were basically treated like nobility. When they got to their worlds however, they discovered what had been done to them. Many of the adults on these ships had been unknowingly injected with strains of DNA from other animal species in order to make human-animal hybrids. After a long sleepless night of agony, they woke with new animalistic features. These colonies have continued to be taken care of for fear of retaliation from the beastra to the humans.",
+    "Starter": "Yes",
+    "Special": "",
+    "Pinterest_Inspo_Board": ""
+  },
+  {
+    "Campaign": "Scifi",
+    "SubType": "Humanoid",
+    "Name": "Ensin",
+    "Description": "These Demi-Humans have been changed in their colony by the combination of a hostile environment and the psychoactive air. Over time they developed the ability to shift their appearance, and their lungs adapted to the air of the world. Ensin tend to be loopy on other worlds, and in order to shift, they need extra gas. The Ensin are generally left out of serious conversation as a result of the other races and demi-human’s impression of them.",
+    "Starter": "Yes",
+    "Special": "",
+    "Pinterest_Inspo_Board": ""
+  },
+  {
+    "Campaign": "Scifi",
+    "SubType": "Humanoid",
+    "Name": "Mechanica",
+    "Description": "Mechanica are an extremely industrial society, and their entire system is machinery to manufacture things. They depended on humans in the early days of their colony, so they haven’t changed too much. They have one world to grow food on, however. They turned their sun into a Dyson sphere and have adapted to basically an OSHA environment. They are extremely skilled craftsmen, and pride themselves on their ingenuity and reliability. Your ship is in capable hands if you have a Mechanica aboard.",
+    "Starter": "Yes",
+    "Special": "",
+    "Pinterest_Inspo_Board": ""
+  },
+  {
+    "Campaign": "Scifi",
+    "SubType": "Humanoid",
+    "Name": "Nebulous",
+    "Description": "A Branch of demi-humans that didn’t make it to a new planet, they got stuck in a nebula. The Nebulous are very charismatic, as they have developed an isolated culture in the islands of their ships. They have a penchant for poetry, and have a bit of wanderlust. They can see UV and Infrared light, and they can walk outside a spaceship without a suit for a brief period of time. They also can wield energy weapons very well. In addition, they have a very close bond with the Talvi, as they were the original escort for the colony ships the then-human Nebulous were on: the Colossus.",
+    "Starter": "Yes",
+    "Special": "",
+    "Pinterest_Inspo_Board": ""
+  },
+  {
+    "Campaign": "Scifi",
+    "SubType": "Humanoid",
+    "Name": "Pure Human",
+    "Description": "They’re human. Their homeworld isn’t Earth, but it is very similar. Humans are effectively the same as real humans, and are quickly making other races nervous with how quick they grow and adapt to increasingly hostile places and activities. They are very numerous and very divided amongst themselves. Human origins are odd, as their current homeworld of Terra is not their original homeworld, Earth. Earth was lost and nobody alive is sure why or where it actually was. Humans actually joined the intergalactic stage “on the run” as they put it. None of the other races know what they were running from.",
+    "Starter": "Yes",
+    "Special": "",
+    "Pinterest_Inspo_Board": ""
+  },
+  {
+    "Campaign": "Scifi",
+    "SubType": "Humanoid",
+    "Name": "Talvi",
+    "Description": "Militaristic, Exceptionally loyal to humanity. These ape-like demihumans were stranded in a war with the Zih-Zih on an icy planet, and injected themselves with the primitive formula used on the Beastra in order to survive the cold. This war was caused by the Zih-Zih’s attack on the Colossus, and the Talvi escort fleet told the Colossus to run, and so the Talvi fought their war. They won their small war with the zih-Zih, and managed to send a distress call, to which the humans came and found them. Afterwards, they found out the Colossus survived and became the race of the Nebulous, and so the two races have an almost inseparable bond.",
+    "Starter": "Yes",
+    "Special": "",
+    "Pinterest_Inspo_Board": ""
+  },
+  {
+    "Campaign": "Scifi",
+    "SubType": "Humanoid",
+    "Name": "Thruman",
+    "Description": "Have very Sensitive hearing thanks to their long pointy ears. They also have extremely acute eyesight and smell. They are known as one of the best shots in the galaxy, and one of them holds the Galactic longest record for a sniper rifle kill. The Truman lived in caves on their colony and took care of themselves, which is what influenced their adaptations. The Thruman also have many Ohmud influences on their culture as a result of an Ohmud hermit that the colony came across, who not only taught them to survive in such a strange world, but also how to maintain a sense of self and civilization. The Thruman have a very Ohmud-esque grace and light footedness, but they managed to make it their own thing as well. The Thruman are very proud of this, and wouldn’t tell an Ashen to their face that they look down on them at all, but they totally do.",
+    "Starter": "Yes",
+    "Special": "",
+    "Pinterest_Inspo_Board": ""
+  },
+  {
+    "Campaign": "Scifi",
+    "SubType": "Robotic",
+    "Name": "Junker",
+    "Description": "The role of the junkers is to restore ruined worlds. They travel at times to seek out landfill worlds, arid lifeless worlds, and others that don’t support life. They take these worlds and turn them into paradises, and as a race they are looking for a homeworld. The problem is that they need one that isn’t claimed by the others and has enough biomes to satisfy all the toilers, seeing as how they can only ever give a planet one or two biomes at a time. There are factions of junkers that want different biomes, and some that only build, and some that only seek.",
+    "Starter": "Yes",
+    "Special": "",
+    "Pinterest_Inspo_Board": ""
+  },
+  {
+    "Campaign": "Scifi",
+    "SubType": "Robotic",
+    "Name": "Toiler",
+    "Description": "These robots were programmed to take inventory of the universe, and in order to do this job, they created warp gates. They did not speak to other races, and they must count everything. They destroy the necrananites when found however, because it messes with the numbers. Their records are now incomplete however, thanks to the great war followed immediately by the Great Catastrophe, which destroyed all stations outside of the Core as far as they know. Because of this there is a toiler delegation in the council of Civilized Races. Their greatest programmers also created an ‘update’ that expands the toiler’s views and ‘individuality’ so that they can better fulfill their task and interface with the other races of the galaxy. Will not kill any other toilers.",
+    "Starter": "Yes",
+    "Special": "",
+    "Pinterest_Inspo_Board": ""
+  },
+  {
+    "Campaign": "Steampunk",
+    "SubType": "Factioned Races",
+    "Name": "Aarakocra",
+    "Description": "The noble aarakocra. These avians descend from the true avians in the world as you know it. There is every bird under the sun that the aarakocra can wear the feathers of. These birds are equipped with flight but usually can’t fight. Their hollow bones allow for flight but in return, they are easily broken. There are some exceptions to this and those are the hawks and eagles who are usually protectors and defenders. Another thing to note is they tend to adhere to a hierarchy where the more noble birds, owls and eagles, lead, showy birds and songbirds follow. Along the bottom of the barrel corvids rank highest followed by vultures and finally the lowest of the birds, as far as the aarakocra are concerned, the pigeons and seagulls, sky rats. Although some of the aarakocra don’t care about this code, the highest avians see themselves as better than the rest.",
+    "Starter": "Yes",
+    "Special": "Hollow bones mean that you should avoid combat, unless you are a raptor species. Mele will see your bones broken.",
+    "Pinterest_Inspo_Board": ""
+  },
+  {
+    "Campaign": "Steampunk",
+    "SubType": "Factioned Races",
+    "Name": "Dragonborn",
+    "Description": "A noble race famed for their kinship with the Dragons, no one know exactly how the dragonborn came to be but they persist and survive despite the world's constant tumultuous periods. They are one of the toughest races, and are blessed with wings or dragon breath, and in very rare cases both. They are a race that seeks to help the other nations of the world, rarely enough dragonborn around to have their own civilization. They tend to have one of two naming schemes. The first is reserved for nobles. Roll a D20 and come up with that many middle names that have some meaning to you or your family. These are your ancestors leading up to you. When writing your name, it is your first name, your parent's name and then your last name. If you are not noble, you only need one name. It can be very simple, like John or Millie.",
+    "Starter": "Yes",
+    "Special": "Dragonkin: Dragonbreath & resistance",
+    "Pinterest_Inspo_Board": ""
+  },
+  {
+    "Campaign": "Steampunk",
+    "SubType": "Factioned Races",
+    "Name": "Kenku",
+    "Description": "The Kenkus were the engineers for the Aarakocra. These avians lack the ability to fly, with the lack of wings, but they are covered in feathers and take appearances from corvids. Kenku are often much shorter than aarakocra, around 4.5-5.5 feet tall. They love their shiny things and often can let that distract them from their work.",
+    "Starter": "Yes",
+    "Special": "",
+    "Pinterest_Inspo_Board": ""
+  },
+  {
+    "Campaign": "Steampunk",
+    "SubType": "Factioned Races",
+    "Name": "Kobold",
+    "Description": "These little guys, usually standing at no more than 5 ft tall, are crafters. They hoard and gather their shiny objects and use them to trade. Their ingenuity and tinkering spirit drive them to build complex traps and mechanisms. They have a wonderful curiosity and affinity for magic, some Kobold tribes favor magic heavily enough their entire culture’s based around magic.",
+    "Starter": "Yes",
+    "Special": "Tinkerous Bastards: Gains Trap crafting skill, also color of scales provide elemental resistance",
+    "Pinterest_Inspo_Board": ""
+  },
+  {
+    "Campaign": "Steampunk",
+    "SubType": "Factioned Races",
+    "Name": "Strathund",
+    "Description": "You’re probably familiar with the Strathund’s cousin, the Kobold. These are the dog kobolds you would likely have seen in the early versions of DND. They are curious little bipedal hounds and love learning and messing with others. The main thing with the Strathund is that they wear masks that hide their eyes. Black where the white should be and glowing pupils mean that they spooked most people that they came into contact with. As a way to interact with society they adopted the visors and turned them into a way to express themselves by picking runes to adorn the sides of the visors. With a slightly smaller stature, you are able to get into places otherwise inaccessible by other races, much like the kobolds. You have a fairly decent sniffer at the end of your snout along with large ears to be able to hear a good bit too.",
+    "Starter": "Yes",
+    "Special": "",
+    "Pinterest_Inspo_Board": ""
+  },
+  {
+    "Campaign": "Steampunk",
+    "SubType": "Factioned Races",
+    "Name": "Tiefling",
+    "Description": "These guys are the Germans of the world, from their accent to their culture, they like their control. Alongside them in this world, are the Strathund, who usually act as their engineers and builders. The tieflings are rather military inclined. On the matter of appearances, Tieflings are mostly shades of red but can be other shades as well. Their horns can also say a lot about an individual. A tiefling’s horns are smooth until they meet a point in life where they make a large change with themselves, this creates a branch in their horns. The more branches and chaos in the horns, the more decisions they’ve had to make.",
+    "Starter": "Yes",
+    "Special": "Fiendish Heritage; gets to pick 3 fiendish spells from a list provided by the DM.",
+    "Pinterest_Inspo_Board": ""
+  },
+  {
+    "Campaign": "Steampunk",
+    "SubType": "Unfactioned Races",
+    "Name": "Beastmen",
+    "Description": "A race that branched off of humanity many many years ago, they are mostly human with animal features that adorn their bodies, tails ears, stripes, wings, claws etc. They are humans who have an animal spirit bonded to them and it shows. They can be any land mammal, avian and rarely reptile and are just as capable as humans are, but their animal likeness gives them some benefits that normal humans don’t have. They do have an issue with a disease that only targets their race, known as the Feral syndrome, which makes them forced to fight the animal they’re bonded with. It's a painful brutal process and most come out of it fine. Though some lose themselves and become feral beastfolk.",
+    "Starter": "Yes",
+    "Special": "",
+    "Pinterest_Inspo_Board": ""
+  },
+  {
+    "Campaign": "Steampunk",
+    "SubType": "Unfactioned Races",
+    "Name": "Kay'asa",
+    "Description": "Kay’asa has wares, if you have coin. Fully feline humanoid, Kay’asa have six forms depending on which of the six stars they were born under. Each of the six stars align with the six stats on your character sheet. The star you are born under determines a stat boon and physical attribute about your feline form. Under the strength star, you are more muscular and larger than your standard kin. Under the dexterity star, you are more agile and lean, maybe a little smaller too. Another thing you are equipped with, is a natural weapon, claws. Your melee damage does a devastating amount of damage since you are liable to extend your claws on impact. The breed of cat you choose, will mainly only affect your coat and maybe another boon.",
+    "Starter": "Yes",
+    "Special": "Star Touched: born under specific star drastically changes stats",
+    "Pinterest_Inspo_Board": ""
+  },
+  {
+    "Campaign": "Steampunk",
+    "SubType": "Unfactioned Races",
+    "Name": "Rodentfolk",
+    "Description": "Rodentfolk are nearly completely animalistic humanoids. These creatures were once feral and barbaric, however on the skylands, they have adapted to a more civilized lifestyle. They are still seen as lowly creatures that are sly and criminalistic.",
+    "Starter": "Yes",
+    "Special": "",
+    "Pinterest_Inspo_Board": ""
+  },
+  {
+    "Campaign": "Steampunk",
+    "SubType": "Unfactioned Races",
+    "Name": "Ulfgar",
+    "Description": "Ulfgar are the wolven cousins of the houndsmen. They are often brutish and tend to be more barbaric than the other races. They honestly couldn’t care more about what crosses their path, they’d gladly take it out and use their bones as a nice chew toy. Their demeanor tends to trend more towards viking culture than anything else. It’s rare to have a socialized and friendly ulfgar.",
+    "Starter": "Yes",
+    "Special": "Olfrins Children: gain +2 chances, and natural intimidation, but vulnerability to fire",
+    "Pinterest_Inspo_Board": ""
+  },
+  {
+    "Campaign": "Fantasy",
+    "SubType": "Oceanic",
+    "Name": "Selkie",
+    "Description": "Selkies are the sea's shapeshifters by nature. In the water they are seals and on land they look mostly human. These shapeshifters shed a seal skin coat when they go on land and require it to turn back into a seal when the time comes to go back into the water. If someone were to take the coat, the selkie is often bound to whoever has the coat, in hopes to get it back. For this reason, most tend to keep their coats near them at all times. As a human, selkies tend to display more grey or tanned skin with a grey to light brown hair color as well.",
+    "Starter": "Yes",
+    "Special": "Gain a swim speed of 45",
+    "Pinterest_Inspo_Board": ""
+  },
+  {
+    "Campaign": "Fantasy",
+    "SubType": "Oceanic",
+    "Name": "Merfolk",
+    "Description": "",
+    "Starter": "Yes",
+    "Special": "",
+    "Pinterest_Inspo_Board": ""
+  },
+  {
+    "Campaign": "Fantasy",
+    "SubType": "Oceanic",
+    "Name": "Marrow",
+    "Description": "",
+    "Starter": "No",
+    "Special": "",
+    "Pinterest_Inspo_Board": ""
+  }
+]

@@ -53,18 +53,17 @@ cotoagent.duckdns.org
 Rubric items:
 - [ ] Views (5/10)
 - [ ] Introduction page (First time user page)
-- [ ] Laying out ground work for the AI features
+- [X] Laying out ground work for the AI features
 
 Features:
 - [ ] Introduction page (First time user page)
-- [ ] View Races
-- [ ] View Classes
-- [ ] View Spells
-- [ ] View Character sheet
+- [x] View Races
+- [x] View Classes
+- [x] View Spells
+- [x] View Character sheet
 
 Misc:
 - [x] Break down of all functions needed for AI
-- [ ] Get embeddings done for Class, Race and Spells
 
 #### Delivered
 
@@ -89,6 +88,9 @@ Features:
 - [ ] Character creation workflow with stat rolling
 - [ ] D&D 5e API integration for races/classes/spells data
 - [ ] Basic character sheet display
+
+Misc:
+- [ ] Get embeddings done for Class, Race and Spells
 
 #### Delivered
 
