@@ -51,15 +51,13 @@ cotoagent.duckdns.org
 #### Estimates:
 
 Rubric items:
-- [ ] Views (5/10)
-- [ ] Introduction page (First time user page)
+- [v] Views (4/10)
 - [X] Laying out ground work for the AI features
 
 Features:
-- [ ] Introduction page (First time user page)
 - [x] View Races
 - [x] View Classes
-- [x] View Spells
+- [v] View Spells
 - [x] View Character sheet
 
 Misc:
@@ -67,10 +65,16 @@ Misc:
 
 #### Delivered
 
-Rubric Items: Actions
+Rubric Items:
+Got a few of the views set up and ready to receive their items. 
+Classes can be views fully. 
+Spells and races have their groundwork ready to go
+Got the groundwork ready for the embeddings 
+Finished the last of the tool call rough draft ideas!
 
 
 Features: Views
+Got 4 views ready to go
 
 ---
 ### Checkpoint 4: `Nov. 8, 2025`
@@ -78,6 +82,7 @@ Features: Views
 #### Estimates:
 
 Rubric items:
+- [ ] Introduction page (First time user page)
 - [ ] Network Calls that read and write data (D&D API integration)
 - [ ] Local storage implementation (save character drafts)
 - [ ] Protected routes for authenticated users
@@ -85,6 +90,7 @@ Rubric items:
 - [ ] Authorized pages and public pages
 
 Features:
+- [ ] Introduction page (First time user page)
 - [ ] Character creation workflow with stat rolling
 - [ ] D&D 5e API integration for races/classes/spells data
 - [ ] Basic character sheet display

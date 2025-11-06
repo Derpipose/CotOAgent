@@ -19,19 +19,16 @@ export default function Classes() {
         // Construct API URL intelligently based on environment
         let apiUrl = import.meta.env.VITE_API_URL;
         
-        // If VITE_API_URL is not set or is localhost (Docker), try to use the hostname
+        // If VITE_API_URL is not set or is localhost (Docker), detect environment
         if (!apiUrl || apiUrl.includes('localhost')) {
-          // In Kubernetes, use the service name; in Docker, localhost works
           const protocol = window.location.protocol;
           const host = window.location.hostname;
+          const port = window.location.port;
           
-          // If we're in Kubernetes (hostname is not localhost), construct service URL
-          if (host !== 'localhost' && host !== '127.0.0.1') {
-            apiUrl = `${protocol}//cotoagent-api-svc:3000`;
-          } else {
-            // Otherwise use localhost (Docker environment)
-            apiUrl = `${protocol}//localhost:3000`;
-          }
+          // Construct the API URL using the same host as the frontend
+          // This ensures it goes through the ingress in Kubernetes
+          const hostWithPort = port ? `${host}:${port}` : host;
+          apiUrl = `${protocol}//${hostWithPort}`;
         }
         
         console.log(`[Classes] Fetching from: ${apiUrl}/api/classes`);
