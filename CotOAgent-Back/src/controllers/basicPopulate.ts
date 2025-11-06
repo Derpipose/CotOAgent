@@ -18,6 +18,13 @@ const BasicClassSchema = z.object({
 
 const ClassesArraySchema = z.array(BasicClassSchema);
 
+// Type for raw class data from JSON
+type RawClass = {
+  Classification?: string;
+  ClassName?: string;
+  Description?: string;
+};
+
 /**
  * GET /api/classes
  * Returns all classes from Classes.json as an array of BasicClassDTOs
@@ -28,16 +35,16 @@ router.get('/classes', async (req: Request, res: Response): Promise<void> => {
     console.log(`[basicPopulate] Attempting to read classes from: ${filePath}`);
     
     const fileContent = await readFile(filePath, 'utf-8');
-    const rawData = JSON.parse(fileContent);
+    const rawData: object = JSON.parse(fileContent);
 
     // Validate and parse with Zod
     const classesDTO = ClassesArraySchema.parse(
-      rawData
-        .filter((item: any) => item.ClassName) // Still filter incomplete entries
-        .map((item: any) => ({
-          Classification: item.Classification,
-          ClassName: item.ClassName,
-          Description: item.Description,
+      (Array.isArray(rawData) ? rawData : [])
+        .filter((item: RawClass) => item.ClassName) // Still filter incomplete entries
+        .map((item: RawClass) => ({
+          Classification: item.Classification ?? '',
+          ClassName: item.ClassName ?? '',
+          Description: item.Description ?? '',
         }))
     );
 
