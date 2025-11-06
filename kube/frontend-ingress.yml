@@ -15,6 +15,13 @@ spec:
     - host: cotoagent.duckdns.org
       http:
         paths:
+        - path: /api
+          pathType: Prefix
+          backend:
+            service:
+              name: cotoagent-api-svc
+              port:
+                number: 4000
         - path: /
           pathType: Prefix
           backend:
