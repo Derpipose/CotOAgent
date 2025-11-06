@@ -1,43 +1,147 @@
-.classes-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  gap: 20px;
+.classes-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
   margin-top: 20px;
-  padding: 20px;
+  width: 70vw;
+  max-width: 1200px;
+  margin-left: auto;
+  margin-right: auto;
 }
 
-.class-card {
+.class-item {
   border: 1px solid #ddd;
-  border-radius: 8px;
-  padding: 20px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-  background-color: #fff;
+  border-bottom: none;
 }
 
-.class-card:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+.class-item:last-child {
+  border-bottom: 1px solid #ddd;
 }
 
-.class-card h2 {
-  margin: 0 0 10px 0;
+.class-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 16px 20px;
+  background-color: #f9f9f9;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  font-size: 1rem;
+  text-align: left;
+}
+
+.class-header:hover {
+  background-color: #f0f0f0;
+}
+
+.class-header:active {
+  background-color: #e8e8e8;
+}
+
+.class-name {
+  flex: 1;
+  font-weight: 600;
   color: #333;
-  font-size: 1.5rem;
+  min-width: 150px;
 }
 
-.class-card .classification {
+.class-classification {
+  flex: 0 0 120px;
   color: #666;
-  font-weight: bold;
-  margin: 10px 0;
   font-size: 0.9rem;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
+  text-align: center;
+  padding: 0 20px;
 }
 
-.class-card .description {
-  color: #444;
+.expand-arrow {
+  flex: 0 0 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #999;
+  transition: transform 0.2s ease;
+}
+
+.expand-arrow.expanded {
+  transform: rotate(180deg);
+}
+
+.class-description {
+  padding: 20px;
+  background-color: #fff;
+  border-top: 1px solid #eee;
+  color: #555;
   line-height: 1.6;
   font-size: 0.95rem;
-  margin: 10px 0 0 0;
+  animation: slideDown 0.2s ease;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    max-height: 0;
+  }
+  to {
+    opacity: 1;
+    max-height: 500px;
+  }
+}
+
+/* Responsive design for smaller screens */
+@media (max-width: 1024px) {
+  .classes-list {
+    width: 70vw;
+    max-width: 900px;
+  }
+}
+
+@media (max-width: 768px) {
+  .classes-list {
+    width: 80vw;
+    max-width: 600px;
+  }
+
+  .class-classification {
+    flex: 0 0 100px;
+    padding: 0 15px;
+    font-size: 0.85rem;
+  }
+
+  .class-header {
+    padding: 12px 15px;
+  }
+}
+
+@media (max-width: 480px) {
+  .classes-list {
+    width: 90vw;
+    max-width: 100%;
+  }
+
+  .class-name {
+    font-size: 0.9rem;
+    min-width: 100px;
+  }
+
+  .class-classification {
+    flex: 0 0 80px;
+    padding: 0 10px;
+    font-size: 0.75rem;
+  }
+
+  .expand-arrow {
+    flex: 0 0 25px;
+  }
+
+  .class-header {
+    padding: 10px 12px;
+    font-size: 0.9rem;
+  }
+
+  .class-description {
+    padding: 15px;
+    font-size: 0.9rem;
+  }
 }

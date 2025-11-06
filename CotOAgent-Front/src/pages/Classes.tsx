@@ -11,6 +11,7 @@ export default function Classes() {
   const [classes, setClasses] = useState<ClassData[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [expandedClass, setExpandedClass] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchClasses = async () => {
@@ -31,6 +32,10 @@ export default function Classes() {
     fetchClasses();
   }, []);
 
+  const toggleExpand = (className: string) => {
+    setExpandedClass(expandedClass === className ? null : className);
+  };
+
   if (loading) {
     return <div><h1>Classes</h1><p>Loading...</p></div>;
   }
@@ -42,12 +47,24 @@ export default function Classes() {
   return (
     <div>
       <h1>Classes</h1>
-      <div className="classes-grid">
+      <div className="classes-list">
         {classes.map((cls) => (
-          <div key={cls.ClassName} className="class-card">
-            <h2>{cls.ClassName}</h2>
-            <p className="classification">{cls.Classification}</p>
-            <p className="description">{cls.Description}</p>
+          <div key={cls.ClassName} className="class-item">
+            <button
+              className="class-header"
+              onClick={() => toggleExpand(cls.ClassName)}
+            >
+              <span className="class-name">{cls.ClassName}</span>
+              <span className="class-classification">{cls.Classification}</span>
+              <span className={`expand-arrow ${expandedClass === cls.ClassName ? 'expanded' : ''}`}>
+                ▼
+              </span>
+            </button>
+            {expandedClass === cls.ClassName && (
+              <div className="class-description">
+                {cls.Description}
+              </div>
+            )}
           </div>
         ))}
       </div>
