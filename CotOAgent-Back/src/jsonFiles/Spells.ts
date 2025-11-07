@@ -1,4 +1,4 @@
-[
+export const Spells =[
   {
     "SpellBranch": "Black",
     "SpellBook": "The Black Curse",

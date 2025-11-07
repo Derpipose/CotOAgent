@@ -1,4 +1,4 @@
-[
+export const Races = [
   {
     "Campaign": "Fantasy",
     "SubType": "Ancient",

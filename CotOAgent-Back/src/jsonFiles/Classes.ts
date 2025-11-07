@@ -1,4 +1,4 @@
-[
+export const Classes = [
   {
     "Classification": "Combat",
     "ClassName": "Barbarian",
@@ -203,7 +203,7 @@
     "MagicBooks": 4,
     "Cantrips": 30,
     "Chances": 2,
-    "Description": "Healers are in the back, but far from unimportant. Less frequently known as white mages, Healers are specialized in books of Life, usually starting with the first two books. They spend their time tending and caring for those who can’t, oftentimes finding themselves beside clerics in abbeys, they find strength in praying to omuns for strength and guidance to heal their party members more. However, never take them for being helpless as they can employ a class specific spell called \"Evoke\".",
+    "Description": "Healers are in the back, but far from unimportant. Less frequently known as white mages, Healers are specialized in books of Life, usually starting with the first two books. They spend their time tending and caring for those who can't, oftentimes finding themselves beside clerics in abbeys, they find strength in praying to omuns for strength and guidance to heal their party members more. However, never take them for being helpless as they can employ a class specific spell called \"Evoke\".",
     "Starter": "Yes",
     "SpellCastingModifier": "Wis",
     "StatFavor1": "Wis",
@@ -383,7 +383,7 @@
     "MagicBooks": 1,
     "Cantrips": 20,
     "Chances": 3,
-    "Description": "Another life, another world, but yet, so little memories. Outworlders are usually normal people from other worlds that died in their worlds and showed up in this one. They don’t usually don’t have any memories or much gear on them. They will begin with a memento from their world though, something they had on them when they died. As for the world they came from, well, the possibilities are endless. You'll begin with an extra feat.",
+    "Description": "Another life, another world, but yet, so little memories. Outworlders are usually normal people from other worlds that died in their worlds and showed up in this one. They don't usually don't have any memories or much gear on them. They will begin with a memento from their world though, something they had on them when they died. As for the world they came from, well, the possibilities are endless. You'll begin with an extra feat.",
     "Starter": "Yes",
     "SpellCastingModifier": "Int",
     "StatFavor1": "Any",
@@ -659,4 +659,4 @@
     "StatFavor1": "Int",
     "StatFavor2": "Wis"
   }
-]
+] as const;
