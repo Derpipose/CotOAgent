@@ -63,4 +63,6 @@
 - Browse Spells
 	
 
+- Admin page for load and embed database
+
 

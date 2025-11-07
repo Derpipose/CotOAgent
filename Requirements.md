@@ -83,7 +83,7 @@ Got 4 views ready to go
 
 Rubric items:
 - [ ] Introduction page (First time user page)
-- [ ] Network Calls that read and write data (D&D API integration)
+- [ ] Network Calls that read and write data (get Json from website and save it to database)
 - [ ] Local storage implementation (save character drafts)
 - [ ] Protected routes for authenticated users
 - [ ] Authentication and user account support
@@ -91,8 +91,6 @@ Rubric items:
 
 Features:
 - [ ] Introduction page (First time user page)
-- [ ] Character creation workflow with stat rolling
-- [ ] D&D 5e API integration for races/classes/spells data
 - [ ] Basic character sheet display
 
 Misc:
@@ -115,6 +113,7 @@ Rubric items:
 - [ ] 3+ generic form input components (stat selector, dropdown, text input)
 
 Features:
+- [ ] Character creation workflow with stat rolling
 - [ ] Character revision system
 - [ ] Semi-optimal stat assignment algorithm
 - [ ] Character comparison view

@@ -5,7 +5,6 @@ import { join, dirname } from 'path';
 import { fileURLToPath } from 'url';
 import { z } from 'zod';
 import type { SpellDTO } from '../DTOS/SpellsDto.js';
-import type { SpellbookDTO } from '../DTOS/SpellbookDto.js';
 
 const router: ExpressRouter = Router();
 
