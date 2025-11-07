@@ -7,12 +7,12 @@ spec:
   replicas: 1
   selector:
     matchLabels:
-      app: cotoagent
+      app: cotoagent-api
 
   template:
     metadata:
       labels:
-        app: cotoagent
+        app: cotoagent-api
     spec:
       containers:
       - name: cotoagent-container
