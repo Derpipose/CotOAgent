@@ -1,4 +1,6 @@
-.classes-list {
+/* Generic container styles for both classes and races */
+.classes-list,
+.races-list {
   display: flex;
   flex-direction: column;
   gap: 0;
@@ -9,16 +11,20 @@
   margin-right: auto;
 }
 
-.class-item {
+.class-item,
+.race-item {
   border: 1px solid #ddd;
   border-bottom: none;
 }
 
-.class-item:last-child {
+.class-item:last-child,
+.race-item:last-child {
   border-bottom: 1px solid #ddd;
 }
 
-.class-header {
+/* Generic header styles */
+.class-header,
+.race-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -32,22 +38,28 @@
   text-align: left;
 }
 
-.class-header:hover {
+.class-header:hover,
+.race-header:hover {
   background-color: #f0f0f0;
 }
 
-.class-header:active {
+.class-header:active,
+.race-header:active {
   background-color: #e8e8e8;
 }
 
-.class-name {
+/* Generic name styles */
+.class-name,
+.race-name {
   flex: 1;
   font-weight: 600;
   color: #333;
   min-width: 150px;
 }
 
-.class-classification {
+/* Generic secondary info styles (Classification/Campaign) */
+.class-classification,
+.race-campaign {
   flex: 0 0 120px;
   color: #666;
   font-size: 0.9rem;
@@ -68,7 +80,9 @@
   transform: rotate(180deg);
 }
 
-.class-description {
+/* Generic description styles */
+.class-description,
+.race-description {
   padding: 20px;
   background-color: #fff;
   border-top: 1px solid #eee;
@@ -91,41 +105,48 @@
 
 /* Responsive design for smaller screens */
 @media (max-width: 1024px) {
-  .classes-list {
+  .classes-list,
+  .races-list {
     width: 70vw;
     max-width: 900px;
   }
 }
 
 @media (max-width: 768px) {
-  .classes-list {
+  .classes-list,
+  .races-list {
     width: 80vw;
     max-width: 600px;
   }
 
-  .class-classification {
+  .class-classification,
+  .race-campaign {
     flex: 0 0 100px;
     padding: 0 15px;
     font-size: 0.85rem;
   }
 
-  .class-header {
+  .class-header,
+  .race-header {
     padding: 12px 15px;
   }
 }
 
 @media (max-width: 480px) {
-  .classes-list {
+  .classes-list,
+  .races-list {
     width: 90vw;
     max-width: 100%;
   }
 
-  .class-name {
+  .class-name,
+  .race-name {
     font-size: 0.9rem;
     min-width: 100px;
   }
 
-  .class-classification {
+  .class-classification,
+  .race-campaign {
     flex: 0 0 80px;
     padding: 0 10px;
     font-size: 0.75rem;
@@ -135,12 +156,14 @@
     flex: 0 0 25px;
   }
 
-  .class-header {
+  .class-header,
+  .race-header {
     padding: 10px 12px;
     font-size: 0.9rem;
   }
 
-  .class-description {
+  .class-description,
+  .race-description {
     padding: 15px;
     font-size: 0.9rem;
   }
