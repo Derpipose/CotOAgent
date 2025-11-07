@@ -80,10 +80,10 @@ jobs:
       run: |
         docker build \
           -f ./CotOAgent-Back/Dockerfile \
-          -t ${{ vars.DOCKER_CONTAINER_USERNAME }}/cotoagent-api:${{ github.run_number }}.${{ github.run_attempt }} \
+          -t ${{ vars.DOCKER_CONTAINER_USERNAME }}/cotoagent-api:${{ github.run_number }} \
           ./CotOAgent-Back
 
-        docker push -q ${{ vars.DOCKER_CONTAINER_USERNAME }}/cotoagent-api:${{ github.run_number }}.${{ github.run_attempt }}
+        docker push -q ${{ vars.DOCKER_CONTAINER_USERNAME }}/cotoagent-api:${{ github.run_number }}
   
   
   build_and_push_frontend_to_dockerhub:
@@ -103,14 +103,14 @@ jobs:
       run: |
         docker build \
           -f ./CotOAgent-Front/Dockerfile \
-          -t ${{ vars.DOCKER_CONTAINER_USERNAME }}/cotoagent-web:${{ github.run_number }}.${{ github.run_attempt }} \
+          -t ${{ vars.DOCKER_CONTAINER_USERNAME }}/cotoagent-web:${{ github.run_number }} \
           --build-arg VITE_API_URL="${{ vars.VITE_API_URL }}" \
           --build-arg VITE_KEYCLOAK_URL="${{ vars.VITE_KEYCLOAK_URL }}" \
           --build-arg VITE_KEYCLOAK_REALM="${{ vars.VITE_KEYCLOAK_REALM }}" \
           --build-arg VITE_KEYCLOAK_CLIENT_ID="${{ vars.VITE_KEYCLOAK_CLIENT_ID }}" \
           ./CotOAgent-Front
 
-        docker push -q ${{ vars.DOCKER_CONTAINER_USERNAME }}/cotoagent-web:${{ github.run_number }}.${{ github.run_attempt }}
+        docker push -q ${{ vars.DOCKER_CONTAINER_USERNAME }}/cotoagent-web:${{ github.run_number }}
 
   deploy_to_kubernetes:
     needs: [build_and_push_backend_to_dockerhub, build_and_push_frontend_to_dockerhub]
@@ -123,7 +123,7 @@ jobs:
       run: |
         export KUBECONFIG=$HOME/.kube/config
         kubectl apply -f kube/namespace.yml
-        export CONTAINER_VERSION=${{ github.run_number }}.${{ github.run_attempt }}
+        export CONTAINER_VERSION=${{ github.run_number }}
         export AI_SERVER=${{ vars.AI_SERVER }}
         export JWK_URI=${{ vars.JWK_URI }}
         export AI_Token=${{ secrets.AI_TOKEN }}
