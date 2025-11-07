@@ -16,18 +16,28 @@ export default function Classes() {
   useEffect(() => {
     const fetchClasses = async () => {
       try {
-        // Determine API URL based on environment
-        let apiUrl = import.meta.env.VITE_API_URL;
+        // Determine API endpoint based on environment
+        const apiUrl = import.meta.env.VITE_API_URL;
         
-        if (!apiUrl) {
-          // If no VITE_API_URL is set, use relative path (works with nginx proxy in Kubernetes/production)
-          apiUrl = '/api';
+        // Check if VITE_API_URL is set and valid (for Docker dev)
+        const isDevMode = apiUrl && apiUrl !== 'undefined' && apiUrl.trim() !== '' && apiUrl.startsWith('http');
+        
+        let endpoint: string;
+        if (isDevMode) {
+          // Docker dev mode - use absolute URL
+          endpoint = `${apiUrl}/api/classes`;
+          console.log(`[Classes] Dev mode - fetching from: ${endpoint}`);
+        } else {
+          // Kubernetes/production mode - use relative path through nginx proxy
+          endpoint = '/api/classes';
+          console.log(`[Classes] Production mode - fetching from: ${endpoint}`);
         }
         
-        const endpoint = `${apiUrl}/api/classes`;
-        console.log(`[Classes] Fetching from: ${endpoint}`);
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 second timeout
         
-        const response = await fetch(endpoint);
+        const response = await fetch(endpoint, { signal: controller.signal });
+        clearTimeout(timeoutId);
         
         if (!response.ok) {
           const contentType = response.headers.get('content-type');
@@ -41,8 +51,13 @@ export default function Classes() {
         setClasses(data);
       } catch (err) {
         const errorMessage = err instanceof Error ? err.message : 'An error occurred';
-        console.error('[Classes] Error:', errorMessage);
-        setError(errorMessage);
+        if (err instanceof Error && err.name === 'AbortError') {
+          console.error('[Classes] Error: Request timeout (10s) - backend may be unreachable');
+          setError('Request timeout - backend is not responding');
+        } else {
+          console.error('[Classes] Error:', errorMessage);
+          setError(errorMessage);
+        }
       } finally {
         setLoading(false);
       }
