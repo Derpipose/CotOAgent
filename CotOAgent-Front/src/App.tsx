@@ -17,7 +17,7 @@ function App() {
 
     keycloak
       .init({ 
-        onLoad: 'login-required',
+        onLoad: 'check-sso',
         checkLoginIframe: false,
         messageReceiveTimeout: 10000,
         enableLogging: true
