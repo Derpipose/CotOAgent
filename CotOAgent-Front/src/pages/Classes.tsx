@@ -27,7 +27,7 @@ export default function Classes() {
           
           // If we're in Kubernetes (hostname is not localhost), construct service URL
           if (host !== 'localhost' && host !== '127.0.0.1') {
-            apiUrl = `${protocol}//cotoagent-api-svc:3000`;
+            apiUrl = `${protocol}//cotoagent-api-svc:4000`;
           } else {
             // Otherwise use localhost (Docker environment)
             apiUrl = `${protocol}//localhost:3000`;
