@@ -1,15 +1,12 @@
 import type { Request, Response, Router as ExpressRouter } from 'express';
 import { Router } from 'express';
-import { readFile } from 'fs/promises';
-import { join, dirname } from 'path';
-import { fileURLToPath } from 'url';
 import { z } from 'zod';
 import type { SpellDTO } from '../DTOS/SpellsDto.js';
+import { Spells } from '../jsonFiles/Spells.js';
+import { Classes } from '../jsonFiles/Classes.js';
+import { Races } from '../jsonFiles/Races.js';
 
 const router: ExpressRouter = Router();
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
 
 const BasicClassSchema = z.object({
   Classification: z.string(),
@@ -52,12 +49,12 @@ type RawRace = {
   Description?: string;
 };
 
-// Type for raw spell data from JSON
+// Type for raw spell data from TypeScript module
 type RawSpell = {
   SpellBranch?: string;
   SpellBook?: string;
   SpellName?: string;
-  ManaCost?: number;
+  ManaCost?: number | string;
   HitDie?: string;
   Description?: string;
   BookLevel?: string;
@@ -65,19 +62,15 @@ type RawSpell = {
 
 /**
  * GET /api/classes
- * Returns all classes from Classes.json as an array of BasicClassDTOs
+ * Returns all classes from Classes.ts as an array of BasicClassDTOs
  */
 router.get('/classes', async (req: Request, res: Response): Promise<void> => {
   try {
-    const filePath = join(__dirname, '../jsonFiles/Classes.json');
-    console.log(`[basicPopulate] Attempting to read classes from: ${filePath}`);
+    console.log(`[basicPopulate] Fetching classes from TypeScript module`);
     
-    const fileContent = await readFile(filePath, 'utf-8');
-    const rawData: object = JSON.parse(fileContent);
-
     // Validate and parse with Zod
     const classesDTO = ClassesArraySchema.parse(
-      (Array.isArray(rawData) ? rawData : [])
+      Classes
         .filter((item: RawClass) => item.ClassName) // Still filter incomplete entries
         .map((item: RawClass) => ({
           Classification: item.Classification ?? '',
@@ -99,19 +92,15 @@ router.get('/classes', async (req: Request, res: Response): Promise<void> => {
 
 /**
  * GET /api/races
- * Returns all races from Races.json as an array of RaceDTOs
+ * Returns all races from Races.ts as an array of RaceDTOs
  */
 router.get('/races', async (req: Request, res: Response): Promise<void> => {
   try {
-    const filePath = join(__dirname, '../jsonFiles/Races.json');
-    console.log(`[basicPopulate] Attempting to read races from: ${filePath}`);
+    console.log(`[basicPopulate] Fetching races from TypeScript module`);
     
-    const fileContent = await readFile(filePath, 'utf-8');
-    const rawData: object = JSON.parse(fileContent);
-
     // Validate and parse with Zod
     const racesDTO = RacesArraySchema.parse(
-      (Array.isArray(rawData) ? rawData : [])
+      Races
         .filter((item: RawRace) => item.Name) // Filter incomplete entries
         .map((item: RawRace) => ({
           Campaign: item.Campaign ?? '',
@@ -133,23 +122,21 @@ router.get('/races', async (req: Request, res: Response): Promise<void> => {
 
 /**
  * GET /api/spells
- * Returns all spells from Spells.json as an array of SpellDTOs
+ * Returns all spells from Spells.ts as an array of SpellDTOs
  */
 router.get('/spells', async (req: Request, res: Response): Promise<void> => {
   try {
-    const filePath = join(__dirname, '../jsonFiles/Spells.json');
-    console.log(`[basicPopulate] Attempting to read spells from: ${filePath}`);
+    console.log(`[basicPopulate] Fetching spells from TypeScript module`);
     
-    const fileContent = await readFile(filePath, 'utf-8');
-    const rawData: object = JSON.parse(fileContent);
-
     // Validate and parse with Zod
     const spellsDTO = SpellsArraySchema.parse(
-      (Array.isArray(rawData) ? rawData : [])
+      Spells
         .filter((item: RawSpell) => item.SpellName) // Filter incomplete entries
         .map((item: RawSpell) => ({
+          SpellBranch: item.SpellBranch ?? '',
+          SpellBook: item.SpellBook ?? '',
           SpellName: item.SpellName ?? '',
-          ManaCost: item.ManaCost ?? 0,
+          ManaCost: typeof item.ManaCost === 'number' ? item.ManaCost : 0,
           HitDie: item.HitDie ?? '',
           Description: item.Description ?? '',
         }))
@@ -168,22 +155,18 @@ router.get('/spells', async (req: Request, res: Response): Promise<void> => {
 
 /**
  * GET /api/spellbooks
- * Returns all spellbooks from Spells.json grouped by SpellBranch and SpellBook,
+ * Returns all spellbooks from Spells.ts grouped by SpellBranch and SpellBook,
  * as an array of objects with branch info and nested spellbooks
  */
 router.get('/spellbooks', async (req: Request, res: Response): Promise<void> => {
   try {
-    const filePath = join(__dirname, '../jsonFiles/Spells.json');
-    console.log(`[basicPopulate] Attempting to read spellbooks from: ${filePath}`);
-    
-    const fileContent = await readFile(filePath, 'utf-8');
-    const rawData: object = JSON.parse(fileContent);
+    const fileContent = Spells;
 
     // First group by SpellBranch, then by SpellBook within each branch
     const branchMap = new Map<string, Map<string, {spells: SpellDTO[], bookLevel: string}>>();
 
-    if (Array.isArray(rawData)) {
-      for (const item of rawData) {
+    if (Array.isArray(fileContent)) {
+      for (const item of fileContent) {
         const spell = item as RawSpell;
         
         // Skip incomplete spells
@@ -203,7 +186,7 @@ router.get('/spellbooks', async (req: Request, res: Response): Promise<void> => 
 
         branchBooks.get(bookName)!.spells.push({
           SpellName: spell.SpellName,
-          ManaCost: spell.ManaCost ?? 0,
+          ManaCost: typeof spell.ManaCost === 'number' ? spell.ManaCost : 0,
           HitDie: spell.HitDie ?? '',
           Description: spell.Description ?? '',
         });
