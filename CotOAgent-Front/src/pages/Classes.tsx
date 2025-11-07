@@ -16,27 +16,18 @@ export default function Classes() {
   useEffect(() => {
     const fetchClasses = async () => {
       try {
-        // Construct API URL intelligently based on environment
+        // Determine API URL based on environment
         let apiUrl = import.meta.env.VITE_API_URL;
         
-        // If VITE_API_URL is not set or is localhost (Docker), try to use the hostname
-        if (!apiUrl || apiUrl.includes('localhost')) {
-          // In Kubernetes, use the service name; in Docker, localhost works
-          const protocol = window.location.protocol;
-          const host = window.location.hostname;
-          
-          // If we're in Kubernetes (hostname is not localhost), construct service URL
-          if (host !== 'localhost' && host !== '127.0.0.1') {
-            apiUrl = `${protocol}//cotoagent-api-svc:4000`;
-          } else {
-            // Otherwise use localhost (Docker environment)
-            apiUrl = `${protocol}//localhost:3000`;
-          }
+        if (!apiUrl) {
+          // If no VITE_API_URL is set, use relative path (works with nginx proxy in Kubernetes/production)
+          apiUrl = '/api';
         }
         
-        console.log(`[Classes] Fetching from: ${apiUrl}/api/classes`);
+        const endpoint = `${apiUrl}/api/classes`;
+        console.log(`[Classes] Fetching from: ${endpoint}`);
         
-        const response = await fetch(`${apiUrl}/api/classes`);
+        const response = await fetch(endpoint);
         
         if (!response.ok) {
           const contentType = response.headers.get('content-type');
