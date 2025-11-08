@@ -84,7 +84,6 @@ Got 4 views ready to go
 Rubric items:
 - [ ] Introduction page (First time user page)
 - [ ] Network Calls that read and write data (get Json from website and save it to database)
-- [ ] Local storage implementation (save character drafts)
 - [ ] Protected routes for authenticated users
 - [ ] Authentication and user account support
 - [ ] Authorized pages and public pages
@@ -111,6 +110,7 @@ Features:
 Rubric items:
 - [ ] Client side state stores (character state management)
 - [ ] 3+ generic form input components (stat selector, dropdown, text input)
+- [ ] Local storage implementation (save character drafts)
 
 Features:
 - [ ] Character creation workflow with stat rolling

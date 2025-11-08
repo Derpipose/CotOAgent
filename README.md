@@ -65,4 +65,6 @@
 
 - Admin page for load and embed database
 
+Embedding model:
+nomic-embed-text:latest
 
