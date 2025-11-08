@@ -14,7 +14,12 @@ const PORT = process.env.PORT || 3000;
 
 // CORS configuration that works with Docker and Kubernetes
 const corsOptions = {
-  origin: process.env.CORS_ORIGIN || ['http://localhost:5173', 'http://localhost:3000', 'http://frontend:5173'],
+  origin: process.env.CORS_ORIGIN || [
+    'http://localhost:5173',
+    'http://localhost:3000',
+    'http://frontend:5173',
+    'https://cotoagent.duckdns.org'
+  ],
   credentials: true,
   optionsSuccessStatus: 200,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],

@@ -16,12 +16,24 @@ export default function Admin() {
   }>({})
   const [error, setError] = useState<string | null>(null)
 
+  // Determine the backend API URL based on the current environment
+  const getBackendUrl = () => {
+    // In production (HTTPS), use the same domain with :3000
+    if (window.location.protocol === 'https:') {
+      const hostname = window.location.hostname
+      return `https://${hostname}:3000`
+    }
+    // In development, use localhost:3000
+    return 'http://localhost:3000'
+  }
+
   const handleImport = async (type: 'races' | 'classes' | 'spells') => {
     setLoading(type)
     setError(null)
     
     try {
-      const apiUrl = `http://localhost:3000/api/import/${type}`
+      const backendUrl = getBackendUrl()
+      const apiUrl = `${backendUrl}/api/import/${type}`
       const response = await fetch(apiUrl)
       const data = await response.json()
       
