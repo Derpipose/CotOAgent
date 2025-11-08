@@ -10,11 +10,48 @@ const pool = new Pool({
 
 const databaseRouter: ExpressRouter = Router();
 
-interface Race {
+type EntityType = 'races' | 'classes' | 'spells';
+type NameField = 'name' | 'class_name' | 'spell_name';
+
+interface Entity {
   id: number;
-  name: string;
+  [key: string]: string | number;
   description: string;
 }
+
+interface EmbeddingProgress {
+  races: {
+    total: number;
+    completed: number;
+    failed: number;
+    percentageComplete: number;
+  };
+  classes: {
+    total: number;
+    completed: number;
+    failed: number;
+    percentageComplete: number;
+  };
+  spells: {
+    total: number;
+    completed: number;
+    failed: number;
+    percentageComplete: number;
+  };
+}
+
+const ENTITY_CONFIG: Record<EntityType, {
+  table: string;
+  nameField: NameField;
+  idField: string;
+}> = {
+  races: { table: 'races', nameField: 'name', idField: 'id' },
+  classes: { table: 'classes', nameField: 'class_name', idField: 'id' },
+  spells: { table: 'spells', nameField: 'spell_name', idField: 'id' },
+};
+
+// Track ongoing generation processes
+const activeGenerations = new Set<EntityType>();
 
 /**
  * Generate embedding for a single piece of text using Ollama API
@@ -89,163 +126,258 @@ async function generateEmbedding(text: string): Promise<number[]> {
 }
 
 /**
- * POST /api/embeddings/races/generate
- * Generates embeddings for all races that don't have one yet
+ * Get current embedding progress for all entity types
  */
-databaseRouter.post('/races/generate', async (req: Request, res: Response) => {
-  // Start the generation in the background and return immediately
-  generateRacesEmbeddings().catch((error) => {
-    console.error('[EMBEDDINGS] Background embedding generation failed:', error);
-  });
-
-  res.status(202).json({
-    message: 'Embedding generation started in the background for races',
-    status: 'processing',
-  });
-});
-
-/**
- * GET /api/embeddings/races/status
- * Check the status of races (how many have embeddings, how many don't)
- */
-databaseRouter.get('/races/status', async (req: Request, res: Response) => {
+async function getEmbeddingProgress(): Promise<EmbeddingProgress> {
   const client = await pool.connect();
-
+  
   try {
-    console.log('[EMBEDDINGS_STATUS] Checking races embedding status...');
-    
-    const totalResult = await client.query<{ count: string }>(
-      'SELECT COUNT(*) as count FROM races'
-    );
-    const total = parseInt(totalResult.rows[0]?.count || '0', 10);
+    const progress: EmbeddingProgress = {
+      races: { total: 0, completed: 0, failed: 0, percentageComplete: 0 },
+      classes: { total: 0, completed: 0, failed: 0, percentageComplete: 0 },
+      spells: { total: 0, completed: 0, failed: 0, percentageComplete: 0 },
+    };
 
-    const withEmbeddingsResult = await client.query<{ count: string }>(
-      'SELECT COUNT(*) as count FROM races WHERE embeddings IS NOT NULL'
-    );
-    const withEmbeddings = parseInt(withEmbeddingsResult.rows[0]?.count || '0', 10);
+    for (const entityType of Object.keys(progress) as EntityType[]) {
+      const config = ENTITY_CONFIG[entityType];
+      
+      const totalResult = await client.query<{ count: string }>(
+        `SELECT COUNT(*) as count FROM ${config.table}`
+      );
+      const total = parseInt(totalResult.rows[0]?.count || '0', 10);
 
-    const withoutEmbeddings = total - withEmbeddings;
+      const completedResult = await client.query<{ count: string }>(
+        `SELECT COUNT(*) as count FROM ${config.table} WHERE embeddings IS NOT NULL`
+      );
+      const completed = parseInt(completedResult.rows[0]?.count || '0', 10);
 
-    console.log(`[EMBEDDINGS_STATUS] Total races: ${total}, With embeddings: ${withEmbeddings}, Without: ${withoutEmbeddings}`);
+      progress[entityType] = {
+        total,
+        completed,
+        failed: 0, // We don't track failed separately in the DB, but we can calculate from generation logs if needed
+        percentageComplete: total > 0 ? Math.round((completed / total) * 100) : 0,
+      };
+    }
 
-    res.json({
-      total,
-      withEmbeddings,
-      withoutEmbeddings,
-      percentageComplete: total > 0 ? Math.round((withEmbeddings / total) * 100) : 0,
-    });
-  } catch (error) {
-    console.error('[EMBEDDINGS_STATUS] Error checking status:', error);
-    res.status(500).json({
-      error: error instanceof Error ? error.message : 'Unknown error',
-    });
+    return progress;
   } finally {
     client.release();
   }
-});
+}
 
 /**
- * GET /api/embeddings/races/list
- * List all races and their embedding status for debugging
+ * Generic handler for generating embeddings with SSE progress streaming
  */
-databaseRouter.get('/races/list', async (req: Request, res: Response) => {
-  const client = await pool.connect();
-
-  try {
-    console.log('[EMBEDDINGS_DEBUG] Fetching races list...');
-    
-    const result = await client.query<Race & { hasEmbedding: boolean }>(
-      `SELECT id, name, description, (embeddings IS NOT NULL) as hasEmbedding FROM races ORDER BY id`
-    );
-
-    console.log(`[EMBEDDINGS_DEBUG] Found ${result.rows.length} races`);
-
-    res.json({
-      total: result.rows.length,
-      races: result.rows.map(r => ({
-        id: r.id,
-        name: r.name,
-        hasEmbedding: r.hasEmbedding,
-        descriptionPreview: r.description?.substring(0, 50) + '...',
-      })),
-    });
-  } catch (error) {
-    console.error('[EMBEDDINGS_DEBUG] Error fetching races:', error);
-    res.status(500).json({
-      error: error instanceof Error ? error.message : 'Unknown error',
-    });
-  } finally {
-    client.release();
-  }
-});
-
-/**
- * Background function to generate embeddings for all races without one
- */
-async function generateRacesEmbeddings(): Promise<void> {
-  const client = await pool.connect();
-
-  try {
-    console.log('[EMBEDDINGS] Starting races embedding generation...');
-    
-    // Fetch all races without embeddings
-    console.log('[EMBEDDINGS] Querying database for races without embeddings...');
-    const racesResult = await client.query<Race>(
-      `SELECT id, name, COALESCE(description, name) as description 
-       FROM races 
-       WHERE embeddings IS NULL`
-    );
-
-    const races = racesResult.rows;
-
-    if (races.length === 0) {
-      console.log('[EMBEDDINGS] No races found with null embeddings.');
+function createGenerateHandler(entityType: EntityType) {
+  return async (req: Request, res: Response) => {
+    // Check if generation is already in progress
+    if (activeGenerations.has(entityType)) {
+      res.status(409).json({
+        error: `Embedding generation already in progress for ${entityType}`,
+        status: 'already_processing',
+      });
       return;
     }
 
-    console.log(`[EMBEDDINGS] Found ${races.length} races without embeddings`);
-    console.log(`[EMBEDDINGS] Races to process:`, races.map(r => ({ id: r.id, name: r.name })));
+    activeGenerations.add(entityType);
+
+    // Start the generation in the background
+    generateEmbeddingsForEntity(entityType)
+      .catch((error) => {
+        console.error('[EMBEDDINGS] Background embedding generation failed:', error);
+      })
+      .finally(() => {
+        activeGenerations.delete(entityType);
+      });
+
+    // Set up SSE response headers
+    res.setHeader('Content-Type', 'text/event-stream');
+    res.setHeader('Cache-Control', 'no-cache');
+    res.setHeader('Connection', 'keep-alive');
+
+    // Send initial message
+    res.write(`data: ${JSON.stringify({
+      type: 'started',
+      entityType,
+      message: `Embedding generation started for ${entityType}`,
+    })}\n\n`);
+
+    // Send progress updates every 333ms (3 times per second)
+    const progressInterval = setInterval(async () => {
+      try {
+        const progress = await getEmbeddingProgress();
+        res.write(`data: ${JSON.stringify({
+          type: 'progress',
+          entityType,
+          progress: progress[entityType],
+          allProgress: progress,
+        })}\n\n`);
+      } catch (error) {
+        console.error('[EMBEDDINGS] Error getting progress:', error);
+      }
+    }, 333); // 1000ms / 3 = 333ms
+
+    // When client closes connection, clean up
+    res.on('close', () => {
+      clearInterval(progressInterval);
+      res.end();
+    });
+  };
+}
+
+/**
+ * Generic handler for status endpoints
+ */
+function createStatusHandler(entityType: EntityType) {
+  return async (req: Request, res: Response) => {
+    const client = await pool.connect();
+    const config = ENTITY_CONFIG[entityType];
+    
+    try {
+      console.log(`[EMBEDDINGS_STATUS] Checking ${entityType} embedding status...`);
+      
+      const totalResult = await client.query<{ count: string }>(
+        `SELECT COUNT(*) as count FROM ${config.table}`
+      );
+      const total = parseInt(totalResult.rows[0]?.count || '0', 10);
+
+      const withEmbeddingsResult = await client.query<{ count: string }>(
+        `SELECT COUNT(*) as count FROM ${config.table} WHERE embeddings IS NOT NULL`
+      );
+      const withEmbeddings = parseInt(withEmbeddingsResult.rows[0]?.count || '0', 10);
+
+      const withoutEmbeddings = total - withEmbeddings;
+
+      console.log(`[EMBEDDINGS_STATUS] Total ${entityType}: ${total}, With embeddings: ${withEmbeddings}, Without: ${withoutEmbeddings}`);
+
+      res.json({
+        total,
+        withEmbeddings,
+        withoutEmbeddings,
+        percentageComplete: total > 0 ? Math.round((withEmbeddings / total) * 100) : 0,
+      });
+    } catch (error) {
+      console.error('[EMBEDDINGS_STATUS] Error checking status:', error);
+      res.status(500).json({
+        error: error instanceof Error ? error.message : 'Unknown error',
+      });
+    } finally {
+      client.release();
+    }
+  };
+}
+
+/**
+ * Generic handler for listing entity embedding statuses
+ */
+function createListHandler(entityType: EntityType) {
+  return async (req: Request, res: Response) => {
+    const client = await pool.connect();
+    const config = ENTITY_CONFIG[entityType];
+
+    try {
+      console.log(`[EMBEDDINGS_DEBUG] Fetching ${entityType} list...`);
+      
+      const result = await client.query<Entity & { hasEmbedding: boolean }>(
+        `SELECT id, ${config.nameField}, description, (embeddings IS NOT NULL) as hasEmbedding FROM ${config.table} ORDER BY id`
+      );
+
+      console.log(`[EMBEDDINGS_DEBUG] Found ${result.rows.length} ${entityType}`);
+
+      res.json({
+        total: result.rows.length,
+        [entityType]: result.rows.map((row) => ({
+          id: row.id,
+          [config.nameField]: row[config.nameField],
+          hasEmbedding: row.hasEmbedding,
+          descriptionPreview: row.description?.substring(0, 50) + '...',
+        })),
+      });
+    } catch (error) {
+      console.error(`[EMBEDDINGS_DEBUG] Error fetching ${entityType}:`, error);
+      res.status(500).json({
+        error: error instanceof Error ? error.message : 'Unknown error',
+      });
+    } finally {
+      client.release();
+    }
+  };
+}
+
+/**
+ * Generic function to generate embeddings for any entity type
+ */
+async function generateEmbeddingsForEntity(entityType: EntityType): Promise<void> {
+  const client = await pool.connect();
+  const config = ENTITY_CONFIG[entityType];
+
+  try {
+    console.log(`[EMBEDDINGS] Starting ${entityType} embedding generation...`);
+    
+    console.log(`[EMBEDDINGS] Querying database for ${entityType} without embeddings...`);
+    const result = await client.query<Entity>(
+      `SELECT id, ${config.nameField}, COALESCE(description, ${config.nameField}) as description 
+       FROM ${config.table} 
+       WHERE embeddings IS NULL`
+    );
+
+    const entities = result.rows;
+
+    if (entities.length === 0) {
+      console.log(`[EMBEDDINGS] No ${entityType} found with null embeddings.`);
+      return;
+    }
+
+    console.log(`[EMBEDDINGS] Found ${entities.length} ${entityType} without embeddings`);
+    console.log(`[EMBEDDINGS] ${entityType} to process:`, entities.map(e => ({ id: e.id, name: e[config.nameField] })));
 
     let processedCount = 0;
     let failedCount = 0;
 
-    for (const race of races) {
+    for (const entity of entities) {
       try {
-        console.log(`[EMBEDDINGS] Generating embedding for race ID ${race.id} (${race.name})`);
-        console.log(`[EMBEDDINGS] Description: ${race.description.substring(0, 100)}...`);
+        const name = entity[config.nameField];
+        console.log(`[EMBEDDINGS] Generating embedding for ${entityType.slice(0, -1)} ID ${entity.id} (${name})`);
+        console.log(`[EMBEDDINGS] Description: ${entity.description.substring(0, 100)}...`);
 
-        const embedding = await generateEmbedding(race.description);
+        const embedding = await generateEmbedding(entity.description);
         
         console.log(`[EMBEDDINGS] Generated embedding array with ${embedding.length} dimensions`);
 
-        // Store the embedding as a PostgreSQL vector
         const updateResult = await client.query(
-          'UPDATE races SET embeddings = $1 WHERE id = $2',
-          [JSON.stringify(embedding), race.id]
+          `UPDATE ${config.table} SET embeddings = $1 WHERE id = $2`,
+          [JSON.stringify(embedding), entity.id]
         );
 
         console.log(`[EMBEDDINGS] Update result rowCount:`, updateResult.rowCount);
         
         processedCount++;
-        console.log(`[EMBEDDINGS] ✓ Successfully processed race ID ${race.id}`);
+        console.log(`[EMBEDDINGS] ✓ Successfully processed ${entityType.slice(0, -1)} ID ${entity.id}`);
       } catch (error) {
         failedCount++;
         console.error(
-          `[EMBEDDINGS] ✗ Failed to generate embedding for race ID ${race.id} (${race.name}):`,
+          `[EMBEDDINGS] ✗ Failed to generate embedding for ${entityType.slice(0, -1)} ID ${entity.id}:`,
           error instanceof Error ? error.message : String(error)
         );
-        // Continue to next race even if one fails
         continue;
       }
     }
 
-    console.log(`[EMBEDDINGS] ✓ Races embedding generation complete. Processed: ${processedCount}, Failed: ${failedCount}`);
+    console.log(`[EMBEDDINGS] ✓ ${entityType} embedding generation complete. Processed: ${processedCount}, Failed: ${failedCount}`);
   } catch (error) {
-    console.error('[EMBEDDINGS] ✗ Error in generateRacesEmbeddings:', error);
+    console.error(`[EMBEDDINGS] ✗ Error in generateEmbeddingsForEntity (${entityType}):`, error);
     throw error;
   } finally {
     client.release();
   }
 }
+
+// Register routes for all entity types
+const entityTypes: EntityType[] = ['races', 'classes', 'spells'];
+entityTypes.forEach((entityType) => {
+  databaseRouter.post(`/${entityType}/generate`, createGenerateHandler(entityType));
+  databaseRouter.get(`/${entityType}/status`, createStatusHandler(entityType));
+  databaseRouter.get(`/${entityType}/list`, createListHandler(entityType));
+});
 
 export default databaseRouter;

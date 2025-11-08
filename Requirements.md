@@ -83,7 +83,7 @@ Got 4 views ready to go
 
 Rubric items:
 - [ ] Introduction page (First time user page)
-- [ ] Network Calls that read and write data (get Json from website and save it to database)
+- [x] Network Calls that read and write data (get Json from website and save it to database)
 - [ ] Protected routes for authenticated users
 - [ ] Authentication and user account support
 - [ ] Authorized pages and public pages
@@ -93,7 +93,7 @@ Features:
 - [ ] Basic character sheet display
 
 Misc:
-- [ ] Get embeddings done for Class, Race and Spells
+- [x] Get embeddings done for Class, Race and Spells
 
 #### Delivered
 

@@ -11,21 +11,25 @@ import Spells from './pages/Spells'
 import CharacterSheet from './pages/CharacterSheet'
 import Admin from './pages/Admin'
 import App from './App'
+import SideNavBar from './NavBar/SideNavBar'
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<App />} />
-        <Route path="/about" element={<About />} />
-        <Route path="/contact" element={<Contact />} />
-        <Route path="/races" element={<Races />} />
-        <Route path="/classes" element={<Classes />} />
-        <Route path="/spells" element={<Spells />} />
-        <Route path="/character-sheet" element={<CharacterSheet />} />
-        <Route path="/admin" element={<Admin />} />
-        <Route path="*" element={<NotFound />} />
-      </Routes>
+      <SideNavBar />
+      <div style={{ marginLeft: '250px' }}>
+        <Routes>
+          <Route path="/" element={<App />} />
+          <Route path="/about" element={<About />} />
+          <Route path="/contact" element={<Contact />} />
+          <Route path="/races" element={<Races />} />
+          <Route path="/classes" element={<Classes />} />
+          <Route path="/spells" element={<Spells />} />
+          <Route path="/character-sheet" element={<CharacterSheet />} />
+          <Route path="/admin" element={<Admin />} />
+          <Route path="*" element={<NotFound />} />
+        </Routes>
+      </div>
     </BrowserRouter>
   </StrictMode>,
 )
