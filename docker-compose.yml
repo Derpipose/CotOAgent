@@ -8,6 +8,9 @@ services:
       - "3000:3000"
     environment:
       - NODE_ENV=production
+      - AIToken=${AIToken}
+      - EMBEDDING_URL=${EMBEDDING_URL}
+      - EMBEDDING_MODEL=${EMBEDDING_MODEL}
     networks:
       - cotoagent-network
     restart: unless-stopped

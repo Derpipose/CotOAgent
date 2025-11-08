@@ -167,6 +167,126 @@
   color: #333;
 }
 
+.embeddings-section {
+  background-color: #f0f8ff;
+  border: 2px solid #4facfe;
+  border-radius: 0.5rem;
+  padding: 2rem;
+  margin-top: 2rem;
+}
+
+.embeddings-section h2 {
+  margin-top: 0;
+  color: #0066cc;
+  font-size: 1.8rem;
+  margin-bottom: 0.5rem;
+}
+
+.embeddings-subtitle {
+  color: #0099ff;
+  font-size: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.embeddings-buttons-container {
+  display: flex;
+  gap: 2rem;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin: 1.5rem 0;
+}
+
+.embed-button-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  flex: 1;
+  min-width: 250px;
+  max-width: 300px;
+}
+
+.embed-button {
+  padding: 1rem 2rem;
+  font-size: 1.1rem;
+  font-weight: 600;
+  border: none;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  min-height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  width: 100%;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.embed-button:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+}
+
+.embed-button:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.embed-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.embed-races {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+}
+
+.embed-races:hover:not(:disabled) {
+  background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
+}
+
+.debug-section {
+  margin-top: 2rem;
+  padding-top: 1.5rem;
+  border-top: 2px solid #0099ff;
+}
+
+.debug-section h3 {
+  color: #0066cc;
+  font-size: 1.2rem;
+  margin-bottom: 1rem;
+}
+
+.debug-buttons-container {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.debug-button {
+  padding: 0.75rem 1.5rem;
+  font-size: 0.95rem;
+  font-weight: 600;
+  border: none;
+  border-radius: 0.4rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  background: linear-gradient(135deg, #9b9b9b 0%, #6d6d6d 100%);
+  color: white;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.debug-button:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.debug-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
 /* Responsive design */
 @media (max-width: 768px) {
   .admin-container {
