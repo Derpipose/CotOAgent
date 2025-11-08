@@ -24,8 +24,8 @@ spec:
           value: "postgres://cotoagentuser:cotoagentpassword@cotoagent-db-svc:5432/cotoagentdb"
         - name: AI_SERVER_URL
           value: $AI_SERVER
-        - name: AIToken
-          value: $AI_Token
+        - name: AI_TOKEN
+          value: $AI_TOKEN
         - name: JWK_URI
           value: $JWK_URI
         ports:
