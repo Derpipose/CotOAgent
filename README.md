@@ -68,3 +68,17 @@
 Embedding model:
 nomic-embed-text:latest
 
+Testing spell duplications: 
+curl -s "https://derpipose.github.io/JsonFiles/Spells.json" 2>&1 | python3 -c "
+import json, sys
+data = json.load(sys.stdin)
+spell_names = [spell.get('SpellName') for spell in data]
+duplicates = [name for name in set(spell_names) if spell_names.count(name) > 1]
+if duplicates:
+    print('Duplicate spells found:')
+    for dup in sorted(duplicates):
+        count = spell_names.count(dup)
+        print(f'  {dup}: appears {count} times')
+else:
+    print('No duplicates found')
+"

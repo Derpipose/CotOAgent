@@ -9,6 +9,7 @@ import Races from './pages/Races'
 import Classes from './pages/Classes'
 import Spells from './pages/Spells'
 import CharacterSheet from './pages/CharacterSheet'
+import Admin from './pages/Admin'
 import App from './App'
 
 createRoot(document.getElementById('root')!).render(
@@ -22,6 +23,7 @@ createRoot(document.getElementById('root')!).render(
         <Route path="/classes" element={<Classes />} />
         <Route path="/spells" element={<Spells />} />
         <Route path="/character-sheet" element={<CharacterSheet />} />
+        <Route path="/admin" element={<Admin />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
     </BrowserRouter>
