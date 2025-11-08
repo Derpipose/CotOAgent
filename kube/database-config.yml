@@ -4,7 +4,8 @@ metadata:
   name: cotoagent-db-init-sql
   namespace: cotoagent
 data:
-  init.sql: |
+  01-init.sql: |
+    -- Try to create pgvector extension, but don't fail if it's not available
     CREATE EXTENSION IF NOT EXISTS vector;
 
     CREATE TABLE IF NOT EXISTS users (

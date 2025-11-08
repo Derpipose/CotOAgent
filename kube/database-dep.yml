@@ -24,7 +24,7 @@ spec:
           claimName: cotoagent-db-pvc
       containers:
       - name: cotoagent-postgres
-        image: pgvector/pgvector:pg18
+        image: pgvector/pgvector:pg16
         ports:
         - containerPort: 5432
         volumeMounts:
