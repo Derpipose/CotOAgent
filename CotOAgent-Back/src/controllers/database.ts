@@ -22,6 +22,10 @@ async function saveRacesToDatabase(races: unknown[]): Promise<number> {
   let insertedCount = 0;
 
   try {
+    // Clear existing races
+    await client.query('DELETE FROM races;');
+    console.log('Cleared existing races');
+
     // Validate the races data using Zod
     const validatedRaces = RacesImportSchema.parse(races);
 
@@ -29,8 +33,6 @@ async function saveRacesToDatabase(races: unknown[]): Promise<number> {
       const query = `
         INSERT INTO races (campaign, name, description)
         VALUES ($1, $2, $3)
-        ON CONFLICT (campaign, name) DO UPDATE
-        SET description = EXCLUDED.description
         RETURNING id;
       `;
 
@@ -65,6 +67,10 @@ async function saveClassesToDatabase(classes: unknown[]): Promise<number> {
   let insertedCount = 0;
 
   try {
+    // Clear existing classes
+    await client.query('DELETE FROM classes;');
+    console.log('Cleared existing classes');
+
     // Validate the classes data using Zod
     const validatedClasses = ClassesImportSchema.parse(classes);
 
@@ -72,8 +78,6 @@ async function saveClassesToDatabase(classes: unknown[]): Promise<number> {
       const query = `
         INSERT INTO classes (classification, class_name, description)
         VALUES ($1, $2, $3)
-        ON CONFLICT (classification, class_name) DO UPDATE
-        SET description = EXCLUDED.description
         RETURNING id;
       `;
 
@@ -108,6 +112,10 @@ async function saveSpellsToDatabase(spells: unknown[]): Promise<number> {
   let insertedCount = 0;
 
   try {
+    // Clear existing spells
+    await client.query('DELETE FROM spells;');
+    console.log('Cleared existing spells');
+
     // Validate the spells data using Zod
     const validatedSpells = SpellsImportSchema.parse(spells);
 
@@ -115,10 +123,6 @@ async function saveSpellsToDatabase(spells: unknown[]): Promise<number> {
       const query = `
         INSERT INTO spells (spell_name, mana_cost, hit_die, description)
         VALUES ($1, $2, $3, $4)
-        ON CONFLICT (spell_name) DO UPDATE
-        SET mana_cost = EXCLUDED.mana_cost,
-            hit_die = EXCLUDED.hit_die,
-            description = EXCLUDED.description
         RETURNING id;
       `;
 
