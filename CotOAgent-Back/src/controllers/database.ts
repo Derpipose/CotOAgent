@@ -112,21 +112,49 @@ async function saveSpellsToDatabase(spells: unknown[]): Promise<number> {
   let insertedCount = 0;
 
   try {
-    // Clear existing spells
+    // Clear existing spells and spellbooks
     await client.query('DELETE FROM spells;');
-    console.log('Cleared existing spells');
+    await client.query('DELETE FROM spellbooks;');
+    console.log('Cleared existing spells and spellbooks');
 
     // Validate the spells data using Zod
     const validatedSpells = SpellsImportSchema.parse(spells);
 
+    // Create a map to track created spellbooks
+    const spellbookMap = new Map<string, number>();
+
     for (const spell of validatedSpells) {
+      // Create spellbook if it doesn't exist
+      const spellbookKey = `${spell.SpellBranch}|${spell.SpellBook}`;
+      let spellbookId: number;
+
+      if (spellbookMap.has(spellbookKey)) {
+        spellbookId = spellbookMap.get(spellbookKey)!;
+      } else {
+        // Store both SpellBook and BookLevel in book_level as "BookName|BookLevel"
+        const bookLevelValue = `${spell.SpellBook}|${spell.BookLevel}`;
+        const sbQuery = `
+          INSERT INTO spellbooks (spell_branch, book_level)
+          VALUES ($1, $2)
+          RETURNING id;
+        `;
+        const sbResult = await client.query(sbQuery, [
+          spell.SpellBranch,
+          bookLevelValue,
+        ]);
+        spellbookId = sbResult.rows[0].id;
+        spellbookMap.set(spellbookKey, spellbookId);
+      }
+
+      // Insert spell with spellbook_id
       const query = `
-        INSERT INTO spells (spell_name, mana_cost, hit_die, description)
-        VALUES ($1, $2, $3, $4)
+        INSERT INTO spells (spellbook_id, spell_name, mana_cost, hit_die, description)
+        VALUES ($1, $2, $3, $4, $5)
         RETURNING id;
       `;
 
       const result = await client.query(query, [
+        spellbookId,
         spell.SpellName,
         spell.ManaCost,
         spell.HitDie,
@@ -138,7 +166,7 @@ async function saveSpellsToDatabase(spells: unknown[]): Promise<number> {
       }
     }
 
-    console.log(`Successfully processed ${insertedCount} spells`);
+    console.log(`Successfully processed ${insertedCount} spells in ${spellbookMap.size} spellbooks`);
     return insertedCount;
   } catch (error) {
     console.error('Error saving spells to database:', error);

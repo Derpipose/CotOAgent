@@ -1,12 +1,16 @@
 import type { Request, Response, Router as ExpressRouter } from 'express';
 import { Router } from 'express';
 import { z } from 'zod';
+import pg from 'pg';
 import type { SpellDTO } from '../DTOS/SpellsDto.js';
-import { Spells } from '../jsonFiles/Spells.js';
-import { Classes } from '../jsonFiles/Classes.js';
-import { Races } from '../jsonFiles/Races.js';
 
 const router: ExpressRouter = Router();
+const { Pool } = pg;
+
+// Initialize PostgreSQL connection pool
+const pool = new Pool({
+  connectionString: process.env.DATABASE_URL || process.env.DEFAULT_CONNECTION,
+});
 
 const BasicClassSchema = z.object({
   Classification: z.string(),
@@ -25,8 +29,8 @@ const RaceSchema = z.object({
 const RacesArraySchema = z.array(RaceSchema);
 
 const SpellSchema = z.object({
-  SpellBranch: z.string(),
-  SpellBook: z.string(),
+  SpellBranch: z.string().optional().default(''),
+  SpellBook: z.string().optional().default(''),
   SpellName: z.string(),
   ManaCost: z.number(),
   HitDie: z.string(),
@@ -35,48 +39,30 @@ const SpellSchema = z.object({
 
 const SpellsArraySchema = z.array(SpellSchema);
 
-// Type for raw class data from JSON
-type RawClass = {
-  Classification?: string;
-  ClassName?: string;
-  Description?: string;
-};
-
-// Type for raw race data from JSON
-type RawRace = {
-  Campaign?: string;
-  Name?: string;
-  Description?: string;
-};
-
-// Type for raw spell data from TypeScript module
-type RawSpell = {
-  SpellBranch?: string;
-  SpellBook?: string;
-  SpellName?: string;
-  ManaCost?: number | string;
-  HitDie?: string;
-  Description?: string;
-  BookLevel?: string;
-};
-
 /**
  * GET /api/classes
- * Returns all classes from Classes.ts as an array of BasicClassDTOs
+ * Returns all classes from the database as an array of BasicClassDTOs
  */
 router.get('/classes', async (req: Request, res: Response): Promise<void> => {
+  const client = await pool.connect();
   try {
-    console.log(`[basicPopulate] Fetching classes from TypeScript module`);
+    console.log(`[basicPopulate] Fetching classes from database`);
+    
+    const query = `
+      SELECT classification, class_name, description
+      FROM classes
+      ORDER BY classification, class_name
+    `;
+    
+    const result = await client.query(query);
     
     // Validate and parse with Zod
     const classesDTO = ClassesArraySchema.parse(
-      Classes
-        .filter((item: RawClass) => item.ClassName) // Still filter incomplete entries
-        .map((item: RawClass) => ({
-          Classification: item.Classification ?? '',
-          ClassName: item.ClassName ?? '',
-          Description: item.Description ?? '',
-        }))
+      result.rows.map((row: { classification: string; class_name: string; description: string | null }) => ({
+        Classification: row.classification ?? '',
+        ClassName: row.class_name ?? '',
+        Description: row.description ?? '',
+      }))
     );
 
     console.log(`[basicPopulate] Successfully fetched ${classesDTO.length} classes`);
@@ -87,26 +73,35 @@ router.get('/classes', async (req: Request, res: Response): Promise<void> => {
       error: 'Failed to fetch classes',
       details: error instanceof Error ? error.message : 'Unknown error'
     });
+  } finally {
+    client.release();
   }
 });
 
 /**
  * GET /api/races
- * Returns all races from Races.ts as an array of RaceDTOs
+ * Returns all races from the database as an array of RaceDTOs
  */
 router.get('/races', async (req: Request, res: Response): Promise<void> => {
+  const client = await pool.connect();
   try {
-    console.log(`[basicPopulate] Fetching races from TypeScript module`);
+    console.log(`[basicPopulate] Fetching races from database`);
+    
+    const query = `
+      SELECT campaign, name, description
+      FROM races
+      ORDER BY campaign, name
+    `;
+    
+    const result = await client.query(query);
     
     // Validate and parse with Zod
     const racesDTO = RacesArraySchema.parse(
-      Races
-        .filter((item: RawRace) => item.Name) // Filter incomplete entries
-        .map((item: RawRace) => ({
-          Campaign: item.Campaign ?? '',
-          Name: item.Name ?? '',
-          Description: item.Description ?? '',
-        }))
+      result.rows.map((row: { campaign: string; name: string; description: string | null }) => ({
+        Campaign: row.campaign ?? '',
+        Name: row.name ?? '',
+        Description: row.description ?? '',
+      }))
     );
 
     console.log(`[basicPopulate] Successfully fetched ${racesDTO.length} races`);
@@ -117,29 +112,38 @@ router.get('/races', async (req: Request, res: Response): Promise<void> => {
       error: 'Failed to fetch races',
       details: error instanceof Error ? error.message : 'Unknown error'
     });
+  } finally {
+    client.release();
   }
 });
 
 /**
  * GET /api/spells
- * Returns all spells from Spells.ts as an array of SpellDTOs
+ * Returns all spells from the database as an array of SpellDTOs
  */
 router.get('/spells', async (req: Request, res: Response): Promise<void> => {
+  const client = await pool.connect();
   try {
-    console.log(`[basicPopulate] Fetching spells from TypeScript module`);
+    console.log(`[basicPopulate] Fetching spells from database`);
+    
+    const query = `
+      SELECT spell_name, mana_cost, hit_die, description
+      FROM spells
+      ORDER BY spell_name
+    `;
+    
+    const result = await client.query(query);
     
     // Validate and parse with Zod
     const spellsDTO = SpellsArraySchema.parse(
-      Spells
-        .filter((item: RawSpell) => item.SpellName) // Filter incomplete entries
-        .map((item: RawSpell) => ({
-          SpellBranch: item.SpellBranch ?? '',
-          SpellBook: item.SpellBook ?? '',
-          SpellName: item.SpellName ?? '',
-          ManaCost: typeof item.ManaCost === 'number' ? item.ManaCost : 0,
-          HitDie: item.HitDie ?? '',
-          Description: item.Description ?? '',
-        }))
+      result.rows.map((row: { spell_name: string; mana_cost: string | null; hit_die: string | null; description: string | null }) => ({
+        SpellBranch: '',
+        SpellBook: '',
+        SpellName: row.spell_name ?? '',
+        ManaCost: parseInt(row.mana_cost ?? '0', 10) || 0,
+        HitDie: row.hit_die ?? '',
+        Description: row.description ?? '',
+      }))
     );
 
     console.log(`[basicPopulate] Successfully fetched ${spellsDTO.length} spells`);
@@ -150,45 +154,66 @@ router.get('/spells', async (req: Request, res: Response): Promise<void> => {
       error: 'Failed to fetch spells',
       details: error instanceof Error ? error.message : 'Unknown error'
     });
+  } finally {
+    client.release();
   }
 });
 
 /**
  * GET /api/spellbooks
- * Returns all spellbooks from Spells.ts grouped by SpellBranch and SpellBook,
+ * Returns all spellbooks from the database grouped by SpellBranch and SpellBook,
  * as an array of objects with branch info and nested spellbooks
  */
 router.get('/spellbooks', async (req: Request, res: Response): Promise<void> => {
+  const client = await pool.connect();
   try {
-    const fileContent = Spells;
+    console.log('[basicPopulate] Fetching spellbooks from database');
 
-    // First group by SpellBranch, then by SpellBook within each branch
-    const branchMap = new Map<string, Map<string, {spells: SpellDTO[], bookLevel: string}>>();
+    // Now get all spells grouped by spellbook, including BookLevel from the first spell of each book
+    const spellsQuery = `
+      SELECT 
+        sb.id,
+        sb.spell_branch,
+        sb.book_level,
+        s.spell_name,
+        s.mana_cost,
+        s.hit_die,
+        s.description
+      FROM spellbooks sb
+      LEFT JOIN spells s ON sb.id = s.spellbook_id
+      ORDER BY sb.spell_branch, sb.id, s.spell_name
+    `;
 
-    if (Array.isArray(fileContent)) {
-      for (const item of fileContent) {
-        const spell = item as RawSpell;
-        
-        // Skip incomplete spells
-        if (!spell.SpellName) continue;
+    const result = await client.query(spellsQuery);
 
-        const branch = spell.SpellBranch ?? '';
-        const bookName = spell.SpellBook ?? '';
-        
-        if (!branchMap.has(branch)) {
-          branchMap.set(branch, new Map());
-        }
+    // Group the results by branch and spellbook
+    const branchMap = new Map<string, Map<string, { spells: SpellDTO[]; bookLevel: string; spellBook: string }>>();
 
-        const branchBooks = branchMap.get(branch)!;
-        if (!branchBooks.has(bookName)) {
-          branchBooks.set(bookName, { spells: [], bookLevel: spell.BookLevel ?? '' });
-        }
+    for (const row of result.rows) {
+      const branch = row.spell_branch ?? '';
+      const bookData = row.book_level ?? '';
+      
+      // Parse "BookName|BookLevel" format
+      const [spellBook, bookLevel] = bookData.includes('|') 
+        ? bookData.split('|', 2) 
+        : [bookData, bookData];
 
-        branchBooks.get(bookName)!.spells.push({
-          SpellName: spell.SpellName,
-          ManaCost: typeof spell.ManaCost === 'number' ? spell.ManaCost : 0,
-          HitDie: spell.HitDie ?? '',
-          Description: spell.Description ?? '',
+      if (!branchMap.has(branch)) {
+        branchMap.set(branch, new Map());
+      }
+
+      const branchBooks = branchMap.get(branch)!;
+      if (!branchBooks.has(bookData)) {
+        branchBooks.set(bookData, { spells: [], bookLevel, spellBook });
+      }
+
+      // Only add spell if it exists
+      if (row.spell_name) {
+        branchBooks.get(bookData)!.spells.push({
+          SpellName: row.spell_name ?? '',
+          ManaCost: parseInt(row.mana_cost ?? '0', 10) || 0,
+          HitDie: row.hit_die ?? '',
+          Description: row.description ?? '',
         });
       }
     }
@@ -196,9 +221,9 @@ router.get('/spellbooks', async (req: Request, res: Response): Promise<void> => 
     // Convert to array of branches with nested spellbooks
     const response = Array.from(branchMap.entries()).map(([branch, books]) => ({
       SpellBranch: branch,
-      spellbooks: Array.from(books.entries()).map(([bookName, data]) => ({
+      spellbooks: Array.from(books.entries()).map(([, data]) => ({
         SpellBranch: branch,
-        SpellBook: bookName,
+        SpellBook: data.spellBook,
         BookLevel: data.bookLevel,
         SpellDtos: data.spells,
       })),
@@ -212,6 +237,8 @@ router.get('/spellbooks', async (req: Request, res: Response): Promise<void> => 
       error: 'Failed to fetch spellbooks',
       details: error instanceof Error ? error.message : 'Unknown error'
     });
+  } finally {
+    client.release();
   }
 });
 
