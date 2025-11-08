@@ -18,15 +18,21 @@ spec:
       - name: schema-init
         configMap:
           name: cotoagent-db-init-sql
+          defaultMode: 0755
+      - name: db-storage
+        persistentVolumeClaim:
+          claimName: cotoagent-db-pvc
       containers:
       - name: cotoagent-postgres
-        volumeMounts:
-        - mountPath: /docker-entrypoint-initdb.d/init.sql
-          subPath: init.sql
-          name: schema-init
-        image: postgres:18-alpine3.22
+        image: pgvector/pgvector:pg18
         ports:
         - containerPort: 5432
+        volumeMounts:
+        - mountPath: /docker-entrypoint-initdb.d
+          name: schema-init
+        - mountPath: /var/lib/postgresql/data
+          name: db-storage
+          subPath: postgres
         env:
         - name: POSTGRES_USER
           value: "cotoagentuser"
@@ -34,3 +40,19 @@ spec:
           value: "cotoagentpassword"
         - name: POSTGRES_DB
           value: "cotoagentdb"
+        livenessProbe:
+          exec:
+            command:
+            - /bin/sh
+            - -c
+            - pg_isready -U cotoagentuser
+          initialDelaySeconds: 30
+          periodSeconds: 10
+        readinessProbe:
+          exec:
+            command:
+            - /bin/sh
+            - -c
+            - pg_isready -U cotoagentuser
+          initialDelaySeconds: 10
+          periodSeconds: 5
