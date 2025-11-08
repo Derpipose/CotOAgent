@@ -1,11 +1,8 @@
 import { useState, useEffect } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
 import './App.css'
 import keycloak from './keycloak'
 
 function App() {
-  const [count, setCount] = useState(0)
   const [authenticated, setAuthenticated] = useState(false)
   const [loading, setLoading] = useState(true)
   const [keycloakInitialized, setKeycloakInitialized] = useState(false)
@@ -44,42 +41,44 @@ function App() {
   }
 
   if (loading) {
-    return <div>Loading...</div>
+    return <div className="loading">Loading...</div>
   }
 
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
+    <div className="welcome-container">
+      <div className="welcome-content">
+        <h1 className="welcome-title">Chronicles of the Omuns</h1>
+        <p className="welcome-subtitle">Character Creation Assistant</p>
+        <p className="welcome-description">
+          Welcome to the Chronicles of the Omuns character creation tool. 
+          Use our AI-powered assistant to build and develop your unique character 
+          for your adventures in this immersive world.
         </p>
+        
+        <div className="auth-section">
+          {authenticated ? (
+            <div className="authenticated">
+              <p className="welcome-message">
+                Welcome, <span className="username">{keycloak.tokenParsed?.preferred_username || 'Adventurer'}</span>!
+              </p>
+              <a href="/character-sheet" className="nav-link">
+                <button className="btn btn-primary">Start Character Creation</button>
+              </a>
+              <button className="btn btn-secondary" onClick={handleLogout}>
+                Logout
+              </button>
+            </div>
+          ) : (
+            <div className="unauthenticated">
+              <p className="login-prompt">Sign in to begin your journey</p>
+              <button className="btn btn-primary btn-large" onClick={handleLogin}>
+                Login
+              </button>
+            </div>
+          )}
+        </div>
       </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-      <div>
-        {authenticated ? (
-          <div>
-            <p>Welcome, {keycloak.tokenParsed?.preferred_username || 'User'}!</p>
-            <button onClick={handleLogout}>Logout</button>
-          </div>
-        ) : (
-          <button onClick={handleLogin}>Login</button>
-        )}
-      </div>
-    </>
+    </div>
   )
 }
 
