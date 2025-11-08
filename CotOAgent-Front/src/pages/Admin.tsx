@@ -13,9 +13,34 @@ interface EmbeddingResult {
   status?: string
 }
 
+interface EmbeddingProgress {
+  completed: number
+  total: number
+  failed: number
+  percentageComplete: number
+}
+
+// Utility: Get backend URL
+const getBackendUrl = () => {
+  if (window.location.protocol === 'https:') {
+    return `https://${window.location.hostname}/api`
+  }
+  return 'http://localhost:3000/api'
+}
+
+// Utility: Extract error message
+const getErrorMessage = (err: unknown): string => {
+  return err instanceof Error ? err.message : 'Unknown error'
+}
+
 export default function Admin() {
   const [loading, setLoading] = useState<'races' | 'classes' | 'spells' | null>(null)
-  const [embeddingLoading, setEmbeddingLoading] = useState<'races' | null>(null)
+  const [embeddingLoading, setEmbeddingLoading] = useState<'races' | 'classes' | 'spells' | null>(null)
+  const [embeddingProgress, setEmbeddingProgress] = useState<{
+    races?: EmbeddingProgress & { message: string }
+    classes?: EmbeddingProgress & { message: string }
+    spells?: EmbeddingProgress & { message: string }
+  }>({})
   const [results, setResults] = useState<{
     races?: ImportResult
     classes?: ImportResult
@@ -23,50 +48,33 @@ export default function Admin() {
   }>({})
   const [embeddingResults, setEmbeddingResults] = useState<{
     races?: EmbeddingResult
+    classes?: EmbeddingResult
+    spells?: EmbeddingResult
   }>({})
   const [error, setError] = useState<string | null>(null)
-
-  // Determine the backend API URL based on the current environment
-  const getBackendUrl = () => {
-    // In production, use the same domain with /api path (routed through ingress)
-    if (window.location.protocol === 'https:') {
-      return `https://${window.location.hostname}/api`
-    }
-    // In development, use localhost:3000/api
-    return 'http://localhost:3000/api'
-  }
 
   const handleImport = async (type: 'races' | 'classes' | 'spells') => {
     setLoading(type)
     setError(null)
     
     try {
-      const baseUrl = getBackendUrl()
-      const apiUrl = `${baseUrl}/import/${type}`
-      const response = await fetch(apiUrl)
+      const response = await fetch(`${getBackendUrl()}/import/${type}`)
       const data = await response.json()
       
-      if (response.ok) {
-        setResults(prev => ({
-          ...prev,
-          [type]: {
-            success: true,
-            message: `Successfully imported ${data.savedToDatabase} ${type}`,
-            savedCount: data.savedToDatabase
-          }
-        }))
-      } else {
-        setError(`Failed to import ${type}: ${data.error}`)
-        setResults(prev => ({
-          ...prev,
-          [type]: {
-            success: false,
-            message: `Failed to import ${type}`
-          }
-        }))
-      }
+      const success = response.ok
+      setResults(prev => ({
+        ...prev,
+        [type]: {
+          success,
+          message: success 
+            ? `Successfully imported ${data.savedToDatabase} ${type}`
+            : `Failed to import ${type}`,
+          savedCount: data.savedToDatabase
+        }
+      }))
+      if (!success) setError(`Failed to import ${type}: ${data.error}`)
     } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : 'Unknown error'
+      const errorMessage = getErrorMessage(err)
       setError(`Error importing ${type}: ${errorMessage}`)
       setResults(prev => ({
         ...prev,
@@ -80,85 +88,128 @@ export default function Admin() {
     }
   }
 
-  const handleEmbedRaces = async () => {
-    setEmbeddingLoading('races')
+  const handleEmbed = async (type: 'races' | 'classes' | 'spells') => {
+    setEmbeddingLoading(type)
     setError(null)
+    setEmbeddingResults(prev => ({
+      ...prev,
+      [type]: {
+        success: true,
+        message: 'Connecting to embedding stream...'
+      }
+    }))
     
     try {
-      const baseUrl = getBackendUrl()
-      const apiUrl = `${baseUrl}/embeddings/races/generate`
-      const response = await fetch(apiUrl, {
+      const response = await fetch(`${getBackendUrl()}/embeddings/${type}/generate`, {
         method: 'POST'
       })
-      const data = await response.json()
-      
-      if (response.ok || response.status === 202) {
+
+      if (response.status === 409) {
+        const data = await response.json()
+        setError(data.error)
         setEmbeddingResults(prev => ({
           ...prev,
-          races: {
-            success: true,
-            message: data.message || 'Embedding generation started in the background',
-            status: data.status
-          }
-        }))
-      } else {
-        setError(`Failed to generate embeddings: ${data.error}`)
-        setEmbeddingResults(prev => ({
-          ...prev,
-          races: {
+          [type]: {
             success: false,
-            message: `Failed to generate embeddings`
+            message: data.error
           }
         }))
+        setEmbeddingLoading(null)
+        return
       }
+
+      if (!response.ok || !response.body) {
+        const data = await response.json()
+        setError(data.error || 'Failed to start embedding generation')
+        setEmbeddingResults(prev => ({
+          ...prev,
+          [type]: {
+            success: false,
+            message: data.error || 'Failed to start embedding generation'
+          }
+        }))
+        setEmbeddingLoading(null)
+        return
+      }
+
+      // Handle SSE stream
+      const reader = response.body.getReader()
+      const decoder = new TextDecoder()
+      let buffer = ''
+
+      while (true) {
+        const { done, value } = await reader.read()
+        if (done) break
+
+        buffer += decoder.decode(value, { stream: true })
+        const lines = buffer.split('\n')
+        buffer = lines.pop() || ''
+
+        for (const line of lines) {
+          if (line.startsWith('data: ')) {
+            try {
+              const data = JSON.parse(line.slice(6))
+              
+              if (data.type === 'started') {
+                setEmbeddingResults(prev => ({
+                  ...prev,
+                  [type]: {
+                    success: true,
+                    message: data.message,
+                    status: 'processing'
+                  }
+                }))
+              } else if (data.type === 'progress') {
+                const progress = data.progress as EmbeddingProgress
+                setEmbeddingProgress(prev => ({
+                  ...prev,
+                  [type]: {
+                    ...progress,
+                    message: `Processing: ${progress.completed}/${progress.total} (${progress.percentageComplete}%)`
+                  }
+                }))
+                setEmbeddingResults(prev => ({
+                  ...prev,
+                  [type]: {
+                    success: true,
+                    message: `Processing: ${progress.completed}/${progress.total} (${progress.percentageComplete}%)`,
+                    status: 'processing'
+                  }
+                }))
+              }
+            } catch (parseErr) {
+              console.error('Failed to parse SSE data:', parseErr)
+            }
+          }
+        }
+      }
+
+      // Stream ended, mark as complete and clear loading state
+      setEmbeddingLoading(null)
+      setEmbeddingProgress(prev => ({
+        ...prev,
+        [type]: undefined
+      }))
+      setEmbeddingResults(prev => ({
+        ...prev,
+        [type]: {
+          success: true,
+          message: 'Embedding generation completed!',
+          status: 'completed'
+        }
+      }))
     } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : 'Unknown error'
+      const errorMessage = getErrorMessage(err)
       setError(`Error generating embeddings: ${errorMessage}`)
       setEmbeddingResults(prev => ({
         ...prev,
-        races: {
+        [type]: {
           success: false,
           message: `Error: ${errorMessage}`
         }
       }))
     } finally {
       setEmbeddingLoading(null)
-    }
-  }
-
-  const handleCheckEmbeddingStatus = async () => {
-    try {
-      const baseUrl = getBackendUrl()
-      const apiUrl = `${baseUrl}/embeddings/races/status`
-      const response = await fetch(apiUrl)
-      const data = await response.json()
-      
-      setEmbeddingResults(prev => ({
-        ...prev,
-        races: {
-          success: true,
-          message: `Status: ${data.withEmbeddings}/${data.total} races embedded (${data.percentageComplete}%)`,
-          status: 'status'
-        }
-      }))
-    } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : 'Unknown error'
-      setError(`Error checking status: ${errorMessage}`)
-    }
-  }
-
-  const handleListRaces = async () => {
-    try {
-      const baseUrl = getBackendUrl()
-      const apiUrl = `${baseUrl}/embeddings/races/list`
-      const response = await fetch(apiUrl)
-      const data = await response.json()
-      
-      console.log('Races list:', data)
-      alert(`Found ${data.total} races. Check console for details.`)
-    } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : 'Unknown error'
-      setError(`Error listing races: ${errorMessage}`)
     }
   }
 
@@ -172,7 +223,7 @@ export default function Admin() {
           <button
             className="import-button import-races"
             onClick={() => handleImport('races')}
-            disabled={loading !== null || embeddingLoading !== null}
+            disabled={loading !== null}
           >
             {loading === 'races' ? '⏳ Importing...' : '🐉 Import Races'}
           </button>
@@ -187,7 +238,7 @@ export default function Admin() {
           <button
             className="import-button import-classes"
             onClick={() => handleImport('classes')}
-            disabled={loading !== null || embeddingLoading !== null}
+            disabled={loading !== null}
           >
             {loading === 'classes' ? '⏳ Importing...' : '⚔️ Import Classes'}
           </button>
@@ -202,7 +253,7 @@ export default function Admin() {
           <button
             className="import-button import-spells"
             onClick={() => handleImport('spells')}
-            disabled={loading !== null || embeddingLoading !== null}
+            disabled={loading !== null}
           >
             {loading === 'spells' ? '⏳ Importing...' : '✨ Import Spells'}
           </button>
@@ -222,8 +273,7 @@ export default function Admin() {
           <div className="embed-button-wrapper">
             <button
               className="embed-button embed-races"
-              onClick={handleEmbedRaces}
-              disabled={embeddingLoading !== null || loading !== null}
+              onClick={() => handleEmbed('races')}
             >
               {embeddingLoading === 'races' ? '🧠 Generating...' : '🧠 Embed Races'}
             </button>
@@ -232,26 +282,58 @@ export default function Admin() {
                 {embeddingResults.races.message}
               </div>
             )}
+            {embeddingProgress.races && (
+              <div className="progress-container">
+                <div className="progress-bar">
+                  <div className="progress-fill" style={{ width: `${embeddingProgress.races.percentageComplete}%` }}></div>
+                </div>
+                <div className="progress-text">{embeddingProgress.races.message}</div>
+              </div>
+            )}
           </div>
-        </div>
 
-        <div className="debug-section">
-          <h3>Debug Tools</h3>
-          <div className="debug-buttons-container">
+          <div className="embed-button-wrapper">
             <button
-              className="debug-button"
-              onClick={handleCheckEmbeddingStatus}
-              disabled={loading !== null || embeddingLoading !== null}
+              className="embed-button embed-classes"
+              onClick={() => handleEmbed('classes')}
             >
-              📊 Check Status
+              {embeddingLoading === 'classes' ? '🧠 Generating...' : '🧠 Embed Classes'}
             </button>
+            {embeddingResults.classes && (
+              <div className={`result-message ${embeddingResults.classes.success ? 'success' : 'error'}`}>
+                {embeddingResults.classes.message}
+              </div>
+            )}
+            {embeddingProgress.classes && (
+              <div className="progress-container">
+                <div className="progress-bar">
+                  <div className="progress-fill" style={{ width: `${embeddingProgress.classes.percentageComplete}%` }}></div>
+                </div>
+                <div className="progress-text">{embeddingProgress.classes.message}</div>
+              </div>
+            )}
+          </div>
+
+          <div className="embed-button-wrapper">
             <button
-              className="debug-button"
-              onClick={handleListRaces}
-              disabled={loading !== null || embeddingLoading !== null}
+              className="embed-button embed-spells"
+              onClick={() => handleEmbed('spells')}
             >
-              📋 List Races
+              {embeddingLoading === 'spells' ? '🧠 Generating...' : '🧠 Embed Spells'}
             </button>
+            {embeddingResults.spells && (
+              <div className={`result-message ${embeddingResults.spells.success ? 'success' : 'error'}`}>
+                {embeddingResults.spells.message}
+              </div>
+            )}
+            {embeddingProgress.spells && (
+              <div className="progress-container">
+                <div className="progress-bar">
+                  <div className="progress-fill" style={{ width: `${embeddingProgress.spells.percentageComplete}%` }}></div>
+                </div>
+                <div className="progress-text">{embeddingProgress.spells.message}</div>
+              </div>
+            )}
           </div>
         </div>
       </div>
