@@ -5,16 +5,52 @@ metadata:
   namespace: cotoagent
 data:
   init.sql: |
+    CREATE EXTENSION IF NOT EXISTS vector;
+
     CREATE TABLE IF NOT EXISTS users (
         id SERIAL PRIMARY KEY,
-        user_email VARCHAR(50) UNIQUE NOT NULL,
-        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        user_email VARCHAR(50) UNIQUE NOT NULL
     );
 
     CREATE TABLE IF NOT EXISTS admin_users (
         id SERIAL PRIMARY KEY,
-        admin_email VARCHAR(50) UNIQUE NOT NULL,
+        admin_email VARCHAR(50) UNIQUE NOT NULL
+    );
+
+    CREATE TABLE IF NOT EXISTS classes (
+        id SERIAL PRIMARY KEY,
+        classification VARCHAR(255) NOT NULL,
+        class_name VARCHAR(255) NOT NULL,
+        description TEXT,
+        embeddings vector,
+        UNIQUE(classification, class_name)
+    );
+
+    CREATE TABLE IF NOT EXISTS races (
+        id SERIAL PRIMARY KEY,
+        campaign VARCHAR(255) NOT NULL,
+        name VARCHAR(255) NOT NULL,
+        description TEXT,
+        embeddings vector,
+        UNIQUE(campaign, name)
+    );
+
+    CREATE TABLE IF NOT EXISTS spellbooks (
+        id SERIAL PRIMARY KEY,
+        spell_branch VARCHAR(255) NOT NULL,
+        book_level VARCHAR(50) NOT NULL,
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    );
+
+    CREATE TABLE IF NOT EXISTS spells (
+        id SERIAL PRIMARY KEY,
+        spellbook_id INTEGER REFERENCES spellbooks(id) ON DELETE CASCADE,
+        spell_name VARCHAR(255) NOT NULL,
+        mana_cost VARCHAR(10),
+        hit_die VARCHAR(50),
+        description TEXT,
+        embeddings vector,
+        UNIQUE(spell_name)
     );
 
     INSERT INTO admin_users (admin_email) VALUES ('derpipose@gmail.com') 

@@ -1,6 +1,22 @@
 version: '3.8'
 
 services:
+  database:
+    image: pgvector/pgvector:pg16
+    container_name: cotoagent-db-dev
+    environment:
+      POSTGRES_USER: cotoagentuser
+      POSTGRES_PASSWORD: cotoagentpassword
+      POSTGRES_DB: cotoagentdb
+    ports:
+      - "5432:5432"
+    volumes:
+      - cotoagent-db-data:/var/lib/postgresql/data
+      - ./CotOAgent-Back/init/schema.sql:/docker-entrypoint-initdb.d/01-schema.sql
+    networks:
+      - cotoagent-network
+    restart: unless-stopped
+
   backend:
     build:
       context: ./CotOAgent-Back
@@ -13,8 +29,11 @@ services:
       - /app/node_modules
     environment:
       - NODE_ENV=development
+      - DATABASE_URL=postgresql://cotoagentuser:cotoagentpassword@database:5432/cotoagentdb
     networks:
       - cotoagent-network
+    depends_on:
+      - database
     restart: unless-stopped
 
   frontend:
@@ -42,3 +61,6 @@ services:
 networks:
   cotoagent-network:
     driver: bridge
+
+volumes:
+  cotoagent-db-data:
