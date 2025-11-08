@@ -15,7 +15,7 @@ CREATE TABLE IF NOT EXISTS classes (
     classification VARCHAR(255) NOT NULL,
     class_name VARCHAR(255) NOT NULL,
     description TEXT,
-    embeddings vector,
+    embeddings TEXT,
     UNIQUE(classification, class_name)
 );
 
@@ -24,7 +24,7 @@ CREATE TABLE IF NOT EXISTS races (
     campaign VARCHAR(255) NOT NULL,
     name VARCHAR(255) NOT NULL,
     description TEXT,
-    embeddings vector,
+    embeddings TEXT,
     UNIQUE(campaign, name)
 );
 
@@ -42,7 +42,7 @@ CREATE TABLE IF NOT EXISTS spells (
     mana_cost VARCHAR(10),
     hit_die VARCHAR(50),
     description TEXT,
-    embeddings vector,
+    embeddings TEXT,
     UNIQUE(spell_name)
 );
 
