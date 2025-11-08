@@ -126,7 +126,7 @@ jobs:
         export CONTAINER_VERSION=${{ github.run_number }}
         export AI_SERVER=${{ vars.AI_SERVER }}
         export JWK_URI=${{ vars.JWK_URI }}
-        export AI_Token=${{ secrets.AI_TOKEN }}
+        export AI_TOKEN=${{ secrets.AI_TOKEN }}
         for FILE in "kube"/*
         do
           cat "$FILE" | envsubst | kubectl apply -f -
