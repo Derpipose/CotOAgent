@@ -30,6 +30,9 @@ services:
     environment:
       - NODE_ENV=development
       - DATABASE_URL=postgresql://cotoagentuser:cotoagentpassword@database:5432/cotoagentdb
+      - AIToken=${AIToken}
+      - EMBEDDING_URL=${EMBEDDING_URL}
+      - EMBEDDING_MODEL=${EMBEDDING_MODEL}
     networks:
       - cotoagent-network
     depends_on:
