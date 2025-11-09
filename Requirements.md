@@ -84,9 +84,9 @@ Got 4 views ready to go
 Rubric items:
 - [x] Introduction page (First time user page)
 - [x] Network Calls that read and write data (get Json from website and save it to database)
-- [ ] Protected routes for authenticated users
-- [ ] Authentication and user account support
-- [ ] Authorized pages and public pages
+- [x] Protected routes for authenticated users
+- [x] Authentication and user account support
+- [x] Authorized pages and public pages
 
 Features:
 - [x] Introduction page (First time user page)
