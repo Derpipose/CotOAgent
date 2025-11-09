@@ -82,15 +82,14 @@ Got 4 views ready to go
 #### Estimates:
 
 Rubric items:
-- [ ] Introduction page (First time user page)
+- [x] Introduction page (First time user page)
 - [x] Network Calls that read and write data (get Json from website and save it to database)
 - [ ] Protected routes for authenticated users
 - [ ] Authentication and user account support
 - [ ] Authorized pages and public pages
 
 Features:
-- [ ] Introduction page (First time user page)
-- [ ] Basic character sheet display
+- [x] Introduction page (First time user page)
 
 Misc:
 - [x] Get embeddings done for Class, Race and Spells
@@ -117,6 +116,7 @@ Features:
 - [ ] Character revision system
 - [ ] Semi-optimal stat assignment algorithm
 - [ ] Character comparison view
+- [ ] Basic character sheet display
 
 #### Delivered
 
@@ -135,7 +135,6 @@ Rubric items:
 - [ ] Error handling for API requests and render errors
 
 Features:
-- [ ] Discord integration for sharing character sheets
 - [ ] Audit log for character actions
 - [ ] Character gallery (view all characters)
 
@@ -152,9 +151,10 @@ Features:
 #### Estimates:
 
 Rubric items:
-- [ ] 4+ generic layout components (character card, stats panel, spell list, navigation)
+- [x] 4+ generic layout components (character card, stats panel, spell list, navigation)
 
 Features:
+- [ ] Discord integration for sharing character sheets
 - [ ] Character customization
 - [ ] Spell management and filtering
 - [ ] Character export/import functionality
