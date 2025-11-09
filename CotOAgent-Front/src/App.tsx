@@ -1,38 +1,13 @@
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect } from 'react'
 import './App.css'
 import keycloak from './keycloak'
 
 function App() {
-  const [authenticated, setAuthenticated] = useState(false)
-  const [loading, setLoading] = useState(true)
-  const initAttempted = useRef(false)
+  const [authenticated, setAuthenticated] = useState(keycloak.authenticated || false)
 
   useEffect(() => {
-    // Prevent multiple initialization attempts
-    if (initAttempted.current) {
-      console.log('[App] Keycloak initialization already attempted, skipping')
-      return
-    }
-
-    initAttempted.current = true
-
-    console.log('[App] Initializing Keycloak...')
-    keycloak
-      .init({ 
-        onLoad: 'check-sso',
-        checkLoginIframe: false,
-        messageReceiveTimeout: 10000,
-        enableLogging: true
-      })
-      .then((auth) => {
-        console.log('[App] Keycloak initialization successful, authenticated:', auth)
-        setAuthenticated(auth)
-        setLoading(false)
-      })
-      .catch((error) => {
-        console.error('[App] Keycloak initialization failed:', error)
-        setLoading(false)
-      })
+    console.log('[App] Keycloak authenticated:', keycloak.authenticated)
+    setAuthenticated(keycloak.authenticated || false)
   }, [])
 
   const handleLogin = () => {
@@ -43,10 +18,6 @@ function App() {
   const handleLogout = () => {
     console.log('[App] Logout button clicked')
     keycloak.logout()
-  }
-
-  if (loading) {
-    return <div className="loading">Loading...</div>
   }
 
   return (
