@@ -1,17 +1,22 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import './App.css'
 import keycloak from './keycloak'
 
 function App() {
   const [authenticated, setAuthenticated] = useState(false)
   const [loading, setLoading] = useState(true)
-  const [keycloakInitialized, setKeycloakInitialized] = useState(false)
+  const initAttempted = useRef(false)
 
   useEffect(() => {
-    if (keycloakInitialized) {
+    // Prevent multiple initialization attempts
+    if (initAttempted.current) {
+      console.log('[App] Keycloak initialization already attempted, skipping')
       return
     }
 
+    initAttempted.current = true
+
+    console.log('[App] Initializing Keycloak...')
     keycloak
       .init({ 
         onLoad: 'check-sso',
@@ -20,23 +25,23 @@ function App() {
         enableLogging: true
       })
       .then((auth) => {
+        console.log('[App] Keycloak initialization successful, authenticated:', auth)
         setAuthenticated(auth)
         setLoading(false)
-        setKeycloakInitialized(true)
       })
       .catch((error) => {
-        console.error('Keycloak initialization failed:', error)
+        console.error('[App] Keycloak initialization failed:', error)
         setLoading(false)
       })
-  }, [keycloakInitialized])
+  }, [])
 
   const handleLogin = () => {
-    if (!keycloakInitialized) return
+    console.log('[App] Login button clicked')
     keycloak.login()
   }
 
   const handleLogout = () => {
-    if (!keycloakInitialized) return
+    console.log('[App] Logout button clicked')
     keycloak.logout()
   }
 
@@ -61,8 +66,8 @@ function App() {
               <p className="welcome-message">
                 Welcome, <span className="username">{keycloak.tokenParsed?.preferred_username || 'Adventurer'}</span>!
               </p>
-              <a href="/character-sheet" className="nav-link">
-                <button className="btn btn-primary">Start Character Creation</button>
+              <a href="/about" className="nav-link">
+                <button className="btn btn-primary">How to get started</button>
               </a>
               <button className="btn btn-secondary" onClick={handleLogout}>
                 Logout
