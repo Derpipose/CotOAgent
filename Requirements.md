@@ -97,9 +97,14 @@ Misc:
 #### Delivered
 
 Rubric Items:
-
+I got an introduction page done,
+network calls for the app to scrape my json
+started on protected routes for auth users, right now just admin
+I got the admin page working and hidden from non admin accounts
 
 Features:
+I got an introduction page up and going
+Also got embeddings done for the races, classes and spells
 
 ---
 ### Checkpoint 5: `Nov. 12, 2025`
