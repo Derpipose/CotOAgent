@@ -1,9 +1,30 @@
 import type { Request, Response, Router as ExpressRouter } from 'express';
 import { Router } from 'express';
-import { fetchAndValidate } from './utils/database.js';
-import { RaceSchema } from './utils/schemas.js';
+import { fetchAndValidate } from '../utils/database.js';
+import { RaceSchema } from '../utils/schemas.js';
 
 const router: ExpressRouter = Router();
+
+/**
+ * GET /api/races/names
+ * Returns all race names from the database as a simple array of strings
+ */
+router.get('/races/names', async (req: Request, res: Response): Promise<void> => {
+  try {
+    const pool = (await import('../utils/database.js')).pool;
+    const dbClient = await pool.connect();
+    const result = await dbClient.query('SELECT DISTINCT name FROM races ORDER BY name');
+    dbClient.release();
+    const raceNames = result.rows.map((row: Record<string, unknown>) => row.name as string);
+    res.json(raceNames);
+  } catch (error) {
+    console.error('[races] Error reading race names:', error);
+    res.status(500).json({ 
+      error: 'Failed to fetch race names',
+      details: error instanceof Error ? error.message : 'Unknown error'
+    });
+  }
+});
 
 /**
  * GET /api/races

@@ -1,7 +1,7 @@
 import type { Request, Response, Router as ExpressRouter } from 'express';
 import { Router } from 'express';
-import { fetchAndValidate } from './utils/database.js';
-import { SpellSchema } from './utils/schemas.js';
+import { fetchAndValidate } from '../utils/database.js';
+import { SpellSchema } from '../utils/schemas.js';
 
 const router: ExpressRouter = Router();
 

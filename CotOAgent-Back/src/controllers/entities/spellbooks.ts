@@ -1,6 +1,6 @@
 import type { Request, Response, Router as ExpressRouter } from 'express';
 import { Router } from 'express';
-import { pool } from './utils/database.js';
+import { pool } from '../utils/database.js';
 
 const router: ExpressRouter = Router();
 

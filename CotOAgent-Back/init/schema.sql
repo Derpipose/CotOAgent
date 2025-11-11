@@ -46,6 +46,23 @@ CREATE TABLE IF NOT EXISTS spells (
     UNIQUE(spell_name)
 );
 
+CREATE TABLE IF NOT EXISTS characters (
+    id SERIAL PRIMARY KEY,
+    user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    name VARCHAR(255) NOT NULL,
+    class_id INTEGER REFERENCES classes(id),
+    race_id INTEGER REFERENCES races(id),
+    strength INTEGER,
+    dexterity INTEGER,
+    constitution INTEGER,
+    intelligence INTEGER,
+    wisdom INTEGER,
+    charisma INTEGER,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    last_modified TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    revised BOOLEAN DEFAULT FALSE
+);
+
 
 INSERT INTO users (user_email) VALUES ('derpipose@gmail.com') 
 ON CONFLICT (user_email) DO NOTHING;

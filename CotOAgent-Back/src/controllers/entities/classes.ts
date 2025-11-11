@@ -1,9 +1,30 @@
 import type { Request, Response, Router as ExpressRouter } from 'express';
 import { Router } from 'express';
-import { fetchAndValidate } from './utils/database.js';
-import { BasicClassSchema } from './utils/schemas.js';
+import { fetchAndValidate } from '../utils/database.js';
+import { BasicClassSchema } from '../utils/schemas.js';
 
 const router: ExpressRouter = Router();
+
+/**
+ * GET /api/classes/names
+ * Returns all class names from the database as a simple array of strings
+ */
+router.get('/classes/names', async (req: Request, res: Response): Promise<void> => {
+  try {
+    const pool = (await import('../utils/database.js')).pool;
+    const dbClient = await pool.connect();
+    const result = await dbClient.query('SELECT DISTINCT class_name FROM classes ORDER BY class_name');
+    dbClient.release();
+    const classNames = result.rows.map((row: Record<string, unknown>) => row.class_name as string);
+    res.json(classNames);
+  } catch (error) {
+    console.error('[classes] Error reading class names:', error);
+    res.status(500).json({ 
+      error: 'Failed to fetch class names',
+      details: error instanceof Error ? error.message : 'Unknown error'
+    });
+  }
+});
 
 /**
  * GET /api/classes
