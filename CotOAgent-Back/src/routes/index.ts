@@ -1,10 +1,10 @@
 import type { Application } from 'express';
 import embeddingsRouter from '../controllers/embeddings.js';
 import databaseRouter from '../controllers/database/database.js';
-import classesRouter from '../controllers/classes.js';
-import racesRouter from '../controllers/races.js';
-import spellsRouter from '../controllers/spells.js';
-import spellbooksRouter from '../controllers/spellbooks.js';
+import classesRouter from '../controllers/entities/classes.js';
+import racesRouter from '../controllers/entities/races.js';
+import spellsRouter from '../controllers/entities/spells.js';
+import spellbooksRouter from '../controllers/entities/spellbooks.js';
 import authRouter from '../controllers/auth.js';
 
 export function setupRoutes(app: Application): void {
