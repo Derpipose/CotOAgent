@@ -143,3 +143,70 @@
   border-color: #5d4e37;
   box-shadow: 0 0 5px rgba(93, 78, 55, 0.3);
 }
+
+.button-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 20px;
+  gap: 10px;
+}
+
+.save-button {
+  background: linear-gradient(135deg, #92a9f7 0%, #b086e0 100%);
+  color: #f5f3f0;
+  border: 2px solid #5d4e37;
+  padding: 12px 30px;
+  font-size: 1rem;
+  font-weight: bold;
+  border-radius: 4px;
+  cursor: pointer;
+  font-family: 'Georgia', serif;
+  transition: all 0.3s ease;
+}
+
+.save-button:hover {
+  background: linear-gradient(135deg, #7a92d9 0%, #9968c8 100%);
+  box-shadow: 0 4px 8px rgba(93, 78, 55, 0.3);
+  transform: translateY(-2px);
+}
+
+.save-button:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 4px rgba(93, 78, 55, 0.2);
+}
+
+.save-message {
+  color: #2d8659;
+  background-color: #d4f1e4;
+  border: 2px solid #2d8659;
+  padding: 10px 15px;
+  border-radius: 4px;
+  font-weight: bold;
+  animation: fadeInOut 3s ease-in-out;
+}
+
+.save-message.error {
+  color: #a83232;
+  background-color: #f5d4d4;
+  border-color: #a83232;
+}
+
+@keyframes fadeInOut {
+  0% {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  10% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  90% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+}

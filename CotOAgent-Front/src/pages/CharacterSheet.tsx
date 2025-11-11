@@ -20,6 +20,8 @@ export default function CharacterSheet() {
   const [classes, setClasses] = useState<string[]>([]);
   const [races, setRaces] = useState<string[]>([]);
   const [loading, setLoading] = useState(true);
+  const [saveMessage, setSaveMessage] = useState<string>('');
+  const [isError, setIsError] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -74,6 +76,42 @@ export default function CharacterSheet() {
         [statName]: value,
       },
     });
+  };
+
+  const saveCharacterToLocalStorage = () => {
+    // Validate that required fields are filled in
+    if (!character.Name || character.Name.trim() === '') {
+      setSaveMessage('Please enter a character name');
+      setIsError(true);
+      setTimeout(() => setSaveMessage(''), 3000);
+      return;
+    }
+
+    if (!character.Class) {
+      setSaveMessage('Please select a character class');
+      setIsError(true);
+      setTimeout(() => setSaveMessage(''), 3000);
+      return;
+    }
+
+    if (!character.Race) {
+      setSaveMessage('Please select a character race');
+      setIsError(true);
+      setTimeout(() => setSaveMessage(''), 3000);
+      return;
+    }
+
+    try {
+      localStorage.setItem('character', JSON.stringify(character));
+      setSaveMessage('Character saved successfully!');
+      setIsError(false);
+      setTimeout(() => setSaveMessage(''), 3000);
+    } catch (error) {
+      console.error('Error saving character to local storage:', error);
+      setSaveMessage('Error saving character');
+      setIsError(true);
+      setTimeout(() => setSaveMessage(''), 3000);
+    }
   };
 
   return (
@@ -196,6 +234,16 @@ export default function CharacterSheet() {
               />
             </div>
           </div>
+        </div>
+
+        <div className="button-section">
+          <button 
+            onClick={saveCharacterToLocalStorage}
+            className="save-button"
+          >
+            Save Character Locally
+          </button>
+          {saveMessage && <div className={`save-message ${isError ? 'error' : ''}`}>{saveMessage}</div>}
         </div>
       </div>
     </div>

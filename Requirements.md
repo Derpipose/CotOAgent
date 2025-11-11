@@ -113,15 +113,13 @@ Also got embeddings done for the races, classes and spells
 
 Rubric items:
 - [ ] Client side state stores (character state management)
-- [ ] 3+ generic form input components (stat selector, dropdown, text input)
 - [ ] Local storage implementation (save character drafts)
+- [x] 3+ generic form input components (stat selector, dropdown, text input)
 
 Features:
+- [x] Basic character sheet display
 - [ ] Character creation workflow with stat rolling
-- [ ] Character revision system
-- [ ] Semi-optimal stat assignment algorithm
-- [ ] Character comparison view
-- [ ] Basic character sheet display
+- [ ] Discord integration for sharing character sheets
 
 #### Delivered
 
@@ -159,7 +157,9 @@ Rubric items:
 - [x] 4+ generic layout components (character card, stats panel, spell list, navigation)
 
 Features:
-- [ ] Discord integration for sharing character sheets
+- [ ] Character revision system
+- [ ] Semi-optimal stat assignment algorithm
+- [ ] Character comparison view
 - [ ] Character customization
 - [ ] Spell management and filtering
 - [ ] Character export/import functionality
