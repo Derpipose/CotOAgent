@@ -1,6 +1,6 @@
 export class SpellDTO {
   SpellName!: string;
-  ManaCost!: number;
+  ManaCost!: string;
   HitDie!: string;
   Description!: string;
 }

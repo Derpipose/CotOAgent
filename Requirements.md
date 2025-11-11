@@ -112,8 +112,8 @@ Also got embeddings done for the races, classes and spells
 #### Estimates:
 
 Rubric items:
-- [ ] Client side state stores (character state management)
-- [ ] Local storage implementation (save character drafts)
+- [x] Client side state stores (Auth state management)
+- [x] Local storage implementation (save character drafts)
 - [x] 3+ generic form input components (stat selector, dropdown, text input)
 
 Features:
@@ -162,7 +162,7 @@ Features:
 - [ ] Character comparison view
 - [ ] Character customization
 - [ ] Spell management and filtering
-- [ ] Character export/import functionality
+- [ ] Character save/load functionality
 
 #### Delivered
 
