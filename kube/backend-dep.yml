@@ -28,5 +28,7 @@ spec:
           value: $AI_TOKEN
         - name: JWK_URI
           value: $JWK_URI
+        - name: DISCORD_WEBHOOK_URL
+          value: $DISCORD_WEBHOOK_URL
         ports:
         - containerPort: 4000
