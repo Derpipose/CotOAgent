@@ -118,7 +118,6 @@ Rubric items:
 
 Features:
 - [x] Basic character sheet display
-- [ ] Character creation workflow with stat rolling
 - [ ] Discord integration for sharing character sheets
 
 #### Delivered
@@ -136,6 +135,7 @@ Features:
 Rubric items:
 - [ ] Toasts/global notifications for character actions
 - [ ] Error handling for API requests and render errors
+- [ ] Character creation workflow with stat rolling
 
 Features:
 - [ ] Audit log for character actions

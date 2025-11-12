@@ -1,8 +1,11 @@
 import { useState, useEffect } from 'react';
 import type { CharacterDto } from '../DTOS/Character.Dto';
+import { useAuth } from '../context/useAuth';
 import '../css/charactersheet.css';
 
 export default function CharacterSheet() {
+  const { userEmail } = useAuth();
+  
   const [character, setCharacter] = useState<CharacterDto>({
     Name: '',
     Class: '',
@@ -22,6 +25,8 @@ export default function CharacterSheet() {
   const [loading, setLoading] = useState(true);
   const [saveMessage, setSaveMessage] = useState<string>('');
   const [isError, setIsError] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const [, setCharacterId] = useState<number | null>(null);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -111,6 +116,103 @@ export default function CharacterSheet() {
       setSaveMessage('Error saving character');
       setIsError(true);
       setTimeout(() => setSaveMessage(''), 3000);
+    }
+  };
+
+  const submitCharacterForApproval = async () => {
+    // Validate required fields
+    if (!character.Name || character.Name.trim() === '') {
+      setSaveMessage('Please enter a character name');
+      setIsError(true);
+      setTimeout(() => setSaveMessage(''), 3000);
+      return;
+    }
+
+    if (!character.Class) {
+      setSaveMessage('Please select a character class');
+      setIsError(true);
+      setTimeout(() => setSaveMessage(''), 3000);
+      return;
+    }
+
+    if (!character.Race) {
+      setSaveMessage('Please select a character race');
+      setIsError(true);
+      setTimeout(() => setSaveMessage(''), 3000);
+      return;
+    }
+
+    if (!userEmail) {
+      setSaveMessage('Error: Could not determine user email');
+      setIsError(true);
+      setTimeout(() => setSaveMessage(''), 3000);
+      return;
+    }
+
+    setSubmitting(true);
+    try {
+      const backendUrl = window.location.protocol === 'https:' 
+        ? `https://${window.location.hostname}/api`
+        : 'http://localhost:3000/api';
+
+      // Step 1: Save character to database
+      console.log('[CharacterSheet] Creating character...');
+      const createResponse = await fetch(`${backendUrl}/characters/create`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-user-email': userEmail,
+        },
+        body: JSON.stringify({
+          name: character.Name,
+          class: character.Class,
+          race: character.Race,
+          stats: character.Stats,
+        }),
+      });
+
+      if (!createResponse.ok) {
+        const createError = await createResponse.json();
+        throw new Error(createError.error || 'Failed to create character');
+      }
+
+      const createData = await createResponse.json();
+      const newCharacterId = createData.characterId;
+      setCharacterId(newCharacterId);
+      console.log('[CharacterSheet] Character created with ID:', newCharacterId);
+
+      // Step 2: Submit for approval
+      console.log('[CharacterSheet] Submitting for approval...');
+      const submitResponse = await fetch(`${backendUrl}/discord/submit-character`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-user-email': userEmail,
+        },
+        body: JSON.stringify({
+          characterId: newCharacterId,
+          userEmail: userEmail,
+        }),
+      });
+
+      const submitData = await submitResponse.json();
+
+      if (!submitResponse.ok) {
+        throw new Error(submitData.error || 'Failed to submit character');
+      }
+
+      setSaveMessage('Character submitted for approval! Check Discord for the submission.');
+      setIsError(false);
+      setTimeout(() => setSaveMessage(''), 5000);
+    } catch (error) {
+      console.error('Error submitting character:', error);
+      setSaveMessage(
+        error instanceof Error ? error.message : 'Error submitting character for approval'
+      );
+      setIsError(true);
+      setTimeout(() => setSaveMessage(''), 3000);
+    } finally {
+      setSubmitting(false);
     }
   };
 
@@ -242,6 +344,13 @@ export default function CharacterSheet() {
             className="save-button"
           >
             Save Character Locally
+          </button>
+          <button 
+            onClick={submitCharacterForApproval}
+            className="submit-button"
+            disabled={submitting}
+          >
+            {submitting ? 'Submitting...' : 'Submit for Approval'}
           </button>
           {saveMessage && <div className={`save-message ${isError ? 'error' : ''}`}>{saveMessage}</div>}
         </div>

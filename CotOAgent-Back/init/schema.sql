@@ -60,6 +60,8 @@ CREATE TABLE IF NOT EXISTS characters (
     charisma INTEGER,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     last_modified TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    feedback TEXT,
+    approval_status VARCHAR(50) DEFAULT 'pending',
     revised BOOLEAN DEFAULT FALSE
 );
 
