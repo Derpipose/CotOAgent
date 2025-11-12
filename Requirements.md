@@ -118,7 +118,7 @@ Rubric items:
 
 Features:
 - [x] Basic character sheet display
-- [ ] Discord integration for sharing character sheets
+- [x] Discord integration for sharing character sheets
 
 #### Delivered
 
