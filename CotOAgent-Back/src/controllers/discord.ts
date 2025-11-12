@@ -14,6 +14,22 @@ interface CharacterSubmissionPayload {
   userEmail: string;
 }
 
+interface CharacterRecord {
+  id: number;
+  user_id: number;
+  name: string;
+  class_id: number | null;
+  race_id: number | null;
+  strength: number;
+  dexterity: number;
+  constitution: number;
+  intelligence: number;
+  wisdom: number;
+  charisma: number;
+  class_name?: string;
+  race_name?: string;
+}
+
 /**
  * Send a character to Discord for approval
  * POST /api/discord/submit-character
@@ -113,7 +129,7 @@ discordRouter.post('/submit-character', async (req: Request, res: Response) => {
 /**
  * Format character data into a Discord embed message
  */
-function formatCharacterForDiscord(character: any, userEmail: string) {
+function formatCharacterForDiscord(character: CharacterRecord, userEmail: string) {
   const stats = {
     Strength: character.strength,
     Dexterity: character.dexterity,

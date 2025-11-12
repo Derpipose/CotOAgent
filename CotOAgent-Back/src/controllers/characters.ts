@@ -48,7 +48,7 @@ charactersRouter.post('/create', async (req: Request, res: Response) => {
 
     try {
       // Get or create user
-      let userResult = await client.query('SELECT id FROM users WHERE LOWER(user_email) = $1', [
+      const userResult = await client.query('SELECT id FROM users WHERE LOWER(user_email) = $1', [
         userEmail,
       ]);
 
