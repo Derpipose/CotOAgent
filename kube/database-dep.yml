@@ -40,19 +40,28 @@ spec:
           value: "cotoagentpassword"
         - name: POSTGRES_DB
           value: "cotoagentdb"
+        startupProbe:
+          exec:
+            command:
+            - /bin/sh
+            - -c
+            - pg_isready -U cotoagentuser -d cotoagentdb
+          initialDelaySeconds: 10
+          periodSeconds: 5
+          failureThreshold: 30
         livenessProbe:
           exec:
             command:
             - /bin/sh
             - -c
-            - pg_isready -U cotoagentuser
-          initialDelaySeconds: 30
+            - pg_isready -U cotoagentuser -d cotoagentdb
+          initialDelaySeconds: 60
           periodSeconds: 10
         readinessProbe:
           exec:
             command:
             - /bin/sh
             - -c
-            - pg_isready -U cotoagentuser
-          initialDelaySeconds: 10
+            - pg_isready -U cotoagentuser -d cotoagentdb
+          initialDelaySeconds: 30
           periodSeconds: 5

@@ -8,16 +8,19 @@ data:
     -- Try to create pgvector extension, but don't fail if it's not available
     CREATE EXTENSION IF NOT EXISTS vector;
 
+    -- Create users table
     CREATE TABLE IF NOT EXISTS users (
         id SERIAL PRIMARY KEY,
         user_email VARCHAR(50) UNIQUE NOT NULL
     );
 
+    -- Create admin_users table
     CREATE TABLE IF NOT EXISTS admin_users (
         id SERIAL PRIMARY KEY,
         admin_email VARCHAR(50) UNIQUE NOT NULL
     );
 
+    -- Create classes table
     CREATE TABLE IF NOT EXISTS classes (
         id SERIAL PRIMARY KEY,
         classification VARCHAR(255) NOT NULL,
@@ -27,6 +30,7 @@ data:
         UNIQUE(classification, class_name)
     );
 
+    -- Create races table
     CREATE TABLE IF NOT EXISTS races (
         id SERIAL PRIMARY KEY,
         campaign VARCHAR(255) NOT NULL,
@@ -36,6 +40,7 @@ data:
         UNIQUE(campaign, name)
     );
 
+    -- Create spellbooks table
     CREATE TABLE IF NOT EXISTS spellbooks (
         id SERIAL PRIMARY KEY,
         spell_branch VARCHAR(255) NOT NULL,
@@ -43,6 +48,7 @@ data:
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     );
 
+    -- Create spells table
     CREATE TABLE IF NOT EXISTS spells (
         id SERIAL PRIMARY KEY,
         spellbook_id INTEGER REFERENCES spellbooks(id) ON DELETE CASCADE,
@@ -54,6 +60,7 @@ data:
         UNIQUE(spell_name)
     );
 
+    -- Create characters table for Discord integration
     CREATE TABLE IF NOT EXISTS characters (
         id SERIAL PRIMARY KEY,
         user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
@@ -73,8 +80,10 @@ data:
         revised BOOLEAN DEFAULT FALSE
     );
 
+    -- Insert default admin user
     INSERT INTO admin_users (admin_email) VALUES ('derpipose@gmail.com') 
     ON CONFLICT (admin_email) DO NOTHING;
 
+    -- Insert default user
     INSERT INTO users (user_email) VALUES ('derpipose@gmail.com') 
     ON CONFLICT (user_email) DO NOTHING;
