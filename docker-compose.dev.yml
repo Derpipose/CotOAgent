@@ -33,6 +33,7 @@ services:
       - AIToken=${AIToken}
       - EMBEDDING_URL=${EMBEDDING_URL}
       - EMBEDDING_MODEL=${EMBEDDING_MODEL}
+      - DISCORD_WEBHOOK_URL=${DISCORD_WEBHOOK_URL}
     networks:
       - cotoagent-network
     depends_on:
