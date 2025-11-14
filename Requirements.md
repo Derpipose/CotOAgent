@@ -123,9 +123,14 @@ Features:
 #### Delivered
 
 Rubric Items:
-
+I got the client side to store auth state
+Local storage saves a character draft, will probably up it later
+I have several generic input components for the stat selector, drop downs for
+races and classes and text input fields for search bars and even names
 
 Features:
+I have the basic character sheet displaying!
+I also have it sending to discord!
 
 ---
 ### Checkpoint 6: `Nov. 15, 2025`
@@ -138,8 +143,8 @@ Rubric items:
 - [ ] Character creation workflow with stat rolling
 
 Features:
-- [ ] Audit log for character actions
 - [ ] Character gallery (view all characters)
+- [ ] Character revision system
 
 #### Delivered
 
@@ -157,12 +162,12 @@ Rubric items:
 - [x] 4+ generic layout components (character card, stats panel, spell list, navigation)
 
 Features:
-- [ ] Character revision system
 - [ ] Semi-optimal stat assignment algorithm
 - [ ] Character comparison view
 - [ ] Character customization
 - [ ] Spell management and filtering
 - [ ] Character save/load functionality
+- [ ] Audit log for character actions
 
 #### Delivered
 
