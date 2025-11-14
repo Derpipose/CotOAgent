@@ -320,3 +320,146 @@
   text-align: center;
   font-weight: 500;
 }
+
+/* Test Section Styles */
+.test-section {
+  margin: 3rem 0;
+  padding: 2rem;
+  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+  border-radius: 1rem;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.07);
+}
+
+.test-section h2 {
+  margin: 0 0 0.5rem 0;
+  color: #333;
+  font-size: 1.8rem;
+  text-align: center;
+}
+
+.test-subtitle {
+  text-align: center;
+  color: #666;
+  font-size: 0.95rem;
+  margin-bottom: 1.5rem;
+  margin-top: 0;
+}
+
+.test-buttons-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 1rem;
+  padding: 1rem;
+}
+
+.test-button {
+  padding: 0.8rem 1.2rem;
+  font-size: 0.95rem;
+  font-weight: 600;
+  border: 2px solid transparent;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  white-space: nowrap;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.test-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+.test-button:active {
+  transform: translateY(0);
+}
+
+.success-test {
+  background-color: #10b981;
+  color: white;
+  border-color: #059669;
+}
+
+.success-test:hover {
+  background-color: #059669;
+  border-color: #047857;
+}
+
+.error-test {
+  background-color: #ef4444;
+  color: white;
+  border-color: #dc2626;
+}
+
+.error-test:hover {
+  background-color: #dc2626;
+  border-color: #b91c1c;
+}
+
+.warning-test {
+  background-color: #f59e0b;
+  color: white;
+  border-color: #d97706;
+}
+
+.warning-test:hover {
+  background-color: #d97706;
+  border-color: #b45309;
+}
+
+.info-test {
+  background-color: #3b82f6;
+  color: white;
+  border-color: #2563eb;
+}
+
+.info-test:hover {
+  background-color: #2563eb;
+  border-color: #1d4ed8;
+}
+
+.persistent-test {
+  background-color: #8b5cf6;
+  color: white;
+  border-color: #7c3aed;
+}
+
+.persistent-test:hover {
+  background-color: #7c3aed;
+  border-color: #6d28d9;
+}
+
+.error-boundary-test {
+  background-color: #ec4899;
+  color: white;
+  border-color: #db2777;
+}
+
+.error-boundary-test:hover {
+  background-color: #db2777;
+  border-color: #be185d;
+}
+
+@media (max-width: 768px) {
+  .test-buttons-container {
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 0.75rem;
+    padding: 0.75rem;
+  }
+
+  .test-button {
+    padding: 0.6rem 0.8rem;
+    font-size: 0.85rem;
+  }
+
+  .test-section {
+    padding: 1.5rem;
+    margin: 2rem 0;
+  }
+
+  .test-section h2 {
+    font-size: 1.5rem;
+  }
+}
