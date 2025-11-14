@@ -34,7 +34,7 @@ const parseErrorResponse = async (response: Response): Promise<string> => {
 /**
  * Enhanced fetch wrapper with error handling
  */
-export const apiCall = async <T = any>(
+export const apiCall = async <T = Record<string, unknown>>(
   url: string,
   options: RequestInit = {}
 ): Promise<T> => {

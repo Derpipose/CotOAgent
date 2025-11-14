@@ -22,7 +22,8 @@ export const errorHandler = (
   err: Error | AppError,
   req: Request,
   res: Response,
-  next: NextFunction
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  _next: NextFunction
 ) => {
   let statusCode = 500;
   let message = 'Internal Server Error';
@@ -70,7 +71,7 @@ export const errorHandler = (
  * Async error handler wrapper for route handlers
  * Wraps async route handlers to catch errors and pass them to the error handler
  */
-export const asyncHandler = (fn: Function) => {
+export const asyncHandler = (fn: (req: Request, res: Response, next: NextFunction) => Promise<void>) => {
   return (req: Request, res: Response, next: NextFunction) => {
     Promise.resolve(fn(req, res, next)).catch(next);
   };
@@ -79,6 +80,7 @@ export const asyncHandler = (fn: Function) => {
 /**
  * Not Found error handler - should be placed after all other routes
  */
-export const notFoundHandler = (req: Request, res: Response) => {
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+export const notFoundHandler = (req: Request, _res: Response) => {
   throw new AppError(404, `Route ${req.originalUrl} not found`, true);
 };
