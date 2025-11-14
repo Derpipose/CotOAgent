@@ -138,8 +138,8 @@ I also have it sending to discord!
 #### Estimates:
 
 Rubric items:
-- [ ] Toasts/global notifications for character actions
-- [ ] Error handling for API requests and render errors
+- [x] Toasts/global notifications for character actions
+- [x] Error handling for API requests and render errors
 - [ ] Character creation workflow with stat rolling
 
 Features:

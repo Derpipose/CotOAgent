@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { useToast } from '../context/ToastContext'
 import '../css/admin.css'
 
 interface ImportResult {
@@ -34,6 +35,7 @@ const getErrorMessage = (err: unknown): string => {
 }
 
 export default function Admin() {
+  const { addToast } = useToast()
   const [loading, setLoading] = useState<'races' | 'classes' | 'spells' | null>(null)
   const [embeddingLoading, setEmbeddingLoading] = useState<'races' | 'classes' | 'spells' | null>(null)
   const [embeddingProgress, setEmbeddingProgress] = useState<{
@@ -52,6 +54,7 @@ export default function Admin() {
     spells?: EmbeddingResult
   }>({})
   const [error, setError] = useState<string | null>(null)
+  const [shouldThrowError, setShouldThrowError] = useState(false)
 
   const handleImport = async (type: 'races' | 'classes' | 'spells') => {
     setLoading(type)
@@ -213,6 +216,36 @@ export default function Admin() {
     }
   }
 
+  // Test error functions
+  const testSuccessToast = () => {
+    addToast('This is a success message! Everything is working great.', 'success')
+  }
+
+  const testErrorToast = () => {
+    addToast('This is an error message. Something went wrong!', 'error')
+  }
+
+  const testWarningToast = () => {
+    addToast('This is a warning message. Please be careful!', 'warning')
+  }
+
+  const testInfoToast = () => {
+    addToast('This is an info message. Just FYI!', 'info')
+  }
+
+  const testPersistentToast = () => {
+    addToast('This toast will stick around until you dismiss it. Click the X to close.', 'info', 0)
+  }
+
+  const testThrowError = () => {
+    setShouldThrowError(true)
+  }
+
+  // This will cause a render error caught by Error Boundary
+  if (shouldThrowError) {
+    throw new Error('This is a test error for the Error Boundary!')
+  }
+
   return (
     <div className="admin-container">
       <h1>Admin Panel</h1>
@@ -343,6 +376,32 @@ export default function Admin() {
           <strong>Error:</strong> {error}
         </div>
       )}
+
+      <div className="test-section">
+        <h2>🧪 Error Handling Tests</h2>
+        <p className="test-subtitle">Test the error handling and toast notification system</p>
+        
+        <div className="test-buttons-container">
+          <button className="test-button success-test" onClick={testSuccessToast}>
+            ✅ Test Success Toast
+          </button>
+          <button className="test-button error-test" onClick={testErrorToast}>
+            ❌ Test Error Toast
+          </button>
+          <button className="test-button warning-test" onClick={testWarningToast}>
+            ⚠️ Test Warning Toast
+          </button>
+          <button className="test-button info-test" onClick={testInfoToast}>
+            ℹ️ Test Info Toast
+          </button>
+          <button className="test-button persistent-test" onClick={testPersistentToast}>
+            📌 Test Persistent Toast
+          </button>
+          <button className="test-button error-boundary-test" onClick={testThrowError}>
+            💥 Test Error Boundary
+          </button>
+        </div>
+      </div>
 
       <div className="info-section">
         <h3>Import Information</h3>

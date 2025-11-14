@@ -5,6 +5,7 @@ import helmet from 'helmet';
 import morgan from 'morgan';
 import dotenv from 'dotenv';
 import { setupRoutes } from './routes/index.js';
+import { errorHandler, notFoundHandler } from './middleware/errorHandler.js';
 
 // Load environment variables
 dotenv.config();
@@ -50,16 +51,19 @@ app.get('/api', (req, res) => {
 // Setup additional routes
 setupRoutes(app);
 
-// 404 handler
+// 404 handler - must be before error handler
 app.use((req: Request, res: Response) => {
-  res.status(404).json({ error: 'Route not found' });
+  res.status(404).json({ 
+    error: {
+      message: `Route ${req.originalUrl} not found`,
+      statusCode: 404,
+      timestamp: new Date().toISOString(),
+    }
+  });
 });
 
-// Error handler
-app.use((err: Error, req: Request, res: Response) => {
-  console.error(err.stack);
-  res.status(500).json({ error: 'Something went wrong!' });
-});
+// Global error handler - must be last
+app.use(errorHandler);
 
 app.listen(PORT, () => {
   console.log(`🚀 Server running on port ${PORT}`);
