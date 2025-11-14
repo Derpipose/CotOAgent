@@ -127,8 +127,123 @@ discordRouter.post('/submit-character', async (req: Request, res: Response) => {
 });
 
 /**
- * Format character data into a Discord embed message
+ * Handle Discord interactions (button clicks)
+ * POST /api/discord/interaction
+ * Receives webhooks from Discord when users click buttons
  */
+discordRouter.post('/interaction', async (req: Request, res: Response) => {
+  try {
+    const interaction = req.body;
+
+    // Discord sends a PING request to verify the endpoint
+    if (interaction.type === 1) {
+      return res.status(200).json({ type: 1 });
+    }
+
+    // Handle button interactions
+    if (interaction.type === 3) {
+      const customId = interaction.data.custom_id;
+      const userId = interaction.member.user.id;
+
+      console.log(`[Discord Interaction] User ${userId} clicked button: ${customId}`);
+
+      // Extract action and character ID from custom_id (e.g., "approve_123" or "revision_123")
+      const [action, characterIdStr] = customId.split('_');
+      const characterId = parseInt(characterIdStr, 10);
+
+      if (action === 'approve') {
+        // Update character status to approved
+        const client = await pool.connect();
+        try {
+          await client.query(
+            'UPDATE characters SET approval_status = $1, last_modified = CURRENT_TIMESTAMP WHERE id = $2',
+            ['approved', characterId]
+          );
+
+          // Respond to Discord with success message
+          return res.status(200).json({
+            type: 4, // CHANNEL_MESSAGE_WITH_SOURCE
+            data: {
+              content: `✅ Character #${characterId} has been **APPROVED**!`,
+              flags: 64, // Ephemeral (only visible to the user who clicked)
+            },
+          });
+        } finally {
+          client.release();
+        }
+      } else if (action === 'revision') {
+        // Show a modal for admins to enter revision feedback
+        return res.status(200).json({
+          type: 9, // MODAL
+          data: {
+            custom_id: `revision_submit_${characterId}`,
+            title: 'Request Character Revision',
+            components: [
+              {
+                type: 1, // Action row
+                components: [
+                  {
+                    type: 4, // Text input
+                    custom_id: 'revision_notes',
+                    label: 'Revision Notes',
+                    style: 2, // Paragraph
+                    placeholder: 'Describe what needs to be revised...',
+                    required: true,
+                    max_length: 500,
+                  },
+                ],
+              },
+            ],
+          },
+        });
+      }
+    }
+
+    // Handle modal submission
+    if (interaction.type === 5) {
+      const customId = interaction.data.custom_id;
+
+      if (customId.startsWith('revision_submit_')) {
+        const characterIdStr = customId.replace('revision_submit_', '');
+        const characterId = parseInt(characterIdStr, 10);
+
+        // Extract feedback from modal submission
+        const revisionNotes = interaction.data.components[0].components[0].value;
+
+        const client = await pool.connect();
+        try {
+          // Update character with revision feedback
+          await client.query(
+            'UPDATE characters SET approval_status = $1, feedback = $2, last_modified = CURRENT_TIMESTAMP WHERE id = $3',
+            ['revision_requested', revisionNotes, characterId]
+          );
+
+          // Respond to Discord with success message
+          return res.status(200).json({
+            type: 4, // CHANNEL_MESSAGE_WITH_SOURCE
+            data: {
+              content: `📝 Revision requested for Character #${characterId}. Feedback has been recorded.`,
+              flags: 64, // Ephemeral
+            },
+          });
+        } finally {
+          client.release();
+        }
+      }
+    }
+
+    // Default response
+    return res.status(200).json({ type: 4, data: { content: 'Unknown interaction' } });
+  } catch (error) {
+    console.error('[Discord Interaction Handler] Error:', error);
+    return res.status(500).json({
+      error: 'Failed to process Discord interaction',
+      details: error instanceof Error ? error.message : 'Unknown error',
+    });
+  }
+});
+
+
 function formatCharacterForDiscord(character: CharacterRecord, userEmail: string) {
   const stats = {
     Strength: character.strength,
@@ -143,7 +258,7 @@ function formatCharacterForDiscord(character: CharacterRecord, userEmail: string
     .map(([name, value]) => `${name}: ${value}`)
     .join('\n');
 
-  return {
+  const payload = {
     embeds: [
       {
         title: `⚔️ New Character Submission: ${character.name}`,
@@ -175,11 +290,37 @@ function formatCharacterForDiscord(character: CharacterRecord, userEmail: string
             value: character.id.toString(),
             inline: true,
           },
+          {
+            name: 'Status',
+            value: '⏳ Awaiting Review',
+            inline: true,
+          },
         ],
         timestamp: new Date().toISOString(),
       },
     ],
+    components: [
+      {
+        type: 1,
+        components: [
+          {
+            type: 2,
+            style: 3,
+            label: 'Approve',
+            custom_id: `approve_${character.id}`,
+          },
+          {
+            type: 2,
+            style: 4,
+            label: 'Request Revision',
+            custom_id: `revision_${character.id}`,
+          },
+        ],
+      },
+    ],
   };
+
+  return payload;
 }
 
 export default discordRouter;
