@@ -128,6 +128,7 @@ jobs:
         export JWK_URI=${{ vars.JWK_URI }}
         export AI_TOKEN=${{ secrets.AI_TOKEN }}
         export DISCORD_WEBHOOK_URL=${{ secrets.DISCORD_WEBHOOK_URL }}
+        export DISCORD_BOT_TOKEN=${{ secrets.DISCORD_BOT_TOKEN }}
         for FILE in "kube"/*
         do
           cat "$FILE" | envsubst | kubectl apply -f -

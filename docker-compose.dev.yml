@@ -34,6 +34,7 @@ services:
       - EMBEDDING_URL=${EMBEDDING_URL}
       - EMBEDDING_MODEL=${EMBEDDING_MODEL}
       - DISCORD_WEBHOOK_URL=${DISCORD_WEBHOOK_URL}
+      - DISCORD_BOT_TOKEN=${DISCORD_BOT_TOKEN}
     networks:
       - cotoagent-network
     depends_on:
