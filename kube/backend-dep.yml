@@ -30,5 +30,7 @@ spec:
           value: $JWK_URI
         - name: DISCORD_WEBHOOK_URL
           value: $DISCORD_WEBHOOK_URL
+        - name: DISCORD_BOT_TOKEN
+          value: $DISCORD_BOT_TOKEN
         ports:
         - containerPort: 4000
