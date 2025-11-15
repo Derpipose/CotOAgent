@@ -336,41 +336,19 @@ describe('Entity DTOs Test Suite', () => {
 });
 
 describe('discord Client Test', () => {
-  it('should have clientReady as false before login', () => {
-    const { clientReady } = require('./controllers/discordClient.js');
+  it('should have clientReady as false before login', async () => {
+    const { clientReady } = await import('./controllers/discordClient.js');
     expect(clientReady).toBe(false);
   });
-  //if recieved "!revise 1 Character needs to have strength be main focus"
-  // character.feedback needs to be updated with "Character needs to have strength be main focus"
-  it('should handle !revise command', () => {
-    const { client } = require('./controllers/discordClient.js');
-    let reviseHandled = false;
-    client.on('messageCreate', (message: any) => {
-      if (message.content.startsWith('!revise')) {
-        const args = message.content.split(' ').slice(1);
-        const characterId = parseInt(args[0]);
-        const newDetails = args.slice(1).join(' ');
 
-        if (!characterId || isNaN(characterId)) {
-          return message.reply('Please provide a valid character ID.');
-        }
+  it('should import discord client successfully', async () => {
+    const module = await import('./controllers/discordClient.js');
+    expect(module.client).toBeDefined();
+    expect(module.clientReady).toBe(false);
+  });
 
-        // Simulate handling revision logic
-        reviseHandled = true;
-        message.reply(`Requesting revision for character ID ${characterId} with details: ${newDetails}`);
-      }
-    });
-
-    // Simulate receiving the message
-    const mockMessage = {
-      content: '!revise 1 Character needs to have strength be main focus',
-      reply: (response: string) => {
-        expect(response).toBe('Requesting revision for character ID 1 with details: Character needs to have strength be main focus');
-      },
-
-    };
-
-    client.emit('messageCreate', mockMessage);
-    expect(reviseHandled).toBe(true);
+  it('should import readDiscord router successfully', async () => {
+    const module = await import('./controllers/readDiscord.js');
+    expect(module.default).toBeDefined();
   });
 });
