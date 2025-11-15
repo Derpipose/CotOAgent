@@ -9,7 +9,7 @@ const router: ExpressRouter = Router();
  * GET /api/classes/names
  * Returns all class names from the database as a simple array of strings
  */
-router.get('/classes/names', async (req: Request, res: Response): Promise<void> => {
+router.get('/names', async (req: Request, res: Response): Promise<void> => {
   try {
     const pool = (await import('../utils/database.js')).pool;
     const dbClient = await pool.connect();
@@ -30,7 +30,7 @@ router.get('/classes/names', async (req: Request, res: Response): Promise<void> 
  * GET /api/classes
  * Returns all classes from the database as an array of BasicClassDTOs
  */
-router.get('/classes', async (req: Request, res: Response): Promise<void> => {
+router.get('/', async (req: Request, res: Response): Promise<void> => {
   try {
     const data = await fetchAndValidate(
       `SELECT classification, class_name, description FROM classes ORDER BY classification, class_name`,

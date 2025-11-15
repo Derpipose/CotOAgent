@@ -140,11 +140,11 @@ I also have it sending to discord!
 Rubric items:
 - [x] Toasts/global notifications for character actions
 - [x] Error handling for API requests and render errors
-- [ ] Character creation workflow with stat rolling
+- [x] Character creation workflow with stat rolling
 
 Features:
 - [ ] Character gallery (view all characters)
-- [ ] Character revision system
+- [x] Character revision system
 
 #### Delivered
 

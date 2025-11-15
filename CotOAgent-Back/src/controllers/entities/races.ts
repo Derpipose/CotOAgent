@@ -9,7 +9,7 @@ const router: ExpressRouter = Router();
  * GET /api/races/names
  * Returns all race names from the database as a simple array of strings
  */
-router.get('/races/names', async (req: Request, res: Response): Promise<void> => {
+router.get('/names', async (req: Request, res: Response): Promise<void> => {
   try {
     const pool = (await import('../utils/database.js')).pool;
     const dbClient = await pool.connect();
@@ -30,7 +30,7 @@ router.get('/races/names', async (req: Request, res: Response): Promise<void> =>
  * GET /api/races
  * Returns all races from the database as an array of RaceDTOs
  */
-router.get('/races', async (req: Request, res: Response): Promise<void> => {
+router.get('/', async (req: Request, res: Response): Promise<void> => {
   try {
     const data = await fetchAndValidate(
       `SELECT campaign, name, description FROM races ORDER BY campaign, name`,
