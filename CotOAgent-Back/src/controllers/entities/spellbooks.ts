@@ -9,7 +9,7 @@ const router: ExpressRouter = Router();
  * Returns all spellbooks from the database grouped by SpellBranch and SpellBook,
  * as an array of objects with branch info and nested spellbooks
  */
-router.get('/spellbooks', async (req: Request, res: Response): Promise<void> => {
+router.get('/', async (req: Request, res: Response): Promise<void> => {
   const client = await pool.connect();
   try {
     console.log('[spellbooks] Fetching spellbooks from database');

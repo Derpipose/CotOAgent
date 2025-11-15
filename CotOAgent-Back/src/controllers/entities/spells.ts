@@ -9,7 +9,7 @@ const router: ExpressRouter = Router();
  * GET /api/spells
  * Returns all spells from the database as an array of SpellDTOs
  */
-router.get('/spells', async (req: Request, res: Response): Promise<void> => {
+router.get('/', async (req: Request, res: Response): Promise<void> => {
   try {
     const data = await fetchAndValidate(
       `SELECT spell_name, mana_cost, hit_die, description FROM spells ORDER BY spell_name`,

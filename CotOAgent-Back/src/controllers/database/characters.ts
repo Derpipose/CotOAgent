@@ -130,4 +130,82 @@ charactersRouter.post('/create', async (req: Request, res: Response) => {
   }
 });
 
+/**
+ * GET /api/characters
+ * Get all characters for the currently logged-in user
+ */
+charactersRouter.get('/', async (req: Request, res: Response) => {
+  try {
+    const userEmail = (req.headers['x-user-email'] as string)?.toLowerCase();
+
+    if (!userEmail) {
+      return res.status(400).json({ error: 'Missing user email in header' });
+    }
+
+    const client = await pool.connect();
+
+    try {
+      // Get or create user
+      const userResult = await client.query('SELECT id FROM users WHERE LOWER(user_email) = $1', [
+        userEmail,
+      ]);
+
+      let userId: number;
+
+      if (userResult.rows.length === 0) {
+        // Create new user if they don't exist
+        const createUserResult = await client.query(
+          'INSERT INTO users (user_email) VALUES ($1) RETURNING id',
+          [userEmail]
+        );
+        userId = createUserResult.rows[0].id;
+      } else {
+        userId = userResult.rows[0].id;
+      }
+
+      // Get all characters for this user
+      const charactersResult = await client.query(
+        `SELECT 
+          c.id,
+          c.name,
+          c.class_id,
+          c.race_id,
+          c.strength,
+          c.dexterity,
+          c.constitution,
+          c.intelligence,
+          c.wisdom,
+          c.charisma,
+          c.created_at,
+          c.last_modified,
+          c.feedback,
+          c.approval_status,
+          c.revised,
+          cl.class_name,
+          r.name as race_name
+        FROM characters c
+        LEFT JOIN classes cl ON c.class_id = cl.id
+        LEFT JOIN races r ON c.race_id = r.id
+        WHERE c.user_id = $1
+        ORDER BY c.created_at DESC`,
+        [userId]
+      );
+
+      return res.status(200).json({
+        success: true,
+        characters: charactersResult.rows,
+        count: charactersResult.rows.length,
+      });
+    } finally {
+      client.release();
+    }
+  } catch (error) {
+    console.error('[Characters Controller] Error:', error);
+    return res.status(500).json({
+      error: 'Failed to retrieve characters',
+      details: error instanceof Error ? error.message : 'Unknown error',
+    });
+  }
+});
+
 export default charactersRouter;

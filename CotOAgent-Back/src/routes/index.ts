@@ -7,7 +7,7 @@ import spellsRouter from '../controllers/entities/spells.js';
 import spellbooksRouter from '../controllers/entities/spellbooks.js';
 import authRouter from '../controllers/auth.js';
 import discordRouter from '../controllers/discord.js';
-import charactersRouter from '../controllers/characters.js';
+import charactersRouter from '../controllers/database/characters.js';
 import randomNumberRouter from '../controllers/randomNumberGenerator.js';
 
 export function setupRoutes(app: Application): void {
@@ -18,8 +18,8 @@ export function setupRoutes(app: Application): void {
   app.use('/api/discord', discordRouter);
   app.use('/api/characters', charactersRouter);
   app.use('/api/random', randomNumberRouter);
-  app.use('/api', classesRouter);
-  app.use('/api', racesRouter);
-  app.use('/api', spellsRouter);
-  app.use('/api', spellbooksRouter);
+  app.use('/api/classes', classesRouter);
+  app.use('/api/races', racesRouter);
+  app.use('/api/spells', spellsRouter);
+  app.use('/api/spellbooks', spellbooksRouter);
 }
