@@ -10,8 +10,22 @@ client.on('messageCreate', async (message: Message) => {
   // Ignore messages from the bot itself
   if (message.author.id === client.user?.id) return;
 
+  if (message.content === '!help') {
+    message.reply(
+      '**CotO Agent Bot Commands:**\n' +
+      '`!help` - Show this help message\n' +
+      '`!ping` - Check if the bot is online\n' +
+      '`!revise <characterId> <feedback>` - Request a revision for a character\n' +
+      '`!DERP` - Respond with an easter egg\n'
+    );
+  }
+
   if (message.content === '!ping') {
     message.reply('Pong!');
+  }
+
+  if (message.content === '!DERP') {
+    message.reply('Derpy DERP DERP!');
   }
 
   if (message.content.startsWith('!revise')) {
@@ -21,11 +35,11 @@ client.on('messageCreate', async (message: Message) => {
       const feedback = args.slice(1).join(' ');
 
       if (!characterId || isNaN(characterId)) {
-        return message.reply('❌ Invalid character ID. Usage: `!revise <characterId> <feedback>`');
+        return message.reply('Invalid character ID. Usage: `!revise <characterId> <feedback>`');
       }
 
       if (!feedback.trim()) {
-        return message.reply('❌ Feedback required. Usage: `!revise <characterId> <feedback>`');
+        return message.reply('Feedback required. Usage: `!revise <characterId> <feedback>`');
       }
 
       // Verify character exists
@@ -38,14 +52,14 @@ client.on('messageCreate', async (message: Message) => {
       });
 
       message.reply(
-        `✅ Character **${character.name}** (ID: ${characterId}) marked for revision.\n` +
-        `📧 Player has been notified.\n` +
-        `📝 Feedback: ${feedback}`
+        `Character **${character.name}** (ID: ${characterId}) marked for revision.\n` +
+        `Player will be notified when they next log in.\n` +
+        `Feedback: ${feedback}`
       );
     } catch (error) {
       console.error('[Discord] Revision error:', error);
       const errorMsg = error instanceof Error ? error.message : 'Unknown error';
-      message.reply(`❌ Error processing revision: ${errorMsg}`);
+      message.reply(`Error processing revision: ${errorMsg}`);
     }
   }
 });
