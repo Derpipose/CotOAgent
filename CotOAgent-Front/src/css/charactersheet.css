@@ -144,6 +144,32 @@
   box-shadow: 0 0 5px rgba(93, 78, 55, 0.3);
 }
 
+.random-stat-button {
+  width: 100%;
+  margin-top: 8px;
+  padding: 8px;
+  background: #5d4e37;
+  color: #f5f3f0;
+  border: 1px solid #3d2e1f;
+  border-radius: 3px;
+  font-family: 'Georgia', serif;
+  font-size: 0.85rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.random-stat-button:hover {
+  background: #4d3e2f;
+  box-shadow: 0 2px 4px rgba(93, 78, 55, 0.2);
+  transform: translateY(-1px);
+}
+
+.random-stat-button:active {
+  transform: translateY(0);
+  box-shadow: 0 1px 2px rgba(93, 78, 55, 0.1);
+}
+
 .button-section {
   display: flex;
   flex-direction: column;

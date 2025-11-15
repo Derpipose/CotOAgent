@@ -83,6 +83,21 @@ export default function CharacterSheet() {
     });
   };
 
+  const generateRandomStat = async (statName: keyof typeof character.Stats) => {
+    try {
+      const response = await fetch('/api/random/8');
+      if (!response.ok) {
+        throw new Error('Failed to generate random number');
+      }
+      const data = await response.json();
+      const randomNumber = data.numbers as number;
+      const newStatValue = 10 + randomNumber;
+      handleStatChange(statName, newStatValue);
+    } catch (error) {
+      console.error('Error generating random stat:', error);
+    }
+  };
+
   const saveCharacterToLocalStorage = () => {
     // Validate that required fields are filled in
     if (!character.Name || character.Name.trim() === '') {
@@ -279,6 +294,12 @@ export default function CharacterSheet() {
                 onChange={(e) => handleStatChange('Strength', parseInt(e.target.value) || 10)}
                 className="stat-input"
               />
+              <button 
+                onClick={() => generateRandomStat('Strength')}
+                className="random-stat-button"
+              >
+                Random
+              </button>
             </div>
             <div className="stat-item">
               <strong>Dexterity</strong>
@@ -290,6 +311,12 @@ export default function CharacterSheet() {
                 onChange={(e) => handleStatChange('Dexterity', parseInt(e.target.value) || 10)}
                 className="stat-input"
               />
+              <button 
+                onClick={() => generateRandomStat('Dexterity')}
+                className="random-stat-button"
+              >
+                Random
+              </button>
             </div>
             <div className="stat-item">
               <strong>Constitution</strong>
@@ -301,6 +328,12 @@ export default function CharacterSheet() {
                 onChange={(e) => handleStatChange('Constitution', parseInt(e.target.value) || 10)}
                 className="stat-input"
               />
+              <button 
+                onClick={() => generateRandomStat('Constitution')}
+                className="random-stat-button"
+              >
+                Random
+              </button>
             </div>
             <div className="stat-item">
               <strong>Intelligence</strong>
@@ -312,6 +345,12 @@ export default function CharacterSheet() {
                 onChange={(e) => handleStatChange('Intelligence', parseInt(e.target.value) || 10)}
                 className="stat-input"
               />
+              <button 
+                onClick={() => generateRandomStat('Intelligence')}
+                className="random-stat-button"
+              >
+                Random
+              </button>
             </div>
             <div className="stat-item">
               <strong>Wisdom</strong>
@@ -323,6 +362,12 @@ export default function CharacterSheet() {
                 onChange={(e) => handleStatChange('Wisdom', parseInt(e.target.value) || 10)}
                 className="stat-input"
               />
+              <button 
+                onClick={() => generateRandomStat('Wisdom')}
+                className="random-stat-button"
+              >
+                Random
+              </button>
             </div>
             <div className="stat-item">
               <strong>Charisma</strong>
@@ -334,6 +379,12 @@ export default function CharacterSheet() {
                 onChange={(e) => handleStatChange('Charisma', parseInt(e.target.value) || 10)}
                 className="stat-input"
               />
+              <button 
+                onClick={() => generateRandomStat('Charisma')}
+                className="random-stat-button"
+              >
+                Random
+              </button>
             </div>
           </div>
         </div>
