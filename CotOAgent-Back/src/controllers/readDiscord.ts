@@ -46,7 +46,7 @@ client.on('messageCreate', async (message: Message) => {
       const character = await getCharacterById(characterId);
 
       // Process the revision
-      const result = await processCharacterRevision({
+      await processCharacterRevision({
         characterId,
         feedback,
       });

@@ -71,9 +71,6 @@ export async function getCharacterById(characterId: number) {
  */
 export async function processCharacterRevision(revisionData: RevisionData) {
   try {
-    // Verify character exists
-    const character = await getCharacterById(revisionData.characterId);
-
     // Update character with revision feedback
     const updatedCharacter = await updateCharacterRevision(
       revisionData.characterId,
