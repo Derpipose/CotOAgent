@@ -131,6 +131,135 @@ charactersRouter.post('/create', async (req: Request, res: Response) => {
 });
 
 /**
+ * PUT /api/characters/:id
+ * Update an existing character and set status to "revised"
+ */
+charactersRouter.put('/:id', async (req: Request, res: Response) => {
+  try {
+    const userEmail = (req.headers['x-user-email'] as string)?.toLowerCase();
+    const characterId = parseInt(req.params.id || '', 10);
+    const { name, class: className, race, stats } = req.body as CharacterPayload;
+
+    if (!userEmail) {
+      return res.status(400).json({ error: 'Missing user email in header' });
+    }
+
+    if (isNaN(characterId)) {
+      return res.status(400).json({ error: 'Invalid character ID' });
+    }
+
+    if (!name || !className || !race) {
+      return res.status(400).json({ error: 'Missing required fields: name, class, race' });
+    }
+
+    if (!stats || typeof stats.Strength !== 'number') {
+      return res.status(400).json({ error: 'Invalid stats format' });
+    }
+
+    const client = await pool.connect();
+
+    try {
+      // Get user
+      const userResult = await client.query('SELECT id FROM users WHERE LOWER(user_email) = $1', [
+        userEmail,
+      ]);
+
+      if (userResult.rows.length === 0) {
+        return res.status(404).json({ error: 'User not found' });
+      }
+
+      const userId = userResult.rows[0].id;
+
+      // Verify the character belongs to the user
+      const characterCheck = await client.query(
+        'SELECT id FROM characters WHERE id = $1 AND user_id = $2',
+        [characterId, userId]
+      );
+
+      if (characterCheck.rows.length === 0) {
+        return res.status(404).json({ error: 'Character not found or does not belong to this user' });
+      }
+
+      // Get class ID
+      let classId: number | null = null;
+      if (className) {
+        const classResult = await client.query(
+          'SELECT id FROM classes WHERE LOWER(class_name) = LOWER($1) LIMIT 1',
+          [className]
+        );
+        if (classResult.rows.length > 0) {
+          classId = classResult.rows[0].id;
+        }
+      }
+
+      // Get race ID
+      let raceId: number | null = null;
+      if (race) {
+        const raceResult = await client.query(
+          'SELECT id FROM races WHERE LOWER(name) = LOWER($1) LIMIT 1',
+          [race]
+        );
+        if (raceResult.rows.length > 0) {
+          raceId = raceResult.rows[0].id;
+        }
+      }
+
+      // Update character
+      const updateCharacterQuery = `
+        UPDATE characters
+        SET 
+          name = $1,
+          class_id = $2,
+          race_id = $3,
+          strength = $4,
+          dexterity = $5,
+          constitution = $6,
+          intelligence = $7,
+          wisdom = $8,
+          charisma = $9,
+          revised = true,
+          last_modified = CURRENT_TIMESTAMP,
+          approval_status = 'Revised'
+        WHERE id = $10 AND user_id = $11
+        RETURNING id
+      `;
+
+      const updateResult = await client.query(updateCharacterQuery, [
+        name,
+        classId,
+        raceId,
+        stats.Strength,
+        stats.Dexterity,
+        stats.Constitution,
+        stats.Intelligence,
+        stats.Wisdom,
+        stats.Charisma,
+        characterId,
+        userId,
+      ]);
+
+      if (updateResult.rows.length === 0) {
+        return res.status(500).json({ error: 'Failed to update character' });
+      }
+
+      return res.status(200).json({
+        success: true,
+        message: 'Character updated successfully',
+        characterId: updateResult.rows[0].id,
+      });
+    } finally {
+      client.release();
+    }
+  } catch (error) {
+    console.error('[Characters Controller] Error:', error);
+    return res.status(500).json({
+      error: 'Failed to update character',
+      details: error instanceof Error ? error.message : 'Unknown error',
+    });
+  }
+});
+
+/**
  * GET /api/characters
  * Get all characters for the currently logged-in user
  */
@@ -207,5 +336,7 @@ charactersRouter.get('/', async (req: Request, res: Response) => {
     });
   }
 });
+
+
 
 export default charactersRouter;
