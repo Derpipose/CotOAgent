@@ -344,9 +344,12 @@ async function generateEmbeddingsForEntity(entityType: EntityType): Promise<void
         
         console.log(`[EMBEDDINGS] Generated embedding array with ${embedding.length} dimensions`);
 
+        // Convert embedding to pgvector format string [x, y, z, ...]
+        const vectorString = `[${embedding.join(',')}]`;
+        
         const updateResult = await client.query(
-          `UPDATE ${config.table} SET embeddings = $1 WHERE id = $2`,
-          [JSON.stringify(embedding), entity.id]
+          `UPDATE ${config.table} SET embeddings = $1::vector WHERE id = $2`,
+          [vectorString, entity.id]
         );
 
         console.log(`[EMBEDDINGS] Update result rowCount:`, updateResult.rowCount);

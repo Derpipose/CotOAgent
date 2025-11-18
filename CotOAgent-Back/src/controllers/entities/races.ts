@@ -2,6 +2,7 @@ import type { Request, Response, Router as ExpressRouter } from 'express';
 import { Router } from 'express';
 import { fetchAndValidate } from '../utils/database.js';
 import { RaceSchema } from '../utils/schemas.js';
+import { searchRacesByEmbedding } from '../embeddedSearch.js';
 
 const router: ExpressRouter = Router();
 
@@ -48,6 +49,40 @@ router.get('/', async (req: Request, res: Response): Promise<void> => {
     res.status(500).json({ 
       error: 'Failed to fetch races',
       details: error instanceof Error ? error.message : 'Unknown error'
+    });
+  }
+});
+
+/**
+ * POST /api/races/search
+ * Searches for races similar to the provided query using embeddings
+ * Request body: { query: string }
+ * Returns top 10 matching races with their similarity distances
+ */
+router.post('/search', async (req: Request, res: Response): Promise<void> => {
+  try {
+    const { query } = req.body as { query?: string };
+
+    if (!query || typeof query !== 'string' || query.trim() === '') {
+      res.status(400).json({ error: 'Query parameter is required and must be a non-empty string' });
+      return;
+    }
+
+    const results = await searchRacesByEmbedding(query.trim(), 10);
+
+    const mappedResults = results.map((race) => ({
+      Campaign: race.campaign,
+      Name: race.name,
+      Description: race.description,
+      Distance: race.distance,
+    }));
+
+    res.json(mappedResults);
+  } catch (error) {
+    console.error('[races] Error searching races:', error);
+    res.status(500).json({
+      error: 'Failed to search races',
+      details: error instanceof Error ? error.message : 'Unknown error',
     });
   }
 });
