@@ -8,7 +8,7 @@ const pool = new Pool({
 });
 
 interface CharacterRecord {
-  feedback: any;
+  feedback: string | null;
   id: number;
   user_id: number;
   name: string;
@@ -231,7 +231,7 @@ function formatRevisedCharacterForDiscord(character: CharacterRecord, userEmail:
           { name: 'Submitted By', value: userEmail, inline: true },
           { name: 'Character ID', value: character.id.toString(), inline: true },
           { name: 'Status', value: '🔄 Re-awaiting Review', inline: true },
-          { name: 'Previous Feedback', value: character.feedback.toString(), inline: true },
+          { name: 'Previous Feedback', value: character.feedback || 'No feedback yet', inline: true },
         ],
         timestamp: new Date().toISOString(),
       },
