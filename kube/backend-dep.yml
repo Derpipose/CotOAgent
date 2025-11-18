@@ -26,6 +26,8 @@ spec:
           value: $AI_SERVER
         - name: AI_TOKEN
           value: $AI_TOKEN
+        - name: AIToken
+          value: $AI_TOKEN
         - name: JWK_URI
           value: $JWK_URI
         - name: DISCORD_WEBHOOK_URL
