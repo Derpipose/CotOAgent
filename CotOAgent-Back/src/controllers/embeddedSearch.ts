@@ -28,52 +28,47 @@ interface RaceSearchResult {
  * @returns The embedding vector as a number array
  */
 async function generateEmbedding(text: string): Promise<number[]> {
-  try {
-    const embeddingUrl = process.env.EMBEDDING_URL;
-    const embeddingModel = process.env.EMBEDDING_MODEL;
-    const aiToken = process.env.AIToken;
+  const embeddingUrl = process.env.EMBEDDING_URL;
+  const embeddingModel = process.env.EMBEDDING_MODEL;
+  const aiToken = process.env.AIToken;
 
-    if (!embeddingUrl || !embeddingModel) {
-      throw new Error('Embedding URL or Model not configured in environment variables');
-    }
-
-    const headers: Record<string, string> = {
-      'Content-Type': 'application/json',
-    };
-
-    if (aiToken) {
-      headers['Authorization'] = `Bearer ${aiToken}`;
-    }
-
-    const response = await fetch(embeddingUrl, {
-      method: 'POST',
-      headers,
-      body: JSON.stringify({
-        model: embeddingModel,
-        input: text,
-      }),
-    });
-
-    if (!response.ok) {
-      const errorText = await response.text();
-      throw new Error(`Embedding service error: ${response.status} ${response.statusText}`);
-    }
-
-    const data = (await response.json()) as EmbeddingResponse;
-
-    if (!Array.isArray(data.embeddings) || data.embeddings.length === 0) {
-      throw new Error('Invalid embedding response from Ollama');
-    }
-
-    const embedding = data.embeddings[0];
-    if (!Array.isArray(embedding) || embedding.length === 0) {
-      throw new Error('Invalid embedding array in response from Ollama');
-    }
-
-    return embedding;
-  } catch (error) {
-    throw error;
+  if (!embeddingUrl || !embeddingModel) {
+    throw new Error('Embedding URL or Model not configured in environment variables');
   }
+
+  const headers: Record<string, string> = {
+    'Content-Type': 'application/json',
+  };
+
+  if (aiToken) {
+    headers['Authorization'] = `Bearer ${aiToken}`;
+  }
+
+  const response = await fetch(embeddingUrl, {
+    method: 'POST',
+    headers,
+    body: JSON.stringify({
+      model: embeddingModel,
+      input: text,
+    }),
+  });
+
+  if (!response.ok) {
+    throw new Error(`Embedding service error: ${response.status} ${response.statusText}`);
+  }
+
+  const data = (await response.json()) as EmbeddingResponse;
+
+  if (!Array.isArray(data.embeddings) || data.embeddings.length === 0) {
+    throw new Error('Invalid embedding response from Ollama');
+  }
+
+  const embedding = data.embeddings[0];
+  if (!Array.isArray(embedding) || embedding.length === 0) {
+    throw new Error('Invalid embedding array in response from Ollama');
+  }
+
+  return embedding;
 }
 
 /**
@@ -116,8 +111,6 @@ export async function searchRacesByEmbedding(
     }));
 
     return races;
-  } catch (error) {
-    throw error;
   } finally {
     client.release();
   }
@@ -170,8 +163,6 @@ export async function searchClassesByEmbedding(
     }));
 
     return classes;
-  } catch (error) {
-    throw error;
   } finally {
     client.release();
   }
@@ -227,8 +218,6 @@ export async function searchSpellsByEmbedding(
     }));
 
     return spells;
-  } catch (error) {
-    throw error;
   } finally {
     client.release();
   }
