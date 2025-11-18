@@ -143,7 +143,7 @@ Rubric items:
 - [x] Character creation workflow with stat rolling
 
 Features:
-- [ ] Character gallery (view all characters)
+- [x] Character gallery (view all characters)
 - [x] Character revision system
 
 #### Delivered
@@ -162,10 +162,8 @@ Rubric items:
 - [x] 4+ generic layout components (character card, stats panel, spell list, navigation)
 
 Features:
-- [ ] Semi-optimal stat assignment algorithm
 - [ ] Character comparison view
 - [ ] Character customization
-- [ ] Spell management and filtering
 - [ ] Character save/load functionality
 - [ ] Audit log for character actions
 
@@ -184,6 +182,9 @@ Features:
 Rubric items:
 - [ ] Mobile responsive design (all experiences mobile friendly)
 - [ ] 3 instances of element re-ordering on smaller screens
+- [ ] Semi-optimal stat assignment algorithm
+- [ ] Spell management and filtering
+
 
 Features:
 - [ ] Mobile-optimized character creation flow

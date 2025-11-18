@@ -84,7 +84,7 @@ postDiscordRouter.post('/submit-character', async (req: Request, res: Response) 
       // Update character status to submitted
       await dbClient.query(
         'UPDATE characters SET approval_status = $1, last_modified = CURRENT_TIMESTAMP WHERE id = $2',
-        ['submitted', characterId]
+        ['Submitted for Approval', characterId]
       );
 
       return res.status(200).json({

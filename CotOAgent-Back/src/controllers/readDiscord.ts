@@ -59,6 +59,12 @@ client.on('messageCreate', async (message: Message) => {
     } catch (error) {
       console.error('[Discord] Revision error:', error);
       const errorMsg = error instanceof Error ? error.message : 'Unknown error';
+      
+      // Check for pending revision error
+      if (errorMsg === 'Character has already gotten review feedback and has not been revised yet.') {
+        return message.reply('Character has already gotten review feedback and has not been revised yet.');
+      }
+      
       message.reply(`Error processing revision: ${errorMsg}`);
     }
   }

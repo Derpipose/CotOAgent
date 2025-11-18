@@ -1,10 +1,10 @@
 import { type Request, type Response } from 'express';
-import { fetchJsonFromUrl } from './database.repository.js';
+import { fetchJsonFromUrl } from './database.fetchURL.js';
 import {
   saveRacesToDatabase,
   saveClassesToDatabase,
   saveSpellsToDatabase,
-} from './database.service.js';
+} from './database.setters.js';
 
 /**
  * GET /api/import/races

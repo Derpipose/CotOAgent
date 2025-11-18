@@ -1,7 +1,7 @@
 import { RacesImportSchema } from '../../DTOS/RaceImportDto.js';
 import { ClassesImportSchema } from '../../DTOS/ClassImportDto.js';
 import { SpellsImportSchema } from '../../DTOS/SpellImportDto.js';
-import { pool } from './database.repository.js';
+import { pool } from './database.fetchURL.js';
 
 /**
  * Save races to the database

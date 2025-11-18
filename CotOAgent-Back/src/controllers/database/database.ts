@@ -3,7 +3,7 @@ import {
   getRacesHandler,
   getClassesHandler,
   getSpellsHandler,
-} from './database.routes.js';
+} from './database.getters.js';
 
 const databaseRouter: ExpressRouter = Router();
 

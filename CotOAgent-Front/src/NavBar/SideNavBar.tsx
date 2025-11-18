@@ -17,6 +17,7 @@ const SideNavBar = () => {
     { label: 'Races', path: '/races' },
     { label: 'Classes', path: '/classes' },
     { label: 'Spells', path: '/spells' },
+    { label: 'My Characters', path: '/characters' },
     { label: 'Character Sheet', path: '/character-sheet' },
     { label: 'About', path: '/about' },
     { label: 'Admin', path: '/admin', requiresAdmin: true },
