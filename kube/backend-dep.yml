@@ -32,5 +32,9 @@ spec:
           value: $DISCORD_WEBHOOK_URL
         - name: DISCORD_BOT_TOKEN
           value: $DISCORD_BOT_TOKEN
+        - name: EMBEDDING_URL
+          value: $EMBEDDING_URL
+        - name: EMBEDDING_MODEL
+          value: $EMBEDDING_MODEL
         ports:
         - containerPort: 4000

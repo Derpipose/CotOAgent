@@ -129,6 +129,8 @@ jobs:
         export AI_TOKEN=${{ secrets.AI_TOKEN }}
         export DISCORD_WEBHOOK_URL=${{ secrets.DISCORD_WEBHOOK_URL }}
         export DISCORD_BOT_TOKEN=${{ secrets.DISCORD_BOT_TOKEN }}
+        export EMBEDDING_URL=${{ secrets.EMBEDDING_URL }}
+        export EMBEDDING_MODEL=${{ vars.EMBEDDING_MODEL }}
         for FILE in "kube"/*
         do
           cat "$FILE" | envsubst | kubectl apply -f -
