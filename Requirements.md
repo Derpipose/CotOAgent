@@ -162,9 +162,8 @@ Rubric items:
 - [x] 4+ generic layout components (character card, stats panel, spell list, navigation)
 
 Features:
-- [ ] Character comparison view
-- [ ] Character customization
-- [ ] Character save/load functionality
+- [x] Character customization
+- [x] Character save/load functionality
 - [ ] Audit log for character actions
 
 #### Delivered
@@ -211,6 +210,7 @@ Features:
 - [ ] UI/UX polish and refinement
 - [ ] Performance optimization
 - [ ] User onboarding improvements
+- [ ] Character comparison view
 
 #### Delivered
 
