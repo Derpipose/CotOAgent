@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import '../css/displaycard.css';
+import { RaceSearchSection, RacesList } from '../components/Races';
 
 interface RaceData {
   id?: number;
@@ -18,7 +19,7 @@ export default function Races() {
   const [allRaces, setAllRaces] = useState<RaceData[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [expandedRaceId, setExpandedRaceId] = useState<number | null>(null);
+  const [expandedRaceKey, setExpandedRaceKey] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [isSearching, setIsSearching] = useState(false);
   const [hasSearched, setHasSearched] = useState(false);
@@ -90,7 +91,7 @@ export default function Races() {
       const results = await response.json();
       setRaces(results);
       setHasSearched(true);
-      setExpandedRaceId(null);
+      setExpandedRaceKey(null);
       console.log(`[Races] Search returned ${results.length} results`);
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'An error occurred during search';
@@ -106,12 +107,11 @@ export default function Races() {
     setRaces(allRaces);
     setHasSearched(false);
     setSearchError(null);
-    setExpandedRaceId(null);
+    setExpandedRaceKey(null);
   };
 
-  const toggleExpand = (raceId: number | undefined) => {
-    if (raceId === undefined) return;
-    setExpandedRaceId(expandedRaceId === raceId ? null : raceId);
+  const toggleExpand = (raceKey: string) => {
+    setExpandedRaceKey(expandedRaceKey === raceKey ? null : raceKey);
   };
 
   if (loading) {
@@ -125,88 +125,21 @@ export default function Races() {
   return (
     <div>
       <h1>Races</h1>
-      
-      {/* Search Section */}
-      <div style={{ marginBottom: '20px', padding: '15px', backgroundColor: '#f5f5f5', borderRadius: '8px' }}>
-        <div style={{ display: 'flex', gap: '10px', marginBottom: '10px' }}>
-          <input
-            type="text"
-            placeholder="Enter race description or characteristics..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            onKeyPress={(e) => e.key === 'Enter' && handleSearch()}
-            style={{
-              flex: 1,
-              padding: '10px',
-              borderRadius: '4px',
-              border: '1px solid #ccc',
-              fontSize: '14px',
-            }}
-          />
-          <button
-            onClick={handleSearch}
-            disabled={isSearching}
-            style={{
-              padding: '10px 20px',
-              backgroundColor: '#007bff',
-              color: 'white',
-              border: 'none',
-              borderRadius: '4px',
-              cursor: isSearching ? 'not-allowed' : 'pointer',
-              opacity: isSearching ? 0.6 : 1,
-            }}
-          >
-            {isSearching ? 'Searching...' : 'Search'}
-          </button>
-          {hasSearched && (
-            <button
-              onClick={handleClearSearch}
-              style={{
-                padding: '10px 20px',
-                backgroundColor: '#6c757d',
-                color: 'white',
-                border: 'none',
-                borderRadius: '4px',
-                cursor: 'pointer',
-              }}
-            >
-              Clear Search
-            </button>
-          )}
-        </div>
-        {searchError && (
-          <p style={{ color: 'red', margin: '10px 0 0 0', fontSize: '14px' }}>
-            {searchError}
-          </p>
-        )}
-        {hasSearched && (
-          <p style={{ color: '#666', margin: '10px 0 0 0', fontSize: '14px' }}>
-            Showing {races.length} results
-          </p>
-        )}
-      </div>
-
-      <div className="races-list">
-        {races.map((race) => (
-          <div key={`${race.id}-${race.Name}-${race.Campaign}`} className="race-item">
-            <button
-              className="race-header"
-              onClick={() => toggleExpand(race.id)}
-            >
-              <span className="race-name">{race.Name}</span>
-              <span className="race-campaign">{race.Campaign}</span>
-              <span className={`expand-arrow ${expandedRaceId === race.id ? 'expanded' : ''}`}>
-                ▼
-              </span>
-            </button>
-            {expandedRaceId === race.id && (
-              <div className="race-description">
-                {race.Description}
-              </div>
-            )}
-          </div>
-        ))}
-      </div>
+      <RaceSearchSection
+        searchQuery={searchQuery}
+        onSearchQueryChange={setSearchQuery}
+        onSearch={handleSearch}
+        onClearSearch={handleClearSearch}
+        isSearching={isSearching}
+        hasSearched={hasSearched}
+        searchError={searchError}
+        resultsCount={races.length}
+      />
+      <RacesList
+        races={races}
+        expandedRaceKey={expandedRaceKey}
+        onToggleExpand={toggleExpand}
+      />
     </div>
   );
 }

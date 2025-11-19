@@ -38,7 +38,6 @@ export default function CharacterSheet() {
 
         if (classesRes.ok) {
           const classesData = await classesRes.json();
-          console.log('Classes data:', classesData);
           setClasses(classesData);
         } else {
           console.error('Classes response not ok:', classesRes.status, classesRes.statusText);
@@ -46,7 +45,6 @@ export default function CharacterSheet() {
 
         if (racesRes.ok) {
           const racesData = await racesRes.json();
-          console.log('Races data:', racesData);
           setRaces(racesData);
         } else {
           console.error('Races response not ok:', racesRes.status, racesRes.statusText);

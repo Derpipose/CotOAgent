@@ -1,6 +1,7 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useRef } from 'react'
 import keycloak from '../keycloak'
 import '../css/characters.css'
+import { CharactersList, CharacterDetailsModal } from '../components/CharacterGallery'
 
 interface Character {
   id: number
@@ -26,7 +27,18 @@ function Characters() {
   const [error, setError] = useState<string | null>(null)
   const [selectedCharacter, setSelectedCharacter] = useState<Character | null>(null)
   const [showDetailsModal, setShowDetailsModal] = useState(false)
+  const [isSubmitting, setIsSubmitting] = useState(false)
   const [editedData, setEditedData] = useState<{
+    class_name: string
+    race_name: string
+    strength: number
+    dexterity: number
+    constitution: number
+    intelligence: number
+    wisdom: number
+    charisma: number
+  } | null>(null)
+  const [lastSubmittedData, setLastSubmittedData] = useState<{
     class_name: string
     race_name: string
     strength: number
@@ -38,6 +50,7 @@ function Characters() {
   } | null>(null)
   const [races, setRaces] = useState<string[]>([])
   const [classes, setClasses] = useState<string[]>([])
+  const submissionInProgressRef = useRef(false)
 
   useEffect(() => {
     const fetchCharacters = async () => {
@@ -126,8 +139,7 @@ function Characters() {
   }
 
   const handleViewDetails = (character: Character) => {
-    setSelectedCharacter(character)
-    setEditedData({
+    const characterData = {
       class_name: character.class_name || '',
       race_name: character.race_name || '',
       strength: character.strength,
@@ -136,7 +148,10 @@ function Characters() {
       intelligence: character.intelligence,
       wisdom: character.wisdom,
       charisma: character.charisma,
-    })
+    }
+    setSelectedCharacter(character)
+    setEditedData(characterData)
+    setLastSubmittedData(characterData)
     setShowDetailsModal(true)
   }
 
@@ -167,6 +182,8 @@ function Characters() {
     setShowDetailsModal(false)
     setSelectedCharacter(null)
     setEditedData(null)
+    setLastSubmittedData(null)
+    setIsSubmitting(false)
   }
 
   const handleEditChange = (field: string, value: string | number) => {
@@ -181,10 +198,17 @@ function Characters() {
   const handleSaveRevision = async () => {
     if (!selectedCharacter || !editedData) return
 
+    // Prevent double submission using ref (immediate check)
+    if (submissionInProgressRef.current) return
+    submissionInProgressRef.current = true
+    setIsSubmitting(true)
+
     try {
       const userEmail = keycloak.tokenParsed?.email
       if (!userEmail) {
         setError('Unable to retrieve user email')
+        submissionInProgressRef.current = false
+        setIsSubmitting(false)
         return
       }
 
@@ -250,16 +274,44 @@ function Characters() {
     } catch (err) {
       console.error('[Characters] Error saving revision:', err)
       setError(err instanceof Error ? err.message : 'Failed to save revision')
+    } finally {
+      submissionInProgressRef.current = false
+      setIsSubmitting(false)
     }
   }
 
   const handleSubmitRevision = async () => {
-    if (!selectedCharacter) return
+    if (!selectedCharacter || !editedData) return
+
+    // Prevent double submission using ref (immediate check)
+    if (submissionInProgressRef.current) return
+    submissionInProgressRef.current = true
+    setIsSubmitting(true)
+
+    // Check if any changes were made since last submission
+    const hasChanges =
+      editedData.class_name !== (lastSubmittedData?.class_name || '') ||
+      editedData.race_name !== (lastSubmittedData?.race_name || '') ||
+      editedData.strength !== (lastSubmittedData?.strength || 0) ||
+      editedData.dexterity !== (lastSubmittedData?.dexterity || 0) ||
+      editedData.constitution !== (lastSubmittedData?.constitution || 0) ||
+      editedData.intelligence !== (lastSubmittedData?.intelligence || 0) ||
+      editedData.wisdom !== (lastSubmittedData?.wisdom || 0) ||
+      editedData.charisma !== (lastSubmittedData?.charisma || 0)
+
+    if (!hasChanges) {
+      setError('No changes were made since the last submission. Please edit the character before submitting again.')
+      submissionInProgressRef.current = false
+      setIsSubmitting(false)
+      return
+    }
 
     try {
       const userEmail = keycloak.tokenParsed?.email
       if (!userEmail) {
         setError('Unable to retrieve user email')
+        submissionInProgressRef.current = false
+        setIsSubmitting(false)
         return
       }
 
@@ -278,11 +330,17 @@ function Characters() {
         throw new Error(`Failed to submit revision: ${response.statusText}`)
       }
 
+      // Update lastSubmittedData to the current editedData so user needs to make changes before next submit
+      setLastSubmittedData(editedData)
+
       // Close modal and refresh character data
       await closeDetailsModal()
     } catch (err) {
       console.error('[Characters] Error submitting revision:', err)
       setError(err instanceof Error ? err.message : 'Failed to submit revision')
+    } finally {
+      submissionInProgressRef.current = false
+      setIsSubmitting(false)
     }
   }
 
@@ -333,224 +391,26 @@ function Characters() {
       )}
 
       {!loading && characters.length > 0 && (
-        <div className="characters-grid">
-          {characters.map((character) => (
-            <div key={character.id} className="character-card">
-              <div className="card-header">
-                <h2 className="character-name">{character.name}</h2>
-                <div className="card-meta">
-                  {character.approval_status && (
-                    <span className={`approval-badge approval-${character.approval_status.toLowerCase()}`}>
-                      {character.approval_status}
-                    </span>
-                  )}
-                </div>
-              </div>
-
-              <div className="card-body">
-                <div className="character-info">
-                  {character.class_name && (
-                    <div className="info-row">
-                      <span className="label">Class:</span>
-                      <span className="value">{character.class_name}</span>
-                    </div>
-                  )}
-                  {character.race_name && (
-                    <div className="info-row">
-                      <span className="label">Race:</span>
-                      <span className="value">{character.race_name}</span>
-                    </div>
-                  )}
-                </div>
-
-                <div className="stats-grid">
-                  <div className={`stat ${getStatColor(character.strength)}`}>
-                    <div className="stat-label">STR</div>
-                    <div className="stat-value">{character.strength}</div>
-                  </div>
-                  <div className={`stat ${getStatColor(character.dexterity)}`}>
-                    <div className="stat-label">DEX</div>
-                    <div className="stat-value">{character.dexterity}</div>
-                  </div>
-                  <div className={`stat ${getStatColor(character.constitution)}`}>
-                    <div className="stat-label">CON</div>
-                    <div className="stat-value">{character.constitution}</div>
-                  </div>
-                  <div className={`stat ${getStatColor(character.intelligence)}`}>
-                    <div className="stat-label">INT</div>
-                    <div className="stat-value">{character.intelligence}</div>
-                  </div>
-                  <div className={`stat ${getStatColor(character.wisdom)}`}>
-                    <div className="stat-label">WIS</div>
-                    <div className="stat-value">{character.wisdom}</div>
-                  </div>
-                  <div className={`stat ${getStatColor(character.charisma)}`}>
-                    <div className="stat-label">CHA</div>
-                    <div className="stat-value">{character.charisma}</div>
-                  </div>
-                </div>
-
-                {character.feedback && (
-                  <div className="feedback-section">
-                    <p className="feedback-label">Feedback:</p>
-                    <p className="feedback-text">{character.feedback}</p>
-                  </div>
-                )}
-              </div>
-
-              <div className="card-footer">
-                <div className="dates">
-                  <span className="date-created">Created: {formatDate(character.created_at)}</span>
-                  <span className="date-modified">Modified: {formatDate(character.last_modified)}</span>
-                </div>
-                <button onClick={() => handleViewDetails(character)} className="btn btn-small">
-                  View Details
-                </button>
-              </div>
-            </div>
-          ))}
-        </div>
+        <CharactersList
+          characters={characters}
+          onViewDetails={handleViewDetails}
+          formatDate={formatDate}
+          getStatColor={getStatColor}
+        />
       )}
 
-      {showDetailsModal && selectedCharacter && (
-        <div className="modal-overlay" onClick={closeDetailsModal}>
-          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
-            <div className="modal-header">
-              <h2>{selectedCharacter.name}</h2>
-              <button className="modal-close" onClick={closeDetailsModal}>
-                ×
-              </button>
-            </div>
-
-            <div className="modal-body">
-              <div className="character-details">
-                <div className="details-info">
-                  <div className="detail-row">
-                    <label className="detail-label">Class:</label>
-                    <select
-                      value={editedData?.class_name || ''}
-                      onChange={(e) => handleEditChange('class_name', e.target.value)}
-                      className="detail-select"
-                    >
-                      <option value="">Select a class</option>
-                      {classes.map((cls) => (
-                        <option key={cls} value={cls}>
-                          {cls}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-                  <div className="detail-row">
-                    <label className="detail-label">Race:</label>
-                    <select
-                      value={editedData?.race_name || ''}
-                      onChange={(e) => handleEditChange('race_name', e.target.value)}
-                      className="detail-select"
-                    >
-                      <option value="">Select a race</option>
-                      {races.map((race) => (
-                        <option key={race} value={race}>
-                          {race}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-                </div>
-
-                <div className="character-stats">
-                  <h3>Character Stats</h3>
-                  <div className="stats-grid-edit">
-                    <div className="stat-edit">
-                      <label className="stat-label">STR</label>
-                      <input
-                        type="number"
-                        value={editedData?.strength || 0}
-                        onChange={(e) => handleEditChange('strength', parseInt(e.target.value, 10) || 0)}
-                        className="stat-input"
-                        min="1"
-                        max="20"
-                      />
-                    </div>
-                    <div className="stat-edit">
-                      <label className="stat-label">DEX</label>
-                      <input
-                        type="number"
-                        value={editedData?.dexterity || 0}
-                        onChange={(e) => handleEditChange('dexterity', parseInt(e.target.value, 10) || 0)}
-                        className="stat-input"
-                        min="1"
-                        max="20"
-                      />
-                    </div>
-                    <div className="stat-edit">
-                      <label className="stat-label">CON</label>
-                      <input
-                        type="number"
-                        value={editedData?.constitution || 0}
-                        onChange={(e) => handleEditChange('constitution', parseInt(e.target.value, 10) || 0)}
-                        className="stat-input"
-                        min="1"
-                        max="20"
-                      />
-                    </div>
-                    <div className="stat-edit">
-                      <label className="stat-label">INT</label>
-                      <input
-                        type="number"
-                        value={editedData?.intelligence || 0}
-                        onChange={(e) => handleEditChange('intelligence', parseInt(e.target.value, 10) || 0)}
-                        className="stat-input"
-                        min="1"
-                        max="20"
-                      />
-                    </div>
-                    <div className="stat-edit">
-                      <label className="stat-label">WIS</label>
-                      <input
-                        type="number"
-                        value={editedData?.wisdom || 0}
-                        onChange={(e) => handleEditChange('wisdom', parseInt(e.target.value, 10) || 0)}
-                        className="stat-input"
-                        min="1"
-                        max="20"
-                      />
-                    </div>
-                    <div className="stat-edit">
-                      <label className="stat-label">CHA</label>
-                      <input
-                        type="number"
-                        value={editedData?.charisma || 0}
-                        onChange={(e) => handleEditChange('charisma', parseInt(e.target.value, 10) || 0)}
-                        className="stat-input"
-                        min="1"
-                        max="20"
-                      />
-                    </div>
-                  </div>
-                </div>
-
-                {selectedCharacter.feedback && (
-                  <div className="feedback-section">
-                    <p className="feedback-label">Feedback:</p>
-                    <p className="feedback-text">{selectedCharacter.feedback}</p>
-                  </div>
-                )}
-              </div>
-            </div>
-
-            <div className="modal-footer">
-              <button className="btn btn-secondary" onClick={closeDetailsModal}>
-                Cancel
-              </button>
-              <button className="btn btn-primary" onClick={handleSaveRevision}>
-                Save Revision
-              </button>
-              <button className="btn btn-success" onClick={handleSubmitRevision}>
-                Submit Revision
-              </button>
-            </div>
-          </div>
-        </div>
+      {showDetailsModal && selectedCharacter && editedData && (
+        <CharacterDetailsModal
+          character={selectedCharacter}
+          editedData={editedData}
+          races={races}
+          classes={classes}
+          onEditChange={handleEditChange}
+          onClose={closeDetailsModal}
+          onSaveRevision={handleSaveRevision}
+          onSubmitRevision={handleSubmitRevision}
+          isSubmitting={isSubmitting}
+        />
       )}
     </div>
   )

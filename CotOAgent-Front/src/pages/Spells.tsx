@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import '../css/displaycard.css';
+import { SpellsContainer } from '../components/Spells';
 
 interface SpellData {
   SpellName: string;
@@ -87,75 +88,15 @@ export default function Spells() {
   return (
     <div>
       <h1>Spells</h1>
-      <div className="spellbooks-container">
-        {branches.map((branch) => (
-          <div key={branch.SpellBranch} className="branch-section">
-            <button
-              className="branch-header"
-              onClick={() => toggleExpandBranch(branch.SpellBranch)}
-            >
-              <span className="branch-name">{branch.SpellBranch}</span>
-              <span className={`expand-arrow ${expandedBranch === branch.SpellBranch ? 'expanded' : ''}`}>
-                ▼
-              </span>
-            </button>
-            {expandedBranch === branch.SpellBranch && (
-              <div className="branch-content">
-                {branch.spellbooks.map((book, index) => {
-                  const bookId = `${branch.SpellBranch}-book-${index}`;
-                  return (
-                    <div key={bookId} className="spellbook-header-wrapper">
-                      <button
-                        className="spellbook-header"
-                        onClick={() => toggleExpandBook(bookId)}
-                      >
-                        <span className="spellbook-title">{book.SpellBook}</span>
-                        <span className="spellbook-level">{book.BookLevel}</span>
-                        <span className={`expand-arrow ${expandedBook === bookId ? 'expanded' : ''}`}>
-                          ▼
-                        </span>
-                      </button>
-                      {expandedBook === bookId && (
-                        <div className="spellbook-content">
-                          <div className="spells-list">
-                            {book.SpellDtos.map((spell) => {
-                              const spellId = `${bookId}-${spell.SpellName}`;
-                              return (
-                                <div key={spellId} className="spell-item">
-                                  <button
-                                    className="spell-header"
-                                    onClick={() => toggleExpandSpell(spellId)}
-                                  >
-                                    <span className="spell-name">{spell.SpellName}</span>
-                                    <span className="spell-mana">Mana: {spell.ManaCost}</span>
-                                    <span className={`expand-arrow ${expandedSpell === spellId ? 'expanded' : ''}`}>
-                                      ▼
-                                    </span>
-                                  </button>
-                                  {expandedSpell === spellId && (
-                                    <div className="spell-details">
-                                      <div className="spell-detail-item">
-                                        <strong>Hit Die:</strong> {spell.HitDie || 'N/A'}
-                                      </div>
-                                      <div className="spell-description">
-                                        {spell.Description}
-                                      </div>
-                                    </div>
-                                  )}
-                                </div>
-                              );
-                            })}
-                          </div>
-                        </div>
-                      )}
-                    </div>
-                  );
-                })}
-              </div>
-            )}
-          </div>
-        ))}
-      </div>
+      <SpellsContainer
+        branches={branches}
+        expandedBranch={expandedBranch}
+        onToggleBranch={toggleExpandBranch}
+        expandedBook={expandedBook}
+        onToggleBook={toggleExpandBook}
+        expandedSpell={expandedSpell}
+        onToggleSpell={toggleExpandSpell}
+      />
     </div>
   );
 }
