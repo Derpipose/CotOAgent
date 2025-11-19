@@ -1,5 +1,7 @@
-I want to configure this workflow to work with my current project. I pulled this from antoerh project similar enough to this that it should work but it just needs some tweaks. Please help me get it where it needs to be. 
 
 
-- Seriously look at C# Backend
-- it works
+- Remove contact
+- Tanstack
+- Try catch removal
+- Error boundary toasts
+- 
