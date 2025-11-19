@@ -1,7 +1,7 @@
 import { Router, type Router as ExpressRouter } from 'express';
 import { type Message } from 'discord.js';
 import { client } from './discordClient.js';
-import { processCharacterRevision, getCharacterById } from './database/revision.js';
+import { processCharacterRevision, getCharacterById } from '../database/revision.js';
 
 const readDiscordRouter: ExpressRouter = Router();
 

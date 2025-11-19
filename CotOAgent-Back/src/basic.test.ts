@@ -337,18 +337,18 @@ describe('Entity DTOs Test Suite', () => {
 
 describe('discord Client Test', () => {
   it('should have clientReady as false before login', async () => {
-    const { clientReady } = await import('./controllers/discordClient.js');
+    const { clientReady } = await import('./controllers/discord/discordClient.js');
     expect(clientReady).toBe(false);
   });
 
   it('should import discord client successfully', async () => {
-    const module = await import('./controllers/discordClient.js');
+    const module = await import('./controllers/discord/discordClient.js');
     expect(module.client).toBeDefined();
     expect(module.clientReady).toBe(false);
   });
 
   it('should import readDiscord router successfully', async () => {
-    const module = await import('./controllers/readDiscord.js');
+    const module = await import('./controllers/discord/readDiscord.js');
     expect(module.default).toBeDefined();
   });
 });

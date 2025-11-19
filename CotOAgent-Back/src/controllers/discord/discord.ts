@@ -12,7 +12,6 @@ const discordRouter: ExpressRouter = Router();
 // Mount Discord message posting routes
 discordRouter.use(postDiscordRouter);
 
-// Mount Discord interaction reading/handling routes
+// Mount Discord message reading routes
 discordRouter.use(readDiscordRouter);
-
 export default discordRouter;

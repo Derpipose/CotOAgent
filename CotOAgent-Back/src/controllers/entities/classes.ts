@@ -2,7 +2,7 @@ import type { Request, Response, Router as ExpressRouter } from 'express';
 import { Router } from 'express';
 import { fetchAndValidate } from '../utils/database.js';
 import { BasicClassSchema } from '../utils/schemas.js';
-import { searchClassesByEmbedding } from '../embeddedSearch.js';
+import { searchClassesByEmbedding } from '../embeddings/embeddedSearch.js';
 
 const router: ExpressRouter = Router();
 

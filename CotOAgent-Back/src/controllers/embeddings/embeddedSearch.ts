@@ -1,4 +1,4 @@
-import { pool } from './utils/database.js';
+import { pool } from '../utils/database.js';
 
 /**
  * Interface for embedding response from Ollama
