@@ -38,7 +38,7 @@
 }
 
 .toast.toast-persistent.toast-warning {
-  border-left-color: #f59e0b;
+  border-left-color: #d97706;
 }
 
 .toast.toast-persistent.toast-info {
@@ -155,7 +155,7 @@
 }
 
 .toast-warning {
-  background-color: #f59e0b;
+  background-color: #d97706;
   color: white;
 }
 

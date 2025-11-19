@@ -1,6 +1,7 @@
 import { useEffect, useState, useRef } from 'react'
 import keycloak from '../keycloak'
 import '../css/characters.css'
+import { useToast } from '../context/ToastContext'
 import { CharactersList, CharacterDetailsModal } from '../components/CharacterGallery'
 
 interface Character {
@@ -22,6 +23,7 @@ interface Character {
 }
 
 function Characters() {
+  const { addToast } = useToast()
   const [characters, setCharacters] = useState<Character[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
@@ -300,7 +302,7 @@ function Characters() {
       editedData.charisma !== (lastSubmittedData?.charisma || 0)
 
     if (!hasChanges) {
-      setError('No changes were made since the last submission. Please edit the character before submitting again.')
+      addToast('No changes were made since the last submission. Please edit the character before submitting again.', 'warning')
       submissionInProgressRef.current = false
       setIsSubmitting(false)
       return
@@ -309,7 +311,7 @@ function Characters() {
     try {
       const userEmail = keycloak.tokenParsed?.email
       if (!userEmail) {
-        setError('Unable to retrieve user email')
+        addToast('Unable to retrieve user email', 'error')
         submissionInProgressRef.current = false
         setIsSubmitting(false)
         return
@@ -337,7 +339,55 @@ function Characters() {
       await closeDetailsModal()
     } catch (err) {
       console.error('[Characters] Error submitting revision:', err)
-      setError(err instanceof Error ? err.message : 'Failed to submit revision')
+      addToast(err instanceof Error ? err.message : 'Failed to submit revision', 'error')
+    } finally {
+      submissionInProgressRef.current = false
+      setIsSubmitting(false)
+    }
+  }
+
+  const handleDeleteCharacter = async () => {
+    if (!selectedCharacter) return
+
+    // Confirm deletion with the user
+    if (!window.confirm(`Are you sure you want to delete "${selectedCharacter.name}"? This action cannot be undone.`)) {
+      return
+    }
+
+    if (submissionInProgressRef.current) return
+    submissionInProgressRef.current = true
+    setIsSubmitting(true)
+
+    try {
+      const userEmail = keycloak.tokenParsed?.email
+      if (!userEmail) {
+        setError('Unable to retrieve user email')
+        return
+      }
+
+      const response = await fetch(`/api/characters/${selectedCharacter.id}`, {
+        method: 'DELETE',
+        headers: {
+          'x-user-email': userEmail.toLowerCase(),
+          'Content-Type': 'application/json',
+        },
+      })
+
+      if (!response.ok) {
+        throw new Error(`Failed to delete character: ${response.statusText}`)
+      }
+
+      // Remove the character from the list
+      setCharacters(characters.filter((char) => char.id !== selectedCharacter.id))
+
+      // Close modal
+      setShowDetailsModal(false)
+      setSelectedCharacter(null)
+      setEditedData(null)
+      setLastSubmittedData(null)
+    } catch (err) {
+      console.error('[Characters] Error deleting character:', err)
+      setError(err instanceof Error ? err.message : 'Failed to delete character')
     } finally {
       submissionInProgressRef.current = false
       setIsSubmitting(false)
@@ -409,6 +459,7 @@ function Characters() {
           onClose={closeDetailsModal}
           onSaveRevision={handleSaveRevision}
           onSubmitRevision={handleSubmitRevision}
+          onDeleteCharacter={handleDeleteCharacter}
           isSubmitting={isSubmitting}
         />
       )}

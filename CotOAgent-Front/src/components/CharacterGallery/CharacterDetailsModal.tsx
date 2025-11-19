@@ -38,6 +38,7 @@ interface CharacterDetailsModalProps {
   onClose: () => void
   onSaveRevision: () => void
   onSubmitRevision: () => void
+  onDeleteCharacter: () => void
   isSubmitting?: boolean
 }
 
@@ -50,6 +51,7 @@ export default function CharacterDetailsModal({
   onClose,
   onSaveRevision,
   onSubmitRevision,
+  onDeleteCharacter,
   isSubmitting = false,
 }: CharacterDetailsModalProps) {
   if (!editedData) return null
@@ -124,6 +126,9 @@ export default function CharacterDetailsModal({
         <div className="modal-footer">
           <button className="btn btn-secondary" onClick={onClose} disabled={isSubmitting}>
             Cancel
+          </button>
+          <button className="btn btn-danger" onClick={onDeleteCharacter} disabled={isSubmitting}>
+            {isSubmitting ? 'Deleting...' : 'Delete Character'}
           </button>
           <button className="btn btn-primary" onClick={onSaveRevision} disabled={isSubmitting}>
             {isSubmitting ? 'Saving...' : 'Save Revision'}

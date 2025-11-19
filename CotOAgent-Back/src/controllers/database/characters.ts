@@ -337,6 +337,72 @@ charactersRouter.get('/', async (req: Request, res: Response) => {
   }
 });
 
+/**
+ * DELETE /api/characters/:id
+ * Delete a character by ID (only the owner can delete their own character)
+ */
+charactersRouter.delete('/:id', async (req: Request, res: Response) => {
+  try {
+    const userEmail = (req.headers['x-user-email'] as string)?.toLowerCase();
+    const characterId = parseInt(req.params.id || '', 10);
 
+    if (!userEmail) {
+      return res.status(400).json({ error: 'Missing user email in header' });
+    }
+
+    if (isNaN(characterId)) {
+      return res.status(400).json({ error: 'Invalid character ID' });
+    }
+
+    const client = await pool.connect();
+
+    try {
+      // Get user
+      const userResult = await client.query('SELECT id FROM users WHERE LOWER(user_email) = $1', [
+        userEmail,
+      ]);
+
+      if (userResult.rows.length === 0) {
+        return res.status(404).json({ error: 'User not found' });
+      }
+
+      const userId = userResult.rows[0].id;
+
+      // Verify the character belongs to the user before deleting
+      const characterCheck = await client.query(
+        'SELECT id FROM characters WHERE id = $1 AND user_id = $2',
+        [characterId, userId]
+      );
+
+      if (characterCheck.rows.length === 0) {
+        return res.status(404).json({ error: 'Character not found or does not belong to this user' });
+      }
+
+      // Delete the character
+      const deleteResult = await client.query(
+        'DELETE FROM characters WHERE id = $1 AND user_id = $2 RETURNING id',
+        [characterId, userId]
+      );
+
+      if (deleteResult.rows.length === 0) {
+        return res.status(500).json({ error: 'Failed to delete character' });
+      }
+
+      return res.status(200).json({
+        success: true,
+        message: 'Character deleted successfully',
+        characterId: deleteResult.rows[0].id,
+      });
+    } finally {
+      client.release();
+    }
+  } catch (error) {
+    console.error('[Characters Controller] Error:', error);
+    return res.status(500).json({
+      error: 'Failed to delete character',
+      details: error instanceof Error ? error.message : 'Unknown error',
+    });
+  }
+});
 
 export default charactersRouter;
