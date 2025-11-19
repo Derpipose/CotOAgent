@@ -104,7 +104,6 @@ jobs:
         docker build \
           -f ./CotOAgent-Front/Dockerfile \
           -t ${{ vars.DOCKER_CONTAINER_USERNAME }}/cotoagent-web:${{ github.run_number }} \
-          --build-arg VITE_API_URL="${{ vars.VITE_API_URL }}" \
           --build-arg VITE_KEYCLOAK_URL="${{ vars.VITE_KEYCLOAK_URL }}" \
           --build-arg VITE_KEYCLOAK_REALM="${{ vars.VITE_KEYCLOAK_REALM }}" \
           --build-arg VITE_KEYCLOAK_CLIENT_ID="${{ vars.VITE_KEYCLOAK_CLIENT_ID }}" \

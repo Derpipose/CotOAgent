@@ -166,13 +166,9 @@ export default function CharacterSheet() {
 
     setSubmitting(true);
     try {
-      const backendUrl = window.location.protocol === 'https:' 
-        ? `https://${window.location.hostname}/api`
-        : 'http://localhost:3000/api';
-
       // Step 1: Save character to database
       console.log('[CharacterSheet] Creating character...');
-      const createResponse = await fetch(`${backendUrl}/characters/create`, {
+      const createResponse = await fetch(`/api/characters/create`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -198,7 +194,7 @@ export default function CharacterSheet() {
 
       // Step 2: Submit for approval
       console.log('[CharacterSheet] Submitting for approval...');
-      const submitResponse = await fetch(`${backendUrl}/discord/submit-character`, {
+      const submitResponse = await fetch(`/api/discord/submit-character`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

@@ -31,22 +31,10 @@ export default function Spells() {
   useEffect(() => {
     const fetchSpellbooks = async () => {
       try {
-        const apiUrl = import.meta.env.VITE_API_URL;
-        const isDevMode = apiUrl && apiUrl !== 'undefined' && apiUrl.trim() !== '' && apiUrl.startsWith('http');
-        
-        let endpoint: string;
-        if (isDevMode) {
-          endpoint = `${apiUrl}/api/spellbooks`;
-          console.log(`[Spells] Dev mode - fetching from: ${endpoint}`);
-        } else {
-          endpoint = '/api/spellbooks';
-          console.log(`[Spells] Production mode - fetching from: ${endpoint}`);
-        }
-        
         const controller = new AbortController();
         const timeoutId = setTimeout(() => controller.abort(), 10000);
         
-        const response = await fetch(endpoint, { signal: controller.signal });
+        const response = await fetch('/api/spellbooks', { signal: controller.signal });
         clearTimeout(timeoutId);
         
         if (!response.ok) {

@@ -53,12 +53,7 @@ function Characters() {
           return
         }
 
-        // Determine API URL based on environment
-        const backendUrl = window.location.protocol === 'https:'
-          ? `https://${window.location.hostname}/api`
-          : 'http://localhost:3000/api'
-
-        const response = await fetch(`${backendUrl}/characters`, {
+        const response = await fetch(`/api/characters`, {
           method: 'GET',
           headers: {
             'x-user-email': userEmail.toLowerCase(),
@@ -92,13 +87,9 @@ function Characters() {
   useEffect(() => {
     const fetchRacesAndClasses = async () => {
       try {
-        const backendUrl = window.location.protocol === 'https:'
-          ? `https://${window.location.hostname}/api`
-          : 'http://localhost:3000/api'
-
         const [racesResponse, classesResponse] = await Promise.all([
-          fetch(`${backendUrl}/races/names`),
-          fetch(`${backendUrl}/classes/names`),
+          fetch(`/api/races/names`),
+          fetch(`/api/classes/names`),
         ])
 
         if (racesResponse.ok) {
@@ -155,11 +146,7 @@ function Characters() {
       try {
         const userEmail = keycloak.tokenParsed?.email
         if (userEmail) {
-          const backendUrl = window.location.protocol === 'https:'
-            ? `https://${window.location.hostname}/api`
-            : 'http://localhost:3000/api'
-
-          const response = await fetch(`${backendUrl}/characters`, {
+          const response = await fetch(`/api/characters`, {
             method: 'GET',
             headers: {
               'x-user-email': userEmail.toLowerCase(),
@@ -201,11 +188,7 @@ function Characters() {
         return
       }
 
-      const backendUrl = window.location.protocol === 'https:'
-        ? `https://${window.location.hostname}/api`
-        : 'http://localhost:3000/api'
-
-      const response = await fetch(`${backendUrl}/characters/${selectedCharacter.id}`, {
+      const response = await fetch(`/api/characters/${selectedCharacter.id}`, {
         method: 'PUT',
         headers: {
           'x-user-email': userEmail.toLowerCase(),
@@ -280,11 +263,7 @@ function Characters() {
         return
       }
 
-      const backendUrl = window.location.protocol === 'https:'
-        ? `https://${window.location.hostname}/api`
-        : 'http://localhost:3000/api'
-
-      const response = await fetch(`${backendUrl}/discord/submit-revision`, {
+      const response = await fetch(`/api/discord/submit-revision`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

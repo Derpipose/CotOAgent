@@ -27,27 +27,10 @@ export default function Races() {
   useEffect(() => {
     const fetchRaces = async () => {
       try {
-        // Determine API endpoint based on environment
-        const apiUrl = import.meta.env.VITE_API_URL;
-        
-        // Check if VITE_API_URL is set and valid (for Docker dev)
-        const isDevMode = apiUrl && apiUrl !== 'undefined' && apiUrl.trim() !== '' && apiUrl.startsWith('http');
-        
-        let endpoint: string;
-        if (isDevMode) {
-          // Docker dev mode - use absolute URL
-          endpoint = `${apiUrl}/api/races`;
-          console.log(`[Races] Dev mode - fetching from: ${endpoint}`);
-        } else {
-          // Kubernetes/production mode - use relative path through nginx proxy
-          endpoint = '/api/races';
-          console.log(`[Races] Production mode - fetching from: ${endpoint}`);
-        }
-        
         const controller = new AbortController();
         const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 second timeout
         
-        const response = await fetch(endpoint, { signal: controller.signal });
+        const response = await fetch('/api/races', { signal: controller.signal });
         clearTimeout(timeoutId);
         
         if (!response.ok) {
@@ -88,10 +71,7 @@ export default function Races() {
     setSearchError(null);
 
     try {
-      const apiUrl = import.meta.env.VITE_API_URL;
-      const isDevMode = apiUrl && apiUrl !== 'undefined' && apiUrl.trim() !== '' && apiUrl.startsWith('http');
-
-      const endpoint = isDevMode ? `${apiUrl}/api/races/search` : '/api/races/search';
+      const endpoint = '/api/races/search';
 
       console.log(`[Races] Searching for: "${searchQuery}" via ${endpoint}`);
 

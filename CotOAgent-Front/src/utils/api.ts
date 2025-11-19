@@ -85,9 +85,18 @@ export const getApiBaseUrl = (): string => {
     return 'http://localhost:3000/api';
   }
 
-  return window.location.protocol === 'https:'
-    ? `https://${window.location.hostname}/api`
-    : 'http://localhost:3000/api';
+  // In Docker dev, use the backend service name
+  if (window.location.hostname === 'frontend' || window.location.hostname === 'cotoagent-frontend') {
+    return 'http://backend:3000/api'
+  }
+
+  // In production, use HTTPS with the same hostname
+  if (window.location.protocol === 'https:') {
+    return `https://${window.location.hostname}/api`
+  }
+
+  // Local development: use relative paths to leverage Vite proxy
+  return '/api';
 };
 
 /**

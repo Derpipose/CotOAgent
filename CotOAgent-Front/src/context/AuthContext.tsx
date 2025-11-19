@@ -11,14 +11,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   const checkAdminStatus = useCallback(async (email: string) => {
     try {
-      const backendUrl = window.location.protocol === 'https:' 
-        ? `https://${window.location.hostname}/api`
-        : 'http://localhost:3000/api'
-
-      // Normalize email
       const normalizedEmail = email.trim().toLowerCase()
-      console.log('[AuthContext] Checking admin status at:', `${backendUrl}/auth/check-admin`, 'with email:', normalizedEmail)
-      const response = await fetch(`${backendUrl}/auth/check-admin`, {
+      console.log('[AuthContext] Checking admin status with email:', normalizedEmail)
+      const response = await fetch(`/api/auth/check-admin`, {
         headers: {
           'x-user-email': normalizedEmail
         }

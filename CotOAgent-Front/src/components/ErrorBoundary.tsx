@@ -1,7 +1,10 @@
-import React from 'react';
+import React, { useContext, type ReactNode } from 'react';
+import type { ToastContextType } from '../context/ToastContext';
+import { ToastContext } from '../context/ToastContext';
 
 interface Props {
-  children: React.ReactNode;
+  children: ReactNode;
+  addToast?: ToastContextType['addToast'];
 }
 
 interface State {
@@ -9,7 +12,7 @@ interface State {
   errorMessage: string;
 }
 
-export class ErrorBoundary extends React.Component<Props, State> {
+class ErrorBoundaryComponent extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props);
     this.state = {
@@ -32,6 +35,12 @@ export class ErrorBoundary extends React.Component<Props, State> {
       errorInfo,
       timestamp: new Date().toISOString(),
     });
+
+    // Trigger error toast notification
+    if (this.props.addToast) {
+      const errorMsg = error.message || 'An unexpected error occurred';
+      this.props.addToast(errorMsg, 'error', 5000);
+    }
   }
 
   handleReset = () => {
@@ -58,6 +67,12 @@ export class ErrorBoundary extends React.Component<Props, State> {
 
     return this.props.children;
   }
+}
+
+// Higher-Order Component wrapper to provide addToast from context
+function ErrorBoundary({ children }: { children: ReactNode }) {
+  const toastContext = useContext(ToastContext);
+  return <ErrorBoundaryComponent addToast={toastContext?.addToast} children={children} />;
 }
 
 export default ErrorBoundary;

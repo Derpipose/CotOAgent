@@ -10,7 +10,7 @@ export interface Toast {
   isPersistent?: boolean;
 }
 
-interface ToastContextType {
+export interface ToastContextType {
   toasts: Toast[];
   addToast: (message: string, type: ToastType, duration?: number) => string;
   addPersistentToast: (message: string, type: ToastType) => string;
@@ -18,7 +18,8 @@ interface ToastContextType {
   clearAllToasts: () => void;
 }
 
-const ToastContext = createContext<ToastContextType | undefined>(undefined);
+// eslint-disable-next-line react-refresh/only-export-components
+export const ToastContext = createContext<ToastContextType | undefined>(undefined);
 
 export const ToastProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [toasts, setToasts] = useState<Toast[]>([]);
@@ -28,6 +29,8 @@ export const ToastProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     const newToast: Toast = { id, message, type, duration, isPersistent: false };
 
     setToasts((prev) => [...prev, newToast]);
+
+
 
     // Auto-remove toast after duration
     if (duration > 0) {

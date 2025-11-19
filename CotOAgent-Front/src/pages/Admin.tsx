@@ -21,14 +21,6 @@ interface EmbeddingProgress {
   percentageComplete: number
 }
 
-// Utility: Get backend URL
-const getBackendUrl = () => {
-  if (window.location.protocol === 'https:') {
-    return `https://${window.location.hostname}/api`
-  }
-  return 'http://localhost:3000/api'
-}
-
 // Utility: Extract error message
 const getErrorMessage = (err: unknown): string => {
   return err instanceof Error ? err.message : 'Unknown error'
@@ -61,7 +53,7 @@ export default function Admin() {
     setError(null)
     
     try {
-      const response = await fetch(`${getBackendUrl()}/import/${type}`)
+      const response = await fetch(`/api/import/${type}`)
       const data = await response.json()
       
       const success = response.ok
@@ -103,7 +95,7 @@ export default function Admin() {
     }))
     
     try {
-      const response = await fetch(`${getBackendUrl()}/embeddings/${type}/generate`, {
+      const response = await fetch(`/api/embeddings/${type}/generate`, {
         method: 'POST'
       })
 
