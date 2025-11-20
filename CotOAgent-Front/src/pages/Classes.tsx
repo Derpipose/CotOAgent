@@ -27,6 +27,17 @@ export default function Classes() {
 
   // Search mutation
   const searchMutation = useMutationApi<ClassData[], { query: string }>({
+    mutationOptions: {
+      mutationFn: async (variables) => {
+        const response = await fetch('/api/classes/search', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ query: variables.query }),
+        });
+        if (!response.ok) throw new Error('Search failed');
+        return response.json();
+      },
+    },
     showError: true,
     errorMessage: 'Failed to search classes',
   });

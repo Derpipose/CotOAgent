@@ -1,5 +1,6 @@
 import type { Request, Response, Router as ExpressRouter } from 'express';
 import { Router } from 'express';
+import { asyncHandler } from '../../middleware/errorHandler.js';
 import { pool } from '../utils/database.js';
 
 const router: ExpressRouter = Router();
@@ -9,7 +10,7 @@ const router: ExpressRouter = Router();
  * Returns all spellbooks from the database grouped by SpellBranch and SpellBook,
  * as an array of objects with branch info and nested spellbooks
  */
-router.get('/', async (req: Request, res: Response): Promise<void> => {
+router.get('/', asyncHandler(async (req: Request, res: Response) => {
   const client = await pool.connect();
   try {
     console.log('[spellbooks] Fetching spellbooks from database');
@@ -65,15 +66,9 @@ router.get('/', async (req: Request, res: Response): Promise<void> => {
 
     console.log(`[spellbooks] Successfully fetched ${response.length} branches with spellbooks`);
     res.json(response);
-  } catch (error) {
-    console.error('[spellbooks] Error reading spellbooks:', error);
-    res.status(500).json({ 
-      error: 'Failed to fetch spellbooks',
-      details: error instanceof Error ? error.message : 'Unknown error'
-    });
   } finally {
     client.release();
   }
-});
+}));
 
 export default router;

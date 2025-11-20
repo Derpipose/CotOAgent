@@ -21,6 +21,13 @@ export default function Admin() {
 
   // Import mutations for races, classes, and spells
   const importRacesMutation = useMutationApi<{ savedToDatabase: number }>({
+    mutationOptions: {
+      mutationFn: async () => {
+        const response = await fetch('/api/import/races');
+        if (!response.ok) throw new Error('Import failed');
+        return response.json();
+      },
+    },
     showSuccess: true,
     successMessage: 'Successfully imported races',
     showError: true,
@@ -28,6 +35,13 @@ export default function Admin() {
   })
 
   const importClassesMutation = useMutationApi<{ savedToDatabase: number }>({
+    mutationOptions: {
+      mutationFn: async () => {
+        const response = await fetch('/api/import/classes');
+        if (!response.ok) throw new Error('Import failed');
+        return response.json();
+      },
+    },
     showSuccess: true,
     successMessage: 'Successfully imported classes',
     showError: true,
@@ -35,6 +49,13 @@ export default function Admin() {
   })
 
   const importSpellsMutation = useMutationApi<{ savedToDatabase: number }>({
+    mutationOptions: {
+      mutationFn: async () => {
+        const response = await fetch('/api/import/spells');
+        if (!response.ok) throw new Error('Import failed');
+        return response.json();
+      },
+    },
     showSuccess: true,
     successMessage: 'Successfully imported spells',
     showError: true,

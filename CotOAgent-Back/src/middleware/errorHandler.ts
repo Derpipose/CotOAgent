@@ -70,11 +70,21 @@ export const errorHandler = (
 /**
  * Async error handler wrapper for route handlers
  * Wraps async route handlers to catch errors and pass them to the error handler
+ * Usage: router.get('/path', asyncHandler(async (req, res, next) => { ... }))
  */
 export const asyncHandler = (fn: (req: Request, res: Response, next: NextFunction) => Promise<void>) => {
   return (req: Request, res: Response, next: NextFunction) => {
     Promise.resolve(fn(req, res, next)).catch(next);
   };
+};
+
+/**
+ * Validation error helper - throws AppError for validation failures
+ */
+export const validateRequest = (value: unknown, message: string, statusCode: number = 400): void => {
+  if (!value) {
+    throw new AppError(statusCode, message);
+  }
 };
 
 /**

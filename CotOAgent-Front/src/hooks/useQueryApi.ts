@@ -13,16 +13,23 @@ export const useQueryApi = <T,>(
     showError?: boolean;
     errorMessage?: string;
     enabled?: boolean;
+    headers?: Record<string, string>;
   }
 ) => {
   const { addToast } = useToast();
 
   const query = useQuery<T>({
-    queryKey: [endpoint],
+    queryKey: [endpoint, options?.headers],
     queryFn: async () => {
       try {
         const url = buildApiUrl(endpoint);
-        return await apiCall<T>(url);
+        const fetchOptions: RequestInit = {};
+        
+        if (options?.headers) {
+          fetchOptions.headers = options.headers;
+        }
+        
+        return await apiCall<T>(url, fetchOptions);
       } catch (error) {
         let errorMsg = 'Failed to fetch data';
 
@@ -65,6 +72,10 @@ export const useMutationApi = <TData, TVariables = unknown>(
   const queryClient = useQueryClient();
 
   const mutation = useMutation<TData, Error, TVariables>({
+    // Provide a default mutationFn if none is provided
+    mutationFn: config?.mutationOptions?.mutationFn || (async () => {
+      throw new Error('No mutationFn provided');
+    }),
     onSuccess: () => {
       if (config?.showSuccess) {
         const message = config?.successMessage || 'Operation completed successfully';

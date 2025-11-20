@@ -1,5 +1,6 @@
 import { Router, type Request, type Response, type Router as ExpressRouter } from 'express';
 import pg from 'pg';
+import { asyncHandler, AppError } from '../../middleware/errorHandler.js';
 
 const { Pool } = pg;
 
@@ -169,14 +170,10 @@ async function getEmbeddingProgress(): Promise<EmbeddingProgress> {
  * Generic handler for generating embeddings with SSE progress streaming
  */
 function createGenerateHandler(entityType: EntityType) {
-  return async (req: Request, res: Response) => {
+  return (req: Request, res: Response) => {
     // Check if generation is already in progress
     if (activeGenerations.has(entityType)) {
-      res.status(409).json({
-        error: `Embedding generation already in progress for ${entityType}`,
-        status: 'already_processing',
-      });
-      return;
+      throw new AppError(409, `Embedding generation already in progress for ${entityType}`);
     }
 
     activeGenerations.add(entityType);
@@ -229,7 +226,7 @@ function createGenerateHandler(entityType: EntityType) {
  * Generic handler for status endpoints
  */
 function createStatusHandler(entityType: EntityType) {
-  return async (req: Request, res: Response) => {
+  return asyncHandler(async (req: Request, res: Response) => {
     const client = await pool.connect();
     const config = ENTITY_CONFIG[entityType];
     
@@ -256,22 +253,17 @@ function createStatusHandler(entityType: EntityType) {
         withoutEmbeddings,
         percentageComplete: total > 0 ? Math.round((withEmbeddings / total) * 100) : 0,
       });
-    } catch (error) {
-      console.error('[EMBEDDINGS_STATUS] Error checking status:', error);
-      res.status(500).json({
-        error: error instanceof Error ? error.message : 'Unknown error',
-      });
     } finally {
       client.release();
     }
-  };
+  });
 }
 
 /**
  * Generic handler for listing entity embedding statuses
  */
 function createListHandler(entityType: EntityType) {
-  return async (req: Request, res: Response) => {
+  return asyncHandler(async (req: Request, res: Response) => {
     const client = await pool.connect();
     const config = ENTITY_CONFIG[entityType];
 
@@ -293,15 +285,10 @@ function createListHandler(entityType: EntityType) {
           descriptionPreview: row.description?.substring(0, 50) + '...',
         })),
       });
-    } catch (error) {
-      console.error(`[EMBEDDINGS_DEBUG] Error fetching ${entityType}:`, error);
-      res.status(500).json({
-        error: error instanceof Error ? error.message : 'Unknown error',
-      });
     } finally {
       client.release();
     }
-  };
+  });
 }
 
 /**

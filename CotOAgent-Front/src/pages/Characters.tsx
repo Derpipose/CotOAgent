@@ -73,15 +73,16 @@ function Characters() {
       enabled: isAuthenticated && !!userEmail,
       showError: true,
       errorMessage: 'Failed to load characters',
+      headers: userEmail ? { 'x-user-email': userEmail } : undefined,
     }
   )
 
   // Sync fetched data to local state for mutations
   useEffect(() => {
-    if (characterData.characters) {
+    if (characterData?.characters && Array.isArray(characterData.characters)) {
       setCharacters(characterData.characters)
     }
-  }, [characterData])
+  }, [characterData?.characters])
 
   const formatDate = (dateString: string) => {
     const date = new Date(dateString)

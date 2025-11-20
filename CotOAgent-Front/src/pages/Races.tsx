@@ -32,6 +32,17 @@ export default function Races() {
 
   // Search mutation
   const searchMutation = useMutationApi<RaceData[], { query: string }>({
+    mutationOptions: {
+      mutationFn: async (variables) => {
+        const response = await fetch('/api/races/search', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ query: variables.query }),
+        });
+        if (!response.ok) throw new Error('Search failed');
+        return response.json();
+      },
+    },
     showError: true,
     errorMessage: 'Failed to search races',
   });
