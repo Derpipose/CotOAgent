@@ -60,13 +60,13 @@ CREATE TABLE IF NOT EXISTS characters (
     intelligence INTEGER,
     wisdom INTEGER,
     charisma INTEGER,
+    backstory TEXT,
+    notes TEXT,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     last_modified TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     feedback TEXT,
     approval_status VARCHAR(50) DEFAULT 'pending',
-    revised BOOLEAN DEFAULT FALSE,
-    FOREIGN KEY (class_classification, class_name) REFERENCES classes(classification, class_name),
-    FOREIGN KEY (race_campaign, race_name) REFERENCES races(campaign, name)
+    revised BOOLEAN DEFAULT FALSE
 );
 
 

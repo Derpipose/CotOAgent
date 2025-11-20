@@ -164,7 +164,7 @@ Rubric items:
 Features:
 - [x] Character customization
 - [x] Character save/load functionality
-- [ ] Audit log for character actions
+- [x] Character validation and error handling
 
 #### Delivered
 
@@ -183,6 +183,7 @@ Rubric items:
 - [ ] 3 instances of element re-ordering on smaller screens
 - [ ] Semi-optimal stat assignment algorithm
 - [ ] Spell management and filtering
+- [ ] Audit log for character actions
 
 
 Features:
@@ -231,7 +232,6 @@ Rubric items:
 Features:
 - [ ] AI agent behavior refinement
 - [ ] Final Discord integration testing
-- [ ] Character validation and error handling
 
 #### Delivered
 
