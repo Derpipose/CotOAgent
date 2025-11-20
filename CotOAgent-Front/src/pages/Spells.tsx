@@ -1,6 +1,6 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import '../css/displaycard.css';
-import { useApiCall } from '../hooks/useApiCall';
+import { useQueryApi } from '../hooks/useQueryApi';
 import { SpellsContainer } from '../components/Spells';
 
 interface SpellData {
@@ -23,32 +23,17 @@ interface BranchData {
 }
 
 export default function Spells() {
-  const { call } = useApiCall();
-  const [branches, setBranches] = useState<BranchData[]>([]);
-  const [loading, setLoading] = useState(true);
   const [expandedBranch, setExpandedBranch] = useState<string | null>(null);
   const [expandedBook, setExpandedBook] = useState<string | null>(null);
   const [expandedSpell, setExpandedSpell] = useState<string | null>(null);
 
-  useEffect(() => {
-    const fetchSpellbooks = async () => {
-      const data = await call<BranchData[]>(
-        '/spellbooks',
-        undefined,
-        {
-          showError: true,
-          errorMessage: 'Failed to load spellbooks',
-        }
-      );
-
-      if (data) {
-        setBranches(data);
-      }
-      setLoading(false);
-    };
-
-    fetchSpellbooks();
-  }, [call]);
+  const { data: branches = [], isLoading } = useQueryApi<BranchData[]>(
+    '/spellbooks',
+    {
+      showError: true,
+      errorMessage: 'Failed to load spellbooks',
+    }
+  );
 
   const toggleExpandBranch = (branchName: string) => {
     setExpandedBranch(expandedBranch === branchName ? null : branchName);
@@ -62,7 +47,7 @@ export default function Spells() {
     setExpandedSpell(expandedSpell === spellId ? null : spellId);
   };
 
-  if (loading) {
+  if (isLoading) {
     return <div><h1>Spells</h1><p>Loading...</p></div>;
   }
 

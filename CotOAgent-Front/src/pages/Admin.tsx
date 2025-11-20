@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useToast } from '../context/ToastContext'
-import { useApiCall } from '../hooks/useApiCall'
+import { useMutationApi } from '../hooks/useQueryApi'
 import '../css/admin.css'
 
 interface EmbeddingProgress {
@@ -12,8 +12,6 @@ interface EmbeddingProgress {
 
 export default function Admin() {
   const { addToast } = useToast()
-  const { call } = useApiCall()
-  const [loading, setLoading] = useState<'races' | 'classes' | 'spells' | null>(null)
   const [embeddingLoading, setEmbeddingLoading] = useState<'races' | 'classes' | 'spells' | null>(null)
   const [embeddingProgress, setEmbeddingProgress] = useState<{
     races?: EmbeddingProgress & { message: string }
@@ -21,21 +19,35 @@ export default function Admin() {
     spells?: EmbeddingProgress & { message: string }
   }>({})
 
+  // Import mutations for races, classes, and spells
+  const importRacesMutation = useMutationApi<{ savedToDatabase: number }>({
+    showSuccess: true,
+    successMessage: 'Successfully imported races',
+    showError: true,
+    errorMessage: 'Failed to import races',
+  })
+
+  const importClassesMutation = useMutationApi<{ savedToDatabase: number }>({
+    showSuccess: true,
+    successMessage: 'Successfully imported classes',
+    showError: true,
+    errorMessage: 'Failed to import classes',
+  })
+
+  const importSpellsMutation = useMutationApi<{ savedToDatabase: number }>({
+    showSuccess: true,
+    successMessage: 'Successfully imported spells',
+    showError: true,
+    errorMessage: 'Failed to import spells',
+  })
+
   const handleImport = async (type: 'races' | 'classes' | 'spells') => {
-    setLoading(type)
-    
-    await call<{ savedToDatabase: number; error?: string }>(
-      `/import/${type}`,
-      undefined,
-      {
-        showSuccess: true,
-        successMessage: `Successfully imported ${type}`,
-        showError: true,
-        errorMessage: `Failed to import ${type}`,
-      }
-    )
-    
-    setLoading(null)
+    const mutation = 
+      type === 'races' ? importRacesMutation :
+      type === 'classes' ? importClassesMutation :
+      importSpellsMutation
+
+    mutation.mutate({} as Record<string, unknown>)
   }
 
   const handleEmbed = async (type: 'races' | 'classes' | 'spells') => {
@@ -142,9 +154,9 @@ export default function Admin() {
           <button
             className="import-button import-races"
             onClick={() => handleImport('races')}
-            disabled={loading !== null}
+            disabled={importRacesMutation.isPending || importClassesMutation.isPending || importSpellsMutation.isPending}
           >
-            {loading === 'races' ? '⏳ Importing...' : '🐉 Import Races'}
+            {importRacesMutation.isPending ? '⏳ Importing...' : '🐉 Import Races'}
           </button>
         </div>
 
@@ -152,9 +164,9 @@ export default function Admin() {
           <button
             className="import-button import-classes"
             onClick={() => handleImport('classes')}
-            disabled={loading !== null}
+            disabled={importRacesMutation.isPending || importClassesMutation.isPending || importSpellsMutation.isPending}
           >
-            {loading === 'classes' ? '⏳ Importing...' : '⚔️ Import Classes'}
+            {importClassesMutation.isPending ? '⏳ Importing...' : '⚔️ Import Classes'}
           </button>
         </div>
 
@@ -162,9 +174,9 @@ export default function Admin() {
           <button
             className="import-button import-spells"
             onClick={() => handleImport('spells')}
-            disabled={loading !== null}
+            disabled={importRacesMutation.isPending || importClassesMutation.isPending || importSpellsMutation.isPending}
           >
-            {loading === 'spells' ? '⏳ Importing...' : '✨ Import Spells'}
+            {importSpellsMutation.isPending ? '⏳ Importing...' : '✨ Import Spells'}
           </button>
         </div>
       </div>

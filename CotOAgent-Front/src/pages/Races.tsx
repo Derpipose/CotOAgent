@@ -1,6 +1,6 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import '../css/displaycard.css';
-import { useApiCall } from '../hooks/useApiCall';
+import { useQueryApi, useMutationApi } from '../hooks/useQueryApi';
 import { RaceSearchSection, RacesList } from '../components/Races';
 
 interface RaceData {
@@ -16,36 +16,28 @@ interface RaceData {
 }
 
 export default function Races() {
-  const { call } = useApiCall();
-  const [races, setRaces] = useState<RaceData[]>([]);
-  const [allRaces, setAllRaces] = useState<RaceData[]>([]);
-  const [loading, setLoading] = useState(true);
   const [expandedRaceKey, setExpandedRaceKey] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
-  const [isSearching, setIsSearching] = useState(false);
   const [hasSearched, setHasSearched] = useState(false);
   const [searchError, setSearchError] = useState<string | null>(null);
 
-  useEffect(() => {
-    const fetchRaces = async () => {
-      const data = await call<RaceData[]>(
-        '/races',
-        undefined,
-        {
-          showError: true,
-          errorMessage: 'Failed to load races',
-        }
-      );
+  // Fetch all races on mount
+  const { data: allRaces = [], isLoading } = useQueryApi<RaceData[]>(
+    '/races',
+    {
+      showError: true,
+      errorMessage: 'Failed to load races',
+    }
+  );
 
-      if (data) {
-        setRaces(data);
-        setAllRaces(data);
-      }
-      setLoading(false);
-    };
+  // Search mutation
+  const searchMutation = useMutationApi<RaceData[], { query: string }>({
+    showError: true,
+    errorMessage: 'Failed to search races',
+  });
 
-    fetchRaces();
-  }, [call]);
+  // Determine which races to display
+  const displayedRaces = hasSearched ? searchMutation.data || [] : allRaces;
 
   const handleSearch = async () => {
     if (!searchQuery.trim()) {
@@ -53,32 +45,17 @@ export default function Races() {
       return;
     }
 
-    setIsSearching(true);
     setSearchError(null);
-
-    const results = await call<RaceData[]>(
-      '/races/search',
-      {
-        method: 'POST',
-        body: JSON.stringify({ query: searchQuery.trim() }),
+    searchMutation.mutate({ query: searchQuery.trim() }, {
+      onSuccess: () => {
+        setHasSearched(true);
+        setExpandedRaceKey(null);
       },
-      {
-        showError: true,
-        errorMessage: 'Failed to search races',
-      }
-    );
-
-    if (results) {
-      setRaces(results);
-      setHasSearched(true);
-      setExpandedRaceKey(null);
-    }
-    setIsSearching(false);
+    });
   };
 
   const handleClearSearch = () => {
     setSearchQuery('');
-    setRaces(allRaces);
     setHasSearched(false);
     setSearchError(null);
     setExpandedRaceKey(null);
@@ -88,7 +65,7 @@ export default function Races() {
     setExpandedRaceKey(expandedRaceKey === raceKey ? null : raceKey);
   };
 
-  if (loading) {
+  if (isLoading) {
     return <div><h1>Races</h1><p>Loading...</p></div>;
   }
 
@@ -100,13 +77,13 @@ export default function Races() {
         onSearchQueryChange={setSearchQuery}
         onSearch={handleSearch}
         onClearSearch={handleClearSearch}
-        isSearching={isSearching}
+        isSearching={searchMutation.isPending}
         hasSearched={hasSearched}
         searchError={searchError}
-        resultsCount={races.length}
+        resultsCount={displayedRaces.length}
       />
       <RacesList
-        races={races}
+        races={displayedRaces}
         expandedRaceKey={expandedRaceKey}
         onToggleExpand={toggleExpand}
       />

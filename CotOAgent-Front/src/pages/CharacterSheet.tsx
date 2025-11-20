@@ -1,13 +1,13 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import type { CharacterDto } from '../DTOS/Character.Dto';
 import { useAuth } from '../context/useAuth';
-import { useApiCall } from '../hooks/useApiCall';
+import { useQueryApi } from '../hooks/useQueryApi';
 import { useToast } from '../context/ToastContext';
+import { apiCall, buildApiUrl } from '../utils/api';
 import '../css/charactersheet.css';
 
 export default function CharacterSheet() {
   const { userEmail } = useAuth();
-  const { call } = useApiCall();
   const { addToast } = useToast();
   
   const [character, setCharacter] = useState<CharacterDto>({
@@ -24,31 +24,20 @@ export default function CharacterSheet() {
     },
   });
 
-  const [classes, setClasses] = useState<string[]>([]);
-  const [races, setRaces] = useState<string[]>([]);
-  const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      const [classesData, racesData] = await Promise.all([
-        call<string[]>('/classes/names', undefined, { showError: false }),
-        call<string[]>('/races/names', undefined, { showError: false }),
-      ]);
+  // Fetch classes and races
+  const { data: classes = [], isLoading: classesLoading } = useQueryApi<string[]>(
+    '/classes/names',
+    { showError: false }
+  );
 
-      if (classesData) {
-        setClasses(classesData);
-      }
+  const { data: races = [], isLoading: racesLoading } = useQueryApi<string[]>(
+    '/races/names',
+    { showError: false }
+  );
 
-      if (racesData) {
-        setRaces(racesData);
-      }
-
-      setLoading(false);
-    };
-
-    fetchData();
-  }, [call]);
+  const loading = classesLoading || racesLoading;
 
   const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setCharacter({ ...character, Name: e.target.value });
@@ -73,19 +62,18 @@ export default function CharacterSheet() {
   };
 
   const generateRandomStat = async (statName: keyof typeof character.Stats) => {
-    const data = await call<{ numbers: number }>(
-      '/random/8',
-      undefined,
-      {
-        showError: true,
-        errorMessage: 'Failed to generate random number',
-      }
-    );
+    try {
+      const data = await apiCall<{ numbers: number }>(
+        buildApiUrl('/random/8')
+      );
 
-    if (data) {
-      const randomNumber = data.numbers;
-      const newStatValue = 10 + randomNumber;
-      handleStatChange(statName, newStatValue);
+      if (data) {
+        const randomNumber = data.numbers;
+        const newStatValue = 10 + randomNumber;
+        handleStatChange(statName, newStatValue);
+      }
+    } catch {
+      addToast('Failed to generate random number', 'error');
     }
   };
 
@@ -134,55 +122,52 @@ export default function CharacterSheet() {
 
     setSubmitting(true);
 
-    // Step 1: Save character to database
-    const createData = await call<{ characterId: number }>(
-      '/characters/create',
-      {
-        method: 'POST',
-        headers: {
-          'x-user-email': userEmail,
-        },
-        body: JSON.stringify({
-          name: character.Name,
-          class: character.Class,
-          race: character.Race,
-          stats: character.Stats,
-        }),
-      },
-      {
-        showSuccess: false,
-        showError: true,
-        errorMessage: 'Failed to create character',
-      }
-    );
+    try {
+      // Step 1: Save character to database
+      const createData = await apiCall<{ characterId: number }>(
+        buildApiUrl('/characters/create'),
+        {
+          method: 'POST',
+          headers: {
+            'x-user-email': userEmail,
+          },
+          body: JSON.stringify({
+            name: character.Name,
+            class: character.Class,
+            race: character.Race,
+            stats: character.Stats,
+          }),
+        }
+      );
 
-    if (!createData) {
+      if (!createData) {
+        addToast('Failed to create character', 'error');
+        setSubmitting(false);
+        return;
+      }
+
+      // Step 2: Submit for approval
+      await apiCall(
+        buildApiUrl('/discord/submit-character'),
+        {
+          method: 'POST',
+          headers: {
+            'x-user-email': userEmail,
+          },
+          body: JSON.stringify({
+            characterId: createData.characterId,
+            userEmail: userEmail,
+          }),
+        }
+      );
+
+      addToast('Character submitted for approval! Check Discord for the submission.', 'success');
+    } catch (error) {
+      const errorMsg = error instanceof Error ? error.message : 'Failed to submit character for approval';
+      addToast(errorMsg, 'error');
+    } finally {
       setSubmitting(false);
-      return;
     }
-
-    // Step 2: Submit for approval
-    await call(
-      '/discord/submit-character',
-      {
-        method: 'POST',
-        headers: {
-          'x-user-email': userEmail,
-        },
-        body: JSON.stringify({
-          characterId: createData.characterId,
-          userEmail: userEmail,
-        }),
-      },
-      {
-        showSuccess: true,
-        successMessage: 'Character submitted for approval! Check Discord for the submission.',
-        showError: true,
-        errorMessage: 'Failed to submit character for approval',
-      }
-    );
-
-    setSubmitting(false);
   };
 
   return (

@@ -1,6 +1,6 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import '../css/displaycard.css';
-import { useApiCall } from '../hooks/useApiCall';
+import { useQueryApi, useMutationApi } from '../hooks/useQueryApi';
 import { SearchSection, ClassesList } from '../components/Classes';
 
 interface ClassData {
@@ -11,36 +11,28 @@ interface ClassData {
 }
 
 export default function Classes() {
-  const { call } = useApiCall();
-  const [classes, setClasses] = useState<ClassData[]>([]);
-  const [allClasses, setAllClasses] = useState<ClassData[]>([]);
-  const [loading, setLoading] = useState(true);
   const [expandedClass, setExpandedClass] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
-  const [isSearching, setIsSearching] = useState(false);
   const [hasSearched, setHasSearched] = useState(false);
   const [searchError, setSearchError] = useState<string | null>(null);
 
-  useEffect(() => {
-    const fetchClasses = async () => {
-      const data = await call<ClassData[]>(
-        '/classes',
-        undefined,
-        {
-          showError: true,
-          errorMessage: 'Failed to load classes',
-        }
-      );
+  // Fetch all classes on mount
+  const { data: allClasses = [], isLoading } = useQueryApi<ClassData[]>(
+    '/classes',
+    {
+      showError: true,
+      errorMessage: 'Failed to load classes',
+    }
+  );
 
-      if (data) {
-        setClasses(data);
-        setAllClasses(data);
-      }
-      setLoading(false);
-    };
+  // Search mutation
+  const searchMutation = useMutationApi<ClassData[], { query: string }>({
+    showError: true,
+    errorMessage: 'Failed to search classes',
+  });
 
-    fetchClasses();
-  }, [call]);
+  // Determine which classes to display
+  const displayedClasses = hasSearched ? searchMutation.data || [] : allClasses;
 
   const handleSearch = async () => {
     if (!searchQuery.trim()) {
@@ -48,32 +40,17 @@ export default function Classes() {
       return;
     }
 
-    setIsSearching(true);
     setSearchError(null);
-
-    const results = await call<ClassData[]>(
-      '/classes/search',
-      {
-        method: 'POST',
-        body: JSON.stringify({ query: searchQuery.trim() }),
+    searchMutation.mutate({ query: searchQuery.trim() }, {
+      onSuccess: () => {
+        setHasSearched(true);
+        setExpandedClass(null);
       },
-      {
-        showError: true,
-        errorMessage: 'Failed to search classes',
-      }
-    );
-
-    if (results) {
-      setClasses(results);
-      setHasSearched(true);
-      setExpandedClass(null);
-    }
-    setIsSearching(false);
+    });
   };
 
   const handleClearSearch = () => {
     setSearchQuery('');
-    setClasses(allClasses);
     setHasSearched(false);
     setSearchError(null);
     setExpandedClass(null);
@@ -83,7 +60,7 @@ export default function Classes() {
     setExpandedClass(expandedClass === className ? null : className);
   };
 
-  if (loading) {
+  if (isLoading) {
     return <div><h1>Classes</h1><p>Loading...</p></div>;
   }
 
@@ -95,13 +72,13 @@ export default function Classes() {
         onSearchQueryChange={setSearchQuery}
         onSearch={handleSearch}
         onClearSearch={handleClearSearch}
-        isSearching={isSearching}
+        isSearching={searchMutation.isPending}
         hasSearched={hasSearched}
         searchError={searchError}
-        resultsCount={classes.length}
+        resultsCount={displayedClasses.length}
       />
       <ClassesList
-        classes={classes}
+        classes={displayedClasses}
         expandedClass={expandedClass}
         onToggleExpand={toggleExpand}
       />

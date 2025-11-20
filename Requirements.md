@@ -169,9 +169,14 @@ Features:
 #### Delivered
 
 Rubric Items:
-
+I have achieved the 4+ Generic layout components with different pages and such
 
 Features:
+My characters are now customizable. I have added in a notes section and a backstory
+section as well. 
+I have implemented a way to save and load characters to the database and you can view
+and submit them from one page. 
+I have gotten character validation and error handling of invalid characters done. 
 
 ---
 ### Checkpoint 8: `Nov. 22, 2025`

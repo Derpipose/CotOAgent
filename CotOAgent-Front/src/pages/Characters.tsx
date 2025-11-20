@@ -1,8 +1,9 @@
-import { useEffect, useState, useRef } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import keycloak from '../keycloak'
 import '../css/characters.css'
 import { useToast } from '../context/ToastContext'
-import { useApiCall } from '../hooks/useApiCall'
+import { useQueryApi } from '../hooks/useQueryApi'
+import { apiCall, buildApiUrl } from '../utils/api'
 import { CharactersList, CharacterDetailsModal } from '../components/CharacterGallery'
 
 interface Character {
@@ -25,9 +26,7 @@ interface Character {
 
 function Characters() {
   const { addToast } = useToast()
-  const { call } = useApiCall()
   const [characters, setCharacters] = useState<Character[]>([])
-  const [loading, setLoading] = useState(true)
   const [selectedCharacter, setSelectedCharacter] = useState<Character | null>(null)
   const [showDetailsModal, setShowDetailsModal] = useState(false)
   const [isSubmitting, setIsSubmitting] = useState(false)
@@ -51,73 +50,38 @@ function Characters() {
     wisdom: number
     charisma: number
   } | null>(null)
-  const [races, setRaces] = useState<string[]>([])
-  const [classes, setClasses] = useState<string[]>([])
   const submissionInProgressRef = useRef(false)
 
+  const userEmail = keycloak.tokenParsed?.email?.toLowerCase()
+  const isAuthenticated = keycloak.authenticated
+
+  // Fetch races and classes with TanStack Query
+  const { data: races = [] } = useQueryApi<string[]>(
+    '/races/names',
+    { showError: false }
+  )
+
+  const { data: classes = [] } = useQueryApi<string[]>(
+    '/classes/names',
+    { showError: false }
+  )
+
+  // Fetch characters with custom logic due to header requirement
+  const { data: characterData = { characters: [] }, isLoading, refetch } = useQueryApi<{ characters: Character[] }>(
+    '/characters',
+    {
+      enabled: isAuthenticated && !!userEmail,
+      showError: true,
+      errorMessage: 'Failed to load characters',
+    }
+  )
+
+  // Sync fetched data to local state for mutations
   useEffect(() => {
-    const fetchCharacters = async () => {
-      setLoading(true)
-
-      // Get user email from Keycloak
-      const userEmail = keycloak.tokenParsed?.email
-      if (!userEmail) {
-        addToast('Unable to retrieve user email', 'error')
-        setLoading(false)
-        return
-      }
-
-      const data = await call<{ characters: Character[] }>(
-        '/characters',
-        {
-          method: 'GET',
-          headers: {
-            'x-user-email': userEmail.toLowerCase(),
-          },
-        },
-        {
-          showError: true,
-          errorMessage: 'Failed to load characters',
-        }
-      )
-
-      if (data) {
-        setCharacters(data.characters || [])
-      }
-      setLoading(false)
+    if (characterData.characters) {
+      setCharacters(characterData.characters)
     }
-
-    if (keycloak.authenticated) {
-      fetchCharacters()
-    } else {
-      addToast('Please log in to view characters', 'warning')
-      setLoading(false)
-    }
-  }, [call, addToast])
-
-  // Fetch races and classes
-  useEffect(() => {
-    const fetchRacesAndClasses = async () => {
-      const [racesData, classesData] = await Promise.all([
-        call<string[]>('/races/names', undefined, {
-          showError: false,
-        }),
-        call<string[]>('/classes/names', undefined, {
-          showError: false,
-        }),
-      ])
-
-      if (racesData) {
-        setRaces(racesData || [])
-      }
-
-      if (classesData) {
-        setClasses(classesData || [])
-      }
-    }
-
-    fetchRacesAndClasses()
-  }, [call])
+  }, [characterData])
 
   const formatDate = (dateString: string) => {
     const date = new Date(dateString)
@@ -154,25 +118,11 @@ function Characters() {
 
   const closeDetailsModal = async () => {
     // Refresh character data to get updated status
-    if (selectedCharacter) {
-      const userEmail = keycloak.tokenParsed?.email
-      if (userEmail) {
-        const data = await call<{ characters: Character[] }>(
-          '/characters',
-          {
-            method: 'GET',
-            headers: {
-              'x-user-email': userEmail.toLowerCase(),
-            },
-          },
-          {
-            showError: false,
-          }
-        )
-
-        if (data) {
-          setCharacters(data.characters || [])
-        }
+    if (selectedCharacter && refetch) {
+      try {
+        await refetch()
+      } catch (error) {
+        console.error('Failed to refetch characters:', error)
       }
     }
 
@@ -208,74 +158,74 @@ function Characters() {
       return
     }
 
-    const result = await call(
-      `/characters/${selectedCharacter.id}`,
-      {
-        method: 'PUT',
-        headers: {
-          'x-user-email': userEmail.toLowerCase(),
-        },
-        body: JSON.stringify({
-          name: selectedCharacter.name,
-          class: editedData.class_name,
-          race: editedData.race_name,
-          stats: {
-            Strength: editedData.strength,
-            Dexterity: editedData.dexterity,
-            Constitution: editedData.constitution,
-            Intelligence: editedData.intelligence,
-            Wisdom: editedData.wisdom,
-            Charisma: editedData.charisma,
+    try {
+      const result = await apiCall(
+        buildApiUrl(`/characters/${selectedCharacter.id}`),
+        {
+          method: 'PUT',
+          headers: {
+            'x-user-email': userEmail.toLowerCase(),
           },
-          approval_status: 'Revised',
-        }),
-      },
-      {
-        showSuccess: true,
-        successMessage: 'Character saved successfully',
-        showError: true,
-        errorMessage: 'Failed to save character',
-      }
-    )
-
-    if (result) {
-      // Update the character in the list
-      setCharacters(
-        characters.map((char) =>
-          char.id === selectedCharacter.id
-            ? {
-                ...char,
-                class_name: editedData.class_name,
-                race_name: editedData.race_name,
-                strength: editedData.strength,
-                dexterity: editedData.dexterity,
-                constitution: editedData.constitution,
-                intelligence: editedData.intelligence,
-                wisdom: editedData.wisdom,
-                charisma: editedData.charisma,
-              }
-            : char
-        )
+          body: JSON.stringify({
+            name: selectedCharacter.name,
+            class: editedData.class_name,
+            race: editedData.race_name,
+            stats: {
+              Strength: editedData.strength,
+              Dexterity: editedData.dexterity,
+              Constitution: editedData.constitution,
+              Intelligence: editedData.intelligence,
+              Wisdom: editedData.wisdom,
+              Charisma: editedData.charisma,
+            },
+            approval_status: 'Revised',
+          }),
+        }
       )
 
-      // Update selected character for display
-      setSelectedCharacter({
-        ...selectedCharacter,
-        class_name: editedData.class_name,
-        race_name: editedData.race_name,
-        strength: editedData.strength,
-        dexterity: editedData.dexterity,
-        constitution: editedData.constitution,
-        intelligence: editedData.intelligence,
-        wisdom: editedData.wisdom,
-        charisma: editedData.charisma,
-      })
+      if (result) {
+        addToast('Character saved successfully', 'success')
+        // Update the character in the list
+        setCharacters(
+          characters.map((char) =>
+            char.id === selectedCharacter.id
+              ? {
+                  ...char,
+                  class_name: editedData.class_name,
+                  race_name: editedData.race_name,
+                  strength: editedData.strength,
+                  dexterity: editedData.dexterity,
+                  constitution: editedData.constitution,
+                  intelligence: editedData.intelligence,
+                  wisdom: editedData.wisdom,
+                  charisma: editedData.charisma,
+                }
+              : char
+          )
+        )
 
-      closeDetailsModal()
+        // Update selected character for display
+        setSelectedCharacter({
+          ...selectedCharacter,
+          class_name: editedData.class_name,
+          race_name: editedData.race_name,
+          strength: editedData.strength,
+          dexterity: editedData.dexterity,
+          constitution: editedData.constitution,
+          intelligence: editedData.intelligence,
+          wisdom: editedData.wisdom,
+          charisma: editedData.charisma,
+        })
+
+        await closeDetailsModal()
+      }
+    } catch (error) {
+      const errorMsg = error instanceof Error ? error.message : 'Failed to save character'
+      addToast(errorMsg, 'error')
+    } finally {
+      submissionInProgressRef.current = false
+      setIsSubmitting(false)
     }
-
-    submissionInProgressRef.current = false
-    setIsSubmitting(false)
   }
 
   const handleSubmitRevision = async () => {
@@ -312,33 +262,33 @@ function Characters() {
       return
     }
 
-    const result = await call(
-      '/discord/submit-revision',
-      {
-        method: 'POST',
-        body: JSON.stringify({
-          characterId: selectedCharacter.id,
-          userEmail: userEmail,
-        }),
-      },
-      {
-        showSuccess: true,
-        successMessage: 'Character revision submitted successfully',
-        showError: true,
-        errorMessage: 'Failed to submit character revision',
+    try {
+      const result = await apiCall(
+        buildApiUrl('/discord/submit-revision'),
+        {
+          method: 'POST',
+          body: JSON.stringify({
+            characterId: selectedCharacter.id,
+            userEmail: userEmail,
+          }),
+        }
+      )
+
+      if (result) {
+        addToast('Character revision submitted successfully', 'success')
+        // Update lastSubmittedData to the current editedData so user needs to make changes before next submit
+        setLastSubmittedData(editedData)
+
+        // Close modal and refresh character data
+        await closeDetailsModal()
       }
-    )
-
-    if (result) {
-      // Update lastSubmittedData to the current editedData so user needs to make changes before next submit
-      setLastSubmittedData(editedData)
-
-      // Close modal and refresh character data
-      await closeDetailsModal()
+    } catch (error) {
+      const errorMsg = error instanceof Error ? error.message : 'Failed to submit character revision'
+      addToast(errorMsg, 'error')
+    } finally {
+      submissionInProgressRef.current = false
+      setIsSubmitting(false)
     }
-
-    submissionInProgressRef.current = false
-    setIsSubmitting(false)
   }
 
   const handleDeleteCharacter = async () => {
@@ -361,35 +311,35 @@ function Characters() {
       return
     }
 
-    const result = await call(
-      `/characters/${selectedCharacter.id}`,
-      {
-        method: 'DELETE',
-        headers: {
-          'x-user-email': userEmail.toLowerCase(),
-        },
-      },
-      {
-        showSuccess: true,
-        successMessage: 'Character deleted successfully',
-        showError: true,
-        errorMessage: 'Failed to delete character',
+    try {
+      const result = await apiCall(
+        buildApiUrl(`/characters/${selectedCharacter.id}`),
+        {
+          method: 'DELETE',
+          headers: {
+            'x-user-email': userEmail.toLowerCase(),
+          },
+        }
+      )
+
+      if (result) {
+        addToast('Character deleted successfully', 'success')
+        // Remove the character from the list
+        setCharacters(characters.filter((char) => char.id !== selectedCharacter.id))
+
+        // Close modal
+        setShowDetailsModal(false)
+        setSelectedCharacter(null)
+        setEditedData(null)
+        setLastSubmittedData(null)
       }
-    )
-
-    if (result) {
-      // Remove the character from the list
-      setCharacters(characters.filter((char) => char.id !== selectedCharacter.id))
-
-      // Close modal
-      setShowDetailsModal(false)
-      setSelectedCharacter(null)
-      setEditedData(null)
-      setLastSubmittedData(null)
+    } catch (error) {
+      const errorMsg = error instanceof Error ? error.message : 'Failed to delete character'
+      addToast(errorMsg, 'error')
+    } finally {
+      submissionInProgressRef.current = false
+      setIsSubmitting(false)
     }
-
-    submissionInProgressRef.current = false
-    setIsSubmitting(false)
   }
 
   return (
@@ -403,14 +353,14 @@ function Characters() {
         </p>
       </div>
 
-      {loading && (
+      {isLoading && (
         <div className="characters-loading">
           <div className="loading-spinner"></div>
           <p>Loading your characters...</p>
         </div>
       )}
 
-      {!loading && characters.length === 0 && (
+      {!isLoading && characters.length === 0 && (
         <div className="characters-empty">
           <div className="empty-icon">⚔️</div>
           <h2>No Characters Yet</h2>
@@ -421,7 +371,7 @@ function Characters() {
         </div>
       )}
 
-      {!loading && characters.length > 0 && (
+      {!isLoading && characters.length > 0 && (
         <CharactersList
           characters={characters}
           onViewDetails={handleViewDetails}

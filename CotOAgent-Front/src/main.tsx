@@ -1,5 +1,6 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
+import { QueryClientProvider } from '@tanstack/react-query'
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import './index.css'
 import About from './pages/About'
@@ -19,6 +20,7 @@ import ToastContainer from './components/ToastContainer'
 import { AuthProvider } from './context/AuthContext'
 import { ToastProvider } from './context/ToastContext'
 import KeycloakInitializer from './KeycloakInitializer'
+import { queryClient } from './config/queryClient'
 import './css/protected-route.css'
 import './css/error-boundary.css'
 import './css/toast.css'
@@ -27,9 +29,10 @@ createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <ErrorBoundary>
       <KeycloakInitializer>
-        <ToastProvider>
-          <BrowserRouter>
-            <AuthProvider>
+        <QueryClientProvider client={queryClient}>
+          <ToastProvider>
+            <BrowserRouter>
+              <AuthProvider>
               <SideNavBar />
               <ToastContainer />
               <div style={{ marginLeft: '250px' }}>
@@ -56,6 +59,7 @@ createRoot(document.getElementById('root')!).render(
             </AuthProvider>
           </BrowserRouter>
         </ToastProvider>
+        </QueryClientProvider>
       </KeycloakInitializer>
     </ErrorBoundary>
   </StrictMode>,
