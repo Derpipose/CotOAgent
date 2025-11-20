@@ -65,44 +65,50 @@ charactersRouter.post('/create', async (req: Request, res: Response) => {
         userId = userResult.rows[0].id;
       }
 
-      // Get class ID
-      let classId: number | null = null;
+      // Get class details (classification and class_name)
+      let classClassification: string | null = null;
+      let classNameValue: string | null = null;
       if (className) {
         const classResult = await client.query(
-          'SELECT id FROM classes WHERE LOWER(class_name) = LOWER($1) LIMIT 1',
+          'SELECT classification, class_name FROM classes WHERE LOWER(class_name) = LOWER($1) LIMIT 1',
           [className]
         );
         if (classResult.rows.length > 0) {
-          classId = classResult.rows[0].id;
+          classClassification = classResult.rows[0].classification;
+          classNameValue = classResult.rows[0].class_name;
         }
       }
 
-      // Get race ID
-      let raceId: number | null = null;
+      // Get race details (campaign and name)
+      let raceCampaign: string | null = null;
+      let raceNameValue: string | null = null;
       if (race) {
         const raceResult = await client.query(
-          'SELECT id FROM races WHERE LOWER(name) = LOWER($1) LIMIT 1',
+          'SELECT campaign, name FROM races WHERE LOWER(name) = LOWER($1) LIMIT 1',
           [race]
         );
         if (raceResult.rows.length > 0) {
-          raceId = raceResult.rows[0].id;
+          raceCampaign = raceResult.rows[0].campaign;
+          raceNameValue = raceResult.rows[0].name;
         }
       }
 
       // Create character
       const createCharacterQuery = `
         INSERT INTO characters (
-          user_id, name, class_id, race_id,
+          user_id, name, class_classification, class_name, race_campaign, race_name,
           strength, dexterity, constitution, intelligence, wisdom, charisma
-        ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
+        ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)
         RETURNING id
       `;
 
       const characterResult = await client.query(createCharacterQuery, [
         userId,
         name,
-        classId,
-        raceId,
+        classClassification,
+        classNameValue,
+        raceCampaign,
+        raceNameValue,
         stats.Strength,
         stats.Dexterity,
         stats.Constitution,
@@ -180,27 +186,31 @@ charactersRouter.put('/:id', async (req: Request, res: Response) => {
         return res.status(404).json({ error: 'Character not found or does not belong to this user' });
       }
 
-      // Get class ID
-      let classId: number | null = null;
+      // Get class details (classification and class_name)
+      let classClassification: string | null = null;
+      let classNameValue: string | null = null;
       if (className) {
         const classResult = await client.query(
-          'SELECT id FROM classes WHERE LOWER(class_name) = LOWER($1) LIMIT 1',
+          'SELECT classification, class_name FROM classes WHERE LOWER(class_name) = LOWER($1) LIMIT 1',
           [className]
         );
         if (classResult.rows.length > 0) {
-          classId = classResult.rows[0].id;
+          classClassification = classResult.rows[0].classification;
+          classNameValue = classResult.rows[0].class_name;
         }
       }
 
-      // Get race ID
-      let raceId: number | null = null;
+      // Get race details (campaign and name)
+      let raceCampaign: string | null = null;
+      let raceNameValue: string | null = null;
       if (race) {
         const raceResult = await client.query(
-          'SELECT id FROM races WHERE LOWER(name) = LOWER($1) LIMIT 1',
+          'SELECT campaign, name FROM races WHERE LOWER(name) = LOWER($1) LIMIT 1',
           [race]
         );
         if (raceResult.rows.length > 0) {
-          raceId = raceResult.rows[0].id;
+          raceCampaign = raceResult.rows[0].campaign;
+          raceNameValue = raceResult.rows[0].name;
         }
       }
 
@@ -209,25 +219,29 @@ charactersRouter.put('/:id', async (req: Request, res: Response) => {
         UPDATE characters
         SET 
           name = $1,
-          class_id = $2,
-          race_id = $3,
-          strength = $4,
-          dexterity = $5,
-          constitution = $6,
-          intelligence = $7,
-          wisdom = $8,
-          charisma = $9,
+          class_classification = $2,
+          class_name = $3,
+          race_campaign = $4,
+          race_name = $5,
+          strength = $6,
+          dexterity = $7,
+          constitution = $8,
+          intelligence = $9,
+          wisdom = $10,
+          charisma = $11,
           revised = true,
           last_modified = CURRENT_TIMESTAMP,
           approval_status = 'Revised'
-        WHERE id = $10 AND user_id = $11
+        WHERE id = $12 AND user_id = $13
         RETURNING id
       `;
 
       const updateResult = await client.query(updateCharacterQuery, [
         name,
-        classId,
-        raceId,
+        classClassification,
+        classNameValue,
+        raceCampaign,
+        raceNameValue,
         stats.Strength,
         stats.Dexterity,
         stats.Constitution,
@@ -297,8 +311,10 @@ charactersRouter.get('/', async (req: Request, res: Response) => {
         `SELECT 
           c.id,
           c.name,
-          c.class_id,
-          c.race_id,
+          c.class_name,
+          c.class_classification,
+          c.race_name,
+          c.race_campaign,
           c.strength,
           c.dexterity,
           c.constitution,
@@ -309,12 +325,8 @@ charactersRouter.get('/', async (req: Request, res: Response) => {
           c.last_modified,
           c.feedback,
           c.approval_status,
-          c.revised,
-          cl.class_name,
-          r.name as race_name
+          c.revised
         FROM characters c
-        LEFT JOIN classes cl ON c.class_id = cl.id
-        LEFT JOIN races r ON c.race_id = r.id
         WHERE c.user_id = $1
         ORDER BY c.created_at DESC`,
         [userId]

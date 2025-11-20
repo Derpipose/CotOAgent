@@ -13,6 +13,12 @@ export async function saveRacesToDatabase(races: unknown[]): Promise<number> {
   let insertedCount = 0;
 
   try {
+    // Start transaction
+    await client.query('BEGIN;');
+
+    // Temporarily disable foreign key constraints
+    await client.query('SET CONSTRAINTS ALL DEFERRED;');
+
     // Clear existing races
     await client.query('DELETE FROM races;');
     console.log('Cleared existing races');
@@ -38,9 +44,13 @@ export async function saveRacesToDatabase(races: unknown[]): Promise<number> {
       }
     }
 
+    // Commit transaction
+    await client.query('COMMIT;');
     console.log(`Successfully processed ${insertedCount} races`);
     return insertedCount;
   } catch (error) {
+    // Rollback on error
+    await client.query('ROLLBACK;').catch(() => {});
     console.error('Error saving races to database:', error);
     throw error;
   } finally {
@@ -58,6 +68,12 @@ export async function saveClassesToDatabase(classes: unknown[]): Promise<number>
   let insertedCount = 0;
 
   try {
+    // Start transaction
+    await client.query('BEGIN;');
+
+    // Temporarily disable foreign key constraints
+    await client.query('SET CONSTRAINTS ALL DEFERRED;');
+
     // Clear existing classes
     await client.query('DELETE FROM classes;');
     console.log('Cleared existing classes');
@@ -83,9 +99,13 @@ export async function saveClassesToDatabase(classes: unknown[]): Promise<number>
       }
     }
 
+    // Commit transaction
+    await client.query('COMMIT;');
     console.log(`Successfully processed ${insertedCount} classes`);
     return insertedCount;
   } catch (error) {
+    // Rollback on error
+    await client.query('ROLLBACK;').catch(() => {});
     console.error('Error saving classes to database:', error);
     throw error;
   } finally {
@@ -103,6 +123,12 @@ export async function saveSpellsToDatabase(spells: unknown[]): Promise<number> {
   let insertedCount = 0;
 
   try {
+    // Start transaction
+    await client.query('BEGIN;');
+
+    // Temporarily disable foreign key constraints
+    await client.query('SET CONSTRAINTS ALL DEFERRED;');
+
     // Clear existing spells and spellbooks
     await client.query('DELETE FROM spells;');
     await client.query('DELETE FROM spellbooks;');
@@ -157,9 +183,13 @@ export async function saveSpellsToDatabase(spells: unknown[]): Promise<number> {
       }
     }
 
+    // Commit transaction
+    await client.query('COMMIT;');
     console.log(`Successfully processed ${insertedCount} spells in ${spellbookMap.size} spellbooks`);
     return insertedCount;
   } catch (error) {
+    // Rollback on error
+    await client.query('ROLLBACK;').catch(() => {});
     console.error('Error saving spells to database:', error);
     throw error;
   } finally {

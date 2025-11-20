@@ -40,10 +40,10 @@ postDiscordRouter.post('/submit-character', async (req: Request, res: Response) 
     try {
       // Get character details with class and race
       const characterResult = await dbClient.query(
-        `SELECT c.*, cl.class_name, r.name as race_name
+        `SELECT c.id, c.user_id, c.name, c.class_name, c.class_classification, 
+                c.race_name, c.race_campaign, c.strength, c.dexterity, c.constitution, 
+                c.intelligence, c.wisdom, c.charisma, c.feedback
          FROM characters c
-         LEFT JOIN classes cl ON c.class_id = cl.id
-         LEFT JOIN races r ON c.race_id = r.id
          WHERE c.id = $1`,
         [characterId]
       );
@@ -123,10 +123,10 @@ postDiscordRouter.post('/submit-revision', async (req: Request, res: Response) =
     try {
       // Get character details with class and race
       const characterResult = await dbClient.query(
-        `SELECT c.*, cl.class_name, r.name as race_name
+        `SELECT c.id, c.user_id, c.name, c.class_name, c.class_classification, 
+                c.race_name, c.race_campaign, c.strength, c.dexterity, c.constitution, 
+                c.intelligence, c.wisdom, c.charisma, c.feedback
          FROM characters c
-         LEFT JOIN classes cl ON c.class_id = cl.id
-         LEFT JOIN races r ON c.race_id = r.id
          WHERE c.id = $1`,
         [characterId]
       );

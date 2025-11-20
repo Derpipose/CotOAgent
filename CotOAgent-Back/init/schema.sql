@@ -50,8 +50,10 @@ CREATE TABLE IF NOT EXISTS characters (
     id SERIAL PRIMARY KEY,
     user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
     name VARCHAR(255) NOT NULL,
-    class_id INTEGER REFERENCES classes(id),
-    race_id INTEGER REFERENCES races(id),
+    class_name VARCHAR(255),
+    class_classification VARCHAR(255),
+    race_name VARCHAR(255),
+    race_campaign VARCHAR(255),
     strength INTEGER,
     dexterity INTEGER,
     constitution INTEGER,
@@ -62,7 +64,9 @@ CREATE TABLE IF NOT EXISTS characters (
     last_modified TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     feedback TEXT,
     approval_status VARCHAR(50) DEFAULT 'pending',
-    revised BOOLEAN DEFAULT FALSE
+    revised BOOLEAN DEFAULT FALSE,
+    FOREIGN KEY (class_classification, class_name) REFERENCES classes(classification, class_name),
+    FOREIGN KEY (race_campaign, race_name) REFERENCES races(campaign, name)
 );
 
 

@@ -2,6 +2,7 @@ import { useEffect, useState, useRef } from 'react'
 import keycloak from '../keycloak'
 import '../css/characters.css'
 import { useToast } from '../context/ToastContext'
+import { useApiCall } from '../hooks/useApiCall'
 import { CharactersList, CharacterDetailsModal } from '../components/CharacterGallery'
 
 interface Character {
@@ -24,9 +25,9 @@ interface Character {
 
 function Characters() {
   const { addToast } = useToast()
+  const { call } = useApiCall()
   const [characters, setCharacters] = useState<Character[]>([])
   const [loading, setLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
   const [selectedCharacter, setSelectedCharacter] = useState<Character | null>(null)
   const [showDetailsModal, setShowDetailsModal] = useState(false)
   const [isSubmitting, setIsSubmitting] = useState(false)
@@ -56,73 +57,67 @@ function Characters() {
 
   useEffect(() => {
     const fetchCharacters = async () => {
-      try {
-        setLoading(true)
-        setError(null)
+      setLoading(true)
 
-        // Get user email from Keycloak
-        const userEmail = keycloak.tokenParsed?.email
-        if (!userEmail) {
-          setError('Unable to retrieve user email')
-          setLoading(false)
-          return
-        }
+      // Get user email from Keycloak
+      const userEmail = keycloak.tokenParsed?.email
+      if (!userEmail) {
+        addToast('Unable to retrieve user email', 'error')
+        setLoading(false)
+        return
+      }
 
-        const response = await fetch(`/api/characters`, {
+      const data = await call<{ characters: Character[] }>(
+        '/characters',
+        {
           method: 'GET',
           headers: {
             'x-user-email': userEmail.toLowerCase(),
-            'Content-Type': 'application/json',
           },
-        })
-
-        if (!response.ok) {
-          throw new Error(`Failed to fetch characters: ${response.statusText}`)
+        },
+        {
+          showError: true,
+          errorMessage: 'Failed to load characters',
         }
+      )
 
-        const data = await response.json()
+      if (data) {
         setCharacters(data.characters || [])
-      } catch (err) {
-        console.error('[Characters] Error fetching characters:', err)
-        setError(err instanceof Error ? err.message : 'An error occurred')
-      } finally {
-        setLoading(false)
       }
+      setLoading(false)
     }
 
     if (keycloak.authenticated) {
       fetchCharacters()
     } else {
-      setError('You must be logged in to view characters')
+      addToast('Please log in to view characters', 'warning')
       setLoading(false)
     }
-  }, [])
+  }, [call, addToast])
 
   // Fetch races and classes
   useEffect(() => {
     const fetchRacesAndClasses = async () => {
-      try {
-        const [racesResponse, classesResponse] = await Promise.all([
-          fetch(`/api/races/names`),
-          fetch(`/api/classes/names`),
-        ])
+      const [racesData, classesData] = await Promise.all([
+        call<string[]>('/races/names', undefined, {
+          showError: false,
+        }),
+        call<string[]>('/classes/names', undefined, {
+          showError: false,
+        }),
+      ])
 
-        if (racesResponse.ok) {
-          const raceData = await racesResponse.json()
-          setRaces(raceData || [])
-        }
+      if (racesData) {
+        setRaces(racesData || [])
+      }
 
-        if (classesResponse.ok) {
-          const classData = await classesResponse.json()
-          setClasses(classData || [])
-        }
-      } catch (err) {
-        console.error('[Characters] Error fetching races/classes:', err)
+      if (classesData) {
+        setClasses(classesData || [])
       }
     }
 
     fetchRacesAndClasses()
-  }, [])
+  }, [call])
 
   const formatDate = (dateString: string) => {
     const date = new Date(dateString)
@@ -160,24 +155,24 @@ function Characters() {
   const closeDetailsModal = async () => {
     // Refresh character data to get updated status
     if (selectedCharacter) {
-      try {
-        const userEmail = keycloak.tokenParsed?.email
-        if (userEmail) {
-          const response = await fetch(`/api/characters`, {
+      const userEmail = keycloak.tokenParsed?.email
+      if (userEmail) {
+        const data = await call<{ characters: Character[] }>(
+          '/characters',
+          {
             method: 'GET',
             headers: {
               'x-user-email': userEmail.toLowerCase(),
-              'Content-Type': 'application/json',
             },
-          })
-
-          if (response.ok) {
-            const data = await response.json()
-            setCharacters(data.characters || [])
+          },
+          {
+            showError: false,
           }
+        )
+
+        if (data) {
+          setCharacters(data.characters || [])
         }
-      } catch (err) {
-        console.error('[Characters] Error refreshing character data:', err)
       }
     }
 
@@ -205,20 +200,20 @@ function Characters() {
     submissionInProgressRef.current = true
     setIsSubmitting(true)
 
-    try {
-      const userEmail = keycloak.tokenParsed?.email
-      if (!userEmail) {
-        setError('Unable to retrieve user email')
-        submissionInProgressRef.current = false
-        setIsSubmitting(false)
-        return
-      }
+    const userEmail = keycloak.tokenParsed?.email
+    if (!userEmail) {
+      addToast('Unable to retrieve user email', 'error')
+      submissionInProgressRef.current = false
+      setIsSubmitting(false)
+      return
+    }
 
-      const response = await fetch(`/api/characters/${selectedCharacter.id}`, {
+    const result = await call(
+      `/characters/${selectedCharacter.id}`,
+      {
         method: 'PUT',
         headers: {
           'x-user-email': userEmail.toLowerCase(),
-          'Content-Type': 'application/json',
         },
         body: JSON.stringify({
           name: selectedCharacter.name,
@@ -234,12 +229,16 @@ function Characters() {
           },
           approval_status: 'Revised',
         }),
-      })
-
-      if (!response.ok) {
-        throw new Error(`Failed to save character: ${response.statusText}`)
+      },
+      {
+        showSuccess: true,
+        successMessage: 'Character saved successfully',
+        showError: true,
+        errorMessage: 'Failed to save character',
       }
+    )
 
+    if (result) {
       // Update the character in the list
       setCharacters(
         characters.map((char) =>
@@ -273,13 +272,10 @@ function Characters() {
       })
 
       closeDetailsModal()
-    } catch (err) {
-      console.error('[Characters] Error saving revision:', err)
-      setError(err instanceof Error ? err.message : 'Failed to save revision')
-    } finally {
-      submissionInProgressRef.current = false
-      setIsSubmitting(false)
     }
+
+    submissionInProgressRef.current = false
+    setIsSubmitting(false)
   }
 
   const handleSubmitRevision = async () => {
@@ -308,42 +304,41 @@ function Characters() {
       return
     }
 
-    try {
-      const userEmail = keycloak.tokenParsed?.email
-      if (!userEmail) {
-        addToast('Unable to retrieve user email', 'error')
-        submissionInProgressRef.current = false
-        setIsSubmitting(false)
-        return
-      }
+    const userEmail = keycloak.tokenParsed?.email
+    if (!userEmail) {
+      addToast('Unable to retrieve user email', 'error')
+      submissionInProgressRef.current = false
+      setIsSubmitting(false)
+      return
+    }
 
-      const response = await fetch(`/api/discord/submit-revision`, {
+    const result = await call(
+      '/discord/submit-revision',
+      {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
         body: JSON.stringify({
           characterId: selectedCharacter.id,
           userEmail: userEmail,
         }),
-      })
-
-      if (!response.ok) {
-        throw new Error(`Failed to submit revision: ${response.statusText}`)
+      },
+      {
+        showSuccess: true,
+        successMessage: 'Character revision submitted successfully',
+        showError: true,
+        errorMessage: 'Failed to submit character revision',
       }
+    )
 
+    if (result) {
       // Update lastSubmittedData to the current editedData so user needs to make changes before next submit
       setLastSubmittedData(editedData)
 
       // Close modal and refresh character data
       await closeDetailsModal()
-    } catch (err) {
-      console.error('[Characters] Error submitting revision:', err)
-      addToast(err instanceof Error ? err.message : 'Failed to submit revision', 'error')
-    } finally {
-      submissionInProgressRef.current = false
-      setIsSubmitting(false)
     }
+
+    submissionInProgressRef.current = false
+    setIsSubmitting(false)
   }
 
   const handleDeleteCharacter = async () => {
@@ -358,25 +353,31 @@ function Characters() {
     submissionInProgressRef.current = true
     setIsSubmitting(true)
 
-    try {
-      const userEmail = keycloak.tokenParsed?.email
-      if (!userEmail) {
-        setError('Unable to retrieve user email')
-        return
-      }
+    const userEmail = keycloak.tokenParsed?.email
+    if (!userEmail) {
+      addToast('Unable to retrieve user email', 'error')
+      submissionInProgressRef.current = false
+      setIsSubmitting(false)
+      return
+    }
 
-      const response = await fetch(`/api/characters/${selectedCharacter.id}`, {
+    const result = await call(
+      `/characters/${selectedCharacter.id}`,
+      {
         method: 'DELETE',
         headers: {
           'x-user-email': userEmail.toLowerCase(),
-          'Content-Type': 'application/json',
         },
-      })
-
-      if (!response.ok) {
-        throw new Error(`Failed to delete character: ${response.statusText}`)
+      },
+      {
+        showSuccess: true,
+        successMessage: 'Character deleted successfully',
+        showError: true,
+        errorMessage: 'Failed to delete character',
       }
+    )
 
+    if (result) {
       // Remove the character from the list
       setCharacters(characters.filter((char) => char.id !== selectedCharacter.id))
 
@@ -385,24 +386,10 @@ function Characters() {
       setSelectedCharacter(null)
       setEditedData(null)
       setLastSubmittedData(null)
-    } catch (err) {
-      console.error('[Characters] Error deleting character:', err)
-      setError(err instanceof Error ? err.message : 'Failed to delete character')
-    } finally {
-      submissionInProgressRef.current = false
-      setIsSubmitting(false)
     }
-  }
 
-  if (!keycloak.authenticated) {
-    return (
-      <div className="characters-container">
-        <div className="characters-empty">
-          <h1>Characters</h1>
-          <p>Please log in to view your characters</p>
-        </div>
-      </div>
-    )
+    submissionInProgressRef.current = false
+    setIsSubmitting(false)
   }
 
   return (
@@ -416,12 +403,6 @@ function Characters() {
         </p>
       </div>
 
-      {error && (
-        <div className="characters-error">
-          <p>{error}</p>
-        </div>
-      )}
-
       {loading && (
         <div className="characters-loading">
           <div className="loading-spinner"></div>
@@ -429,7 +410,7 @@ function Characters() {
         </div>
       )}
 
-      {!loading && characters.length === 0 && !error && (
+      {!loading && characters.length === 0 && (
         <div className="characters-empty">
           <div className="empty-icon">⚔️</div>
           <h2>No Characters Yet</h2>

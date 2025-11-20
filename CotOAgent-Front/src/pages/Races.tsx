@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import '../css/displaycard.css';
+import { useApiCall } from '../hooks/useApiCall';
 import { RaceSearchSection, RacesList } from '../components/Races';
 
 interface RaceData {
@@ -15,10 +16,10 @@ interface RaceData {
 }
 
 export default function Races() {
+  const { call } = useApiCall();
   const [races, setRaces] = useState<RaceData[]>([]);
   const [allRaces, setAllRaces] = useState<RaceData[]>([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
   const [expandedRaceKey, setExpandedRaceKey] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [isSearching, setIsSearching] = useState(false);
@@ -27,40 +28,24 @@ export default function Races() {
 
   useEffect(() => {
     const fetchRaces = async () => {
-      try {
-        const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 second timeout
-        
-        const response = await fetch('/api/races', { signal: controller.signal });
-        clearTimeout(timeoutId);
-        
-        if (!response.ok) {
-          const contentType = response.headers.get('content-type');
-          if (contentType?.includes('text/html')) {
-            throw new Error(`Backend returned HTML (${response.status}). Check if the backend URL is correct.`);
-          }
-          throw new Error(`Failed to fetch races: ${response.status} ${response.statusText}`);
+      const data = await call<RaceData[]>(
+        '/races',
+        undefined,
+        {
+          showError: true,
+          errorMessage: 'Failed to load races',
         }
-        
-        const data = await response.json();
+      );
+
+      if (data) {
         setRaces(data);
         setAllRaces(data);
-      } catch (err) {
-        const errorMessage = err instanceof Error ? err.message : 'An error occurred';
-        if (err instanceof Error && err.name === 'AbortError') {
-          console.error('[Races] Error: Request timeout (10s) - backend may be unreachable');
-          setError('Request timeout - backend is not responding');
-        } else {
-          console.error('[Races] Error:', errorMessage);
-          setError(errorMessage);
-        }
-      } finally {
-        setLoading(false);
       }
+      setLoading(false);
     };
 
     fetchRaces();
-  }, []);
+  }, [call]);
 
   const handleSearch = async () => {
     if (!searchQuery.trim()) {
@@ -71,35 +56,24 @@ export default function Races() {
     setIsSearching(true);
     setSearchError(null);
 
-    try {
-      const endpoint = '/api/races/search';
-
-      console.log(`[Races] Searching for: "${searchQuery}" via ${endpoint}`);
-
-      const response = await fetch(endpoint, {
+    const results = await call<RaceData[]>(
+      '/races/search',
+      {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
         body: JSON.stringify({ query: searchQuery.trim() }),
-      });
-
-      if (!response.ok) {
-        throw new Error(`Failed to search races: ${response.status} ${response.statusText}`);
+      },
+      {
+        showError: true,
+        errorMessage: 'Failed to search races',
       }
+    );
 
-      const results = await response.json();
+    if (results) {
       setRaces(results);
       setHasSearched(true);
       setExpandedRaceKey(null);
-      console.log(`[Races] Search returned ${results.length} results`);
-    } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : 'An error occurred during search';
-      console.error('[Races] Search error:', errorMessage);
-      setSearchError(errorMessage);
-    } finally {
-      setIsSearching(false);
     }
+    setIsSearching(false);
   };
 
   const handleClearSearch = () => {
@@ -116,10 +90,6 @@ export default function Races() {
 
   if (loading) {
     return <div><h1>Races</h1><p>Loading...</p></div>;
-  }
-
-  if (error) {
-    return <div><h1>Races</h1><p>Error: {error}</p></div>;
   }
 
   return (

@@ -1,18 +1,7 @@
 import { useState } from 'react'
 import { useToast } from '../context/ToastContext'
+import { useApiCall } from '../hooks/useApiCall'
 import '../css/admin.css'
-
-interface ImportResult {
-  success: boolean
-  message: string
-  savedCount?: number
-}
-
-interface EmbeddingResult {
-  success: boolean
-  message: string
-  status?: string
-}
 
 interface EmbeddingProgress {
   completed: number
@@ -21,13 +10,9 @@ interface EmbeddingProgress {
   percentageComplete: number
 }
 
-// Utility: Extract error message
-const getErrorMessage = (err: unknown): string => {
-  return err instanceof Error ? err.message : 'Unknown error'
-}
-
 export default function Admin() {
   const { addToast } = useToast()
+  const { call } = useApiCall()
   const [loading, setLoading] = useState<'races' | 'classes' | 'spells' | null>(null)
   const [embeddingLoading, setEmbeddingLoading] = useState<'races' | 'classes' | 'spells' | null>(null)
   const [embeddingProgress, setEmbeddingProgress] = useState<{
@@ -35,99 +20,47 @@ export default function Admin() {
     classes?: EmbeddingProgress & { message: string }
     spells?: EmbeddingProgress & { message: string }
   }>({})
-  const [results, setResults] = useState<{
-    races?: ImportResult
-    classes?: ImportResult
-    spells?: ImportResult
-  }>({})
-  const [embeddingResults, setEmbeddingResults] = useState<{
-    races?: EmbeddingResult
-    classes?: EmbeddingResult
-    spells?: EmbeddingResult
-  }>({})
-  const [error, setError] = useState<string | null>(null)
-  const [shouldThrowError, setShouldThrowError] = useState(false)
 
   const handleImport = async (type: 'races' | 'classes' | 'spells') => {
     setLoading(type)
-    setError(null)
     
-    try {
-      const response = await fetch(`/api/import/${type}`)
-      const data = await response.json()
-      
-      const success = response.ok
-      setResults(prev => ({
-        ...prev,
-        [type]: {
-          success,
-          message: success 
-            ? `Successfully imported ${data.savedToDatabase} ${type}`
-            : `Failed to import ${type}`,
-          savedCount: data.savedToDatabase
-        }
-      }))
-      if (!success) setError(`Failed to import ${type}: ${data.error}`)
-    } catch (err) {
-      const errorMessage = getErrorMessage(err)
-      setError(`Error importing ${type}: ${errorMessage}`)
-      setResults(prev => ({
-        ...prev,
-        [type]: {
-          success: false,
-          message: `Error: ${errorMessage}`
-        }
-      }))
-    } finally {
-      setLoading(null)
-    }
+    await call<{ savedToDatabase: number; error?: string }>(
+      `/import/${type}`,
+      undefined,
+      {
+        showSuccess: true,
+        successMessage: `Successfully imported ${type}`,
+        showError: true,
+        errorMessage: `Failed to import ${type}`,
+      }
+    )
+    
+    setLoading(null)
   }
 
   const handleEmbed = async (type: 'races' | 'classes' | 'spells') => {
     setEmbeddingLoading(type)
-    setError(null)
-    setEmbeddingResults(prev => ({
-      ...prev,
-      [type]: {
-        success: true,
-        message: 'Connecting to embedding stream...'
-      }
-    }))
     
+    const response = await fetch(`/api/embeddings/${type}/generate`, {
+      method: 'POST'
+    })
+
+    if (response.status === 409) {
+      const data = await response.json()
+      addToast(data.error || 'Embeddings already exist', 'warning')
+      setEmbeddingLoading(null)
+      return
+    }
+
+    if (!response.ok || !response.body) {
+      const data = await response.json()
+      addToast(data.error || 'Failed to start embedding generation', 'error')
+      setEmbeddingLoading(null)
+      return
+    }
+
+    // Handle SSE stream
     try {
-      const response = await fetch(`/api/embeddings/${type}/generate`, {
-        method: 'POST'
-      })
-
-      if (response.status === 409) {
-        const data = await response.json()
-        setError(data.error)
-        setEmbeddingResults(prev => ({
-          ...prev,
-          [type]: {
-            success: false,
-            message: data.error
-          }
-        }))
-        setEmbeddingLoading(null)
-        return
-      }
-
-      if (!response.ok || !response.body) {
-        const data = await response.json()
-        setError(data.error || 'Failed to start embedding generation')
-        setEmbeddingResults(prev => ({
-          ...prev,
-          [type]: {
-            success: false,
-            message: data.error || 'Failed to start embedding generation'
-          }
-        }))
-        setEmbeddingLoading(null)
-        return
-      }
-
-      // Handle SSE stream
       const reader = response.body.getReader()
       const decoder = new TextDecoder()
       let buffer = ''
@@ -142,38 +75,19 @@ export default function Admin() {
 
         for (const line of lines) {
           if (line.startsWith('data: ')) {
-            try {
-              const data = JSON.parse(line.slice(6))
-              
-              if (data.type === 'started') {
-                setEmbeddingResults(prev => ({
-                  ...prev,
-                  [type]: {
-                    success: true,
-                    message: data.message,
-                    status: 'processing'
-                  }
-                }))
-              } else if (data.type === 'progress') {
-                const progress = data.progress as EmbeddingProgress
-                setEmbeddingProgress(prev => ({
-                  ...prev,
-                  [type]: {
-                    ...progress,
-                    message: `Processing: ${progress.completed}/${progress.total} (${progress.percentageComplete}%)`
-                  }
-                }))
-                setEmbeddingResults(prev => ({
-                  ...prev,
-                  [type]: {
-                    success: true,
-                    message: `Processing: ${progress.completed}/${progress.total} (${progress.percentageComplete}%)`,
-                    status: 'processing'
-                  }
-                }))
-              }
-            } catch (parseErr) {
-              console.error('Failed to parse SSE data:', parseErr)
+            const data = JSON.parse(line.slice(6))
+            
+            if (data.type === 'started') {
+              addToast(`Generating embeddings for ${type}...`, 'info')
+            } else if (data.type === 'progress') {
+              const progress = data.progress as EmbeddingProgress
+              setEmbeddingProgress(prev => ({
+                ...prev,
+                [type]: {
+                  ...progress,
+                  message: `Processing: ${progress.completed}/${progress.total} (${progress.percentageComplete}%)`
+                }
+              }))
             }
           }
         }
@@ -185,25 +99,10 @@ export default function Admin() {
         ...prev,
         [type]: undefined
       }))
-      setEmbeddingResults(prev => ({
-        ...prev,
-        [type]: {
-          success: true,
-          message: 'Embedding generation completed!',
-          status: 'completed'
-        }
-      }))
+      addToast(`Embedding generation completed for ${type}!`, 'success')
     } catch (err) {
-      const errorMessage = getErrorMessage(err)
-      setError(`Error generating embeddings: ${errorMessage}`)
-      setEmbeddingResults(prev => ({
-        ...prev,
-        [type]: {
-          success: false,
-          message: `Error: ${errorMessage}`
-        }
-      }))
-    } finally {
+      const errorMessage = err instanceof Error ? err.message : 'Unknown error during streaming'
+      addToast(`Error generating embeddings: ${errorMessage}`, 'error')
       setEmbeddingLoading(null)
     }
   }
@@ -230,11 +129,6 @@ export default function Admin() {
   }
 
   const testThrowError = () => {
-    setShouldThrowError(true)
-  }
-
-  // This will cause a render error caught by Error Boundary
-  if (shouldThrowError) {
     throw new Error('This is a test error for the Error Boundary!')
   }
 
@@ -252,11 +146,6 @@ export default function Admin() {
           >
             {loading === 'races' ? '⏳ Importing...' : '🐉 Import Races'}
           </button>
-          {results.races && (
-            <div className={`result-message ${results.races.success ? 'success' : 'error'}`}>
-              {results.races.message}
-            </div>
-          )}
         </div>
 
         <div className="import-button-wrapper">
@@ -267,11 +156,6 @@ export default function Admin() {
           >
             {loading === 'classes' ? '⏳ Importing...' : '⚔️ Import Classes'}
           </button>
-          {results.classes && (
-            <div className={`result-message ${results.classes.success ? 'success' : 'error'}`}>
-              {results.classes.message}
-            </div>
-          )}
         </div>
 
         <div className="import-button-wrapper">
@@ -282,11 +166,6 @@ export default function Admin() {
           >
             {loading === 'spells' ? '⏳ Importing...' : '✨ Import Spells'}
           </button>
-          {results.spells && (
-            <div className={`result-message ${results.spells.success ? 'success' : 'error'}`}>
-              {results.spells.message}
-            </div>
-          )}
         </div>
       </div>
 
@@ -302,11 +181,6 @@ export default function Admin() {
             >
               {embeddingLoading === 'races' ? '🧠 Generating...' : '🧠 Embed Races'}
             </button>
-            {embeddingResults.races && (
-              <div className={`result-message ${embeddingResults.races.success ? 'success' : 'error'}`}>
-                {embeddingResults.races.message}
-              </div>
-            )}
             {embeddingProgress.races && (
               <div className="progress-container">
                 <div className="progress-bar">
@@ -324,11 +198,6 @@ export default function Admin() {
             >
               {embeddingLoading === 'classes' ? '🧠 Generating...' : '🧠 Embed Classes'}
             </button>
-            {embeddingResults.classes && (
-              <div className={`result-message ${embeddingResults.classes.success ? 'success' : 'error'}`}>
-                {embeddingResults.classes.message}
-              </div>
-            )}
             {embeddingProgress.classes && (
               <div className="progress-container">
                 <div className="progress-bar">
@@ -346,11 +215,6 @@ export default function Admin() {
             >
               {embeddingLoading === 'spells' ? '🧠 Generating...' : '🧠 Embed Spells'}
             </button>
-            {embeddingResults.spells && (
-              <div className={`result-message ${embeddingResults.spells.success ? 'success' : 'error'}`}>
-                {embeddingResults.spells.message}
-              </div>
-            )}
             {embeddingProgress.spells && (
               <div className="progress-container">
                 <div className="progress-bar">
@@ -362,12 +226,6 @@ export default function Admin() {
           </div>
         </div>
       </div>
-
-      {error && (
-        <div className="error-banner">
-          <strong>Error:</strong> {error}
-        </div>
-      )}
 
       <div className="test-section">
         <h2>🧪 Error Handling Tests</h2>
