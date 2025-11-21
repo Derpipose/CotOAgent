@@ -1,12 +1,20 @@
 import { useEffect, useRef, useState } from 'react'
+import { marked } from 'marked'
+import DOMPurify from 'dompurify'
 import { useAuth } from '../context/useAuth'
 import '../css/chatbar.css'
 
 interface ChatMessage {
   id: number
-  sender: 'user' | 'ai'
+  sender: 'user' | 'ai' | 'system'
   message: string
   createdAt: string
+}
+
+// Function to render markdown with sanitized HTML
+const renderMarkdown = (markdown: string): string => {
+  const html = marked(markdown) as string
+  return DOMPurify.sanitize(html, { ALLOWED_TAGS: ['p', 'br', 'strong', 'em', 'u', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'ul', 'ol', 'li', 'blockquote', 'code', 'pre', 'a', 'table', 'thead', 'tbody', 'tr', 'th', 'td'] })
 }
 
 const ChatBar = () => {
@@ -16,7 +24,24 @@ const ChatBar = () => {
   const [inputValue, setInputValue] = useState('')
   const [isLoading, setIsLoading] = useState(false)
   const [isInitializing, setIsInitializing] = useState(false)
+  const [loadingDots, setLoadingDots] = useState('.')
   const messagesEndRef = useRef<HTMLDivElement>(null)
+
+  // Loading animation effect
+  useEffect(() => {
+    if (!isLoading) return
+
+    const interval = setInterval(() => {
+      setLoadingDots((prev) => {
+        if (prev === '.') return '..'
+        if (prev === '..') return '...'
+        if (prev === '...') return '....'
+        return '.'
+      })
+    }, 500)
+
+    return () => clearInterval(interval)
+  }, [isLoading])
 
   // Auto-scroll to bottom
   const scrollToBottom = () => {
@@ -169,11 +194,28 @@ const ChatBar = () => {
                   className={`message ${msg.sender}`}
                 >
                   <div className="message-sender">
-                    {msg.sender === 'user' ? 'You' : 'Chronicler'}
+                    {msg.sender === 'user' ? 'You' : msg.sender === 'system' ? 'System' : 'Chronicler'}
                   </div>
-                  <div className="message-content">{msg.message}</div>
+                  {msg.sender === 'user' ? (
+                    <div className="message-content">{msg.message}</div>
+                  ) : (
+                    <div
+                      className="message-content"
+                      dangerouslySetInnerHTML={{
+                        __html: renderMarkdown(msg.message),
+                      }}
+                    />
+                  )}
                 </div>
               ))}
+              {isLoading && (
+                <div className="message ai">
+                  <div className="message-sender">Chronicler</div>
+                  <div className="message-content loading-indicator">
+                    {loadingDots}
+                  </div>
+                </div>
+              )}
               <div ref={messagesEndRef} />
             </div>
 
