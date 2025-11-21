@@ -9,10 +9,12 @@ import authRouter from '../controllers/auth.js';
 import discordRouter from '../controllers/discord/discord.js';
 import charactersRouter from '../controllers/database/characters.js';
 import randomNumberRouter from '../controllers/randomNumberGenerator.js';
+import chatRouter from '../controllers/chat/chat.js';
 
 export function setupRoutes(app: Application): void {
   // API routes
   app.use('/api/auth', authRouter);
+  app.use('/api/chat', chatRouter);
   app.use('/api/embeddings', embeddingsRouter);
   app.use('/api/import', databaseRouter);
   app.use('/api/discord', discordRouter);

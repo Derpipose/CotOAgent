@@ -14,6 +14,7 @@ import CharacterSheet from './pages/CharacterSheet'
 import Admin from './pages/Admin'
 import App from './App'
 import SideNavBar from './NavBar/SideNavBar'
+import MainLayout from './components/MainLayout'
 import ProtectedRoute from './components/ProtectedRoute'
 import ErrorBoundary from './components/ErrorBoundary'
 import ToastContainer from './components/ToastContainer'
@@ -35,7 +36,7 @@ createRoot(document.getElementById('root')!).render(
               <AuthProvider>
               <SideNavBar />
               <ToastContainer />
-              <div style={{ marginLeft: '250px' }}>
+              <MainLayout>
                 <Routes>
                   <Route path="/" element={<App />} />
                   <Route path="/about" element={<About />} />
@@ -55,7 +56,7 @@ createRoot(document.getElementById('root')!).render(
                   />
                   <Route path="*" element={<NotFound />} />
                 </Routes>
-              </div>
+              </MainLayout>
             </AuthProvider>
           </BrowserRouter>
         </ToastProvider>

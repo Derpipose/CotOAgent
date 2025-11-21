@@ -1,0 +1,239 @@
+.chatbar {
+  position: fixed;
+  right: 0;
+  top: 0;
+  width: 350px;
+  height: 100vh;
+  background-color: #2c3e50;
+  color: #ecf0f1;
+  display: flex;
+  flex-direction: column;
+  box-shadow: -2px 0 5px rgba(0, 0, 0, 0.1);
+  z-index: 999;
+  border-left: 1px solid #34495e;
+}
+
+.chatbar-content {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  padding: 20px;
+  gap: 15px;
+}
+
+.chatbar-title {
+  margin: 0;
+  font-size: 24px;
+  font-weight: 600;
+  color: #ecf0f1;
+  border-bottom: 2px solid #3498db;
+  padding-bottom: 10px;
+  text-align: center;
+}
+
+.chat-messages {
+  flex: 1;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding-right: 8px;
+  margin-bottom: 10px;
+}
+
+/* Scrollbar styling */
+.chat-messages::-webkit-scrollbar {
+  width: 6px;
+}
+
+.chat-messages::-webkit-scrollbar-track {
+  background: #34495e;
+  border-radius: 10px;
+}
+
+.chat-messages::-webkit-scrollbar-thumb {
+  background: #3498db;
+  border-radius: 10px;
+}
+
+.chat-messages::-webkit-scrollbar-thumb:hover {
+  background: #2980b9;
+}
+
+.message {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  animation: slideIn 0.3s ease;
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.message.user {
+  align-items: flex-end;
+}
+
+.message.ai {
+  align-items: flex-start;
+}
+
+.message-sender {
+  font-size: 12px;
+  font-weight: 600;
+  color: #95a5a6;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.message-content {
+  max-width: 90%;
+  padding: 10px 14px;
+  border-radius: 8px;
+  font-size: 14px;
+  line-height: 1.4;
+  word-wrap: break-word;
+}
+
+.message.user .message-content {
+  background-color: #3498db;
+  color: #ffffff;
+  border-bottom-right-radius: 2px;
+}
+
+.message.ai .message-content {
+  background-color: #34495e;
+  color: #ecf0f1;
+  border-bottom-left-radius: 2px;
+  border: 1px solid #3498db;
+}
+
+.chat-input-area {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: auto;
+  padding-top: 10px;
+  border-top: 1px solid #34495e;
+}
+
+.chat-input-wrapper {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.chat-input {
+  flex: 1;
+  padding: 10px 12px;
+  background-color: #34495e;
+  color: #ecf0f1;
+  border: 1px solid #3498db;
+  border-radius: 5px;
+  font-size: 14px;
+  outline: none;
+  transition: all 0.3s ease;
+}
+
+.chat-input:focus {
+  border-color: #2980b9;
+  background-color: #3c5268;
+}
+
+.chat-input::placeholder {
+  color: #7f8c8d;
+}
+
+.chat-input:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.chat-send-btn {
+  padding: 10px 16px;
+  background-color: #3498db;
+  color: #ffffff;
+  border: none;
+  border-radius: 5px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  min-width: 44px;
+  text-align: center;
+}
+
+.chat-send-btn:hover:not(:disabled) {
+  background-color: #2980b9;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(52, 152, 219, 0.4);
+}
+
+.chat-send-btn:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.chat-send-btn:disabled {
+  background-color: #7f8c8d;
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.chat-loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  color: #95a5a6;
+  font-size: 14px;
+}
+
+.chat-login-message {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  color: #95a5a6;
+  font-size: 14px;
+  margin: 0;
+  text-align: center;
+  padding: 20px;
+}
+
+/* Responsive design */
+@media (max-width: 1200px) {
+  .chatbar {
+    width: 300px;
+  }
+
+  .message-content {
+    max-width: 95%;
+  }
+}
+
+@media (max-width: 768px) {
+  .chatbar {
+    width: 100%;
+    height: auto;
+    position: static;
+    border-left: none;
+    border-top: 1px solid #34495e;
+    max-height: 400px;
+  }
+
+  .chatbar-content {
+    height: 400px;
+  }
+
+  .message-content {
+    max-width: 100%;
+  }
+}

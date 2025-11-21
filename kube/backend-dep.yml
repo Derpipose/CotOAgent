@@ -22,7 +22,7 @@ spec:
           value: "4000"
         - name: DATABASE_URL
           value: "postgres://cotoagentuser:cotoagentpassword@cotoagent-db-svc:5432/cotoagentdb"
-        - name: AI_SERVER_URL
+        - name: AI_SERVER
           value: $AI_SERVER
         - name: AI_TOKEN
           value: $AI_TOKEN

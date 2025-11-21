@@ -1,0 +1,137 @@
+import pg from 'pg';
+import type { ChatMessageDto, ConversationDto } from '../../DTOS/ChatDto.js';
+
+const { Pool } = pg;
+
+// Initialize PostgreSQL connection pool
+const pool = new Pool({
+  connectionString: process.env.DATABASE_URL || process.env.DEFAULT_CONNECTION,
+});
+
+/**
+ * Create a new conversation for a user
+ */
+export async function createConversation(
+  userId: number,
+  conversationName: string
+): Promise<ConversationDto> {
+  const query = `
+    INSERT INTO user_chat_conversations (user_id, conversation_name)
+    VALUES ($1, $2)
+    RETURNING id, conversation_name as "conversationName", created_at as "createdAt"
+  `;
+
+  const result = await pool.query(query, [userId, conversationName]);
+
+  if (result.rows.length === 0) {
+    throw new Error('Failed to create conversation');
+  }
+
+  return {
+    id: result.rows[0].id,
+    conversationName: result.rows[0].conversationName,
+    createdAt: result.rows[0].createdAt,
+  };
+}
+
+/**
+ * Add a message to a conversation
+ */
+export async function addMessageToConversation(
+  conversationId: string,
+  sender: 'user' | 'ai' | 'system',
+  message: string
+): Promise<ChatMessageDto> {
+  if (!message || message.trim().length === 0) {
+    throw new Error('Message cannot be empty');
+  }
+
+  const query = `
+    INSERT INTO user_chat_messages (conversation_id, sender, message)
+    VALUES ($1, $2, $3)
+    RETURNING id, sender, message, created_at as "createdAt"
+  `;
+
+  const result = await pool.query(query, [conversationId, sender, message.trim()]);
+
+  if (result.rows.length === 0) {
+    throw new Error('Failed to add message');
+  }
+
+  return {
+    id: result.rows[0].id,
+    sender: result.rows[0].sender,
+    message: result.rows[0].message,
+    createdAt: result.rows[0].createdAt,
+  };
+}
+
+/**
+ * Get all messages in a conversation
+ */
+export async function getConversationHistory(
+  conversationId: string
+): Promise<ChatMessageDto[]> {
+  const query = `
+    SELECT id, sender, message, created_at as "createdAt"
+    FROM user_chat_messages
+    WHERE conversation_id = $1
+    ORDER BY created_at ASC
+  `;
+
+  const result = await pool.query(query, [conversationId]);
+  return result.rows;
+}
+
+/**
+ * Get conversation details
+ */
+export async function getConversation(conversationId: string): Promise<ConversationDto | null> {
+  const query = `
+    SELECT id, conversation_name as "conversationName", created_at as "createdAt"
+    FROM user_chat_conversations
+    WHERE id = $1
+  `;
+
+  const result = await pool.query(query, [conversationId]);
+
+  if (result.rows.length === 0) {
+    return null;
+  }
+
+  return {
+    id: result.rows[0].id,
+    conversationName: result.rows[0].conversationName,
+    createdAt: result.rows[0].createdAt,
+  };
+}
+
+/**
+ * Verify that a user owns a conversation
+ */
+export async function userOwnsConversation(userId: number, conversationId: string): Promise<boolean> {
+  const query = `
+    SELECT 1
+    FROM user_chat_conversations
+    WHERE id = $1 AND user_id = $2
+  `;
+
+  const result = await pool.query(query, [conversationId, userId]);
+  return result.rows.length > 0;
+}
+
+/**
+ * Update conversation name
+ */
+export async function updateConversationName(
+  conversationId: string,
+  newName: string
+): Promise<void> {
+  const query = `
+    UPDATE user_chat_conversations
+    SET conversation_name = $1
+    WHERE id = $2
+  `;
+
+  await pool.query(query, [newName, conversationId]);
+}
