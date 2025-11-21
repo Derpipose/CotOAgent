@@ -236,7 +236,7 @@
 .chat-input-wrapper {
   display: flex;
   gap: 8px;
-  align-items: center;
+  align-items: flex-end;
 }
 
 .chat-input {
@@ -249,6 +249,12 @@
   font-size: 14px;
   outline: none;
   transition: all 0.3s ease;
+  resize: none;
+  font-family: inherit;
+  line-height: 1.4;
+  field-sizing: content;
+  max-height: calc(7 * 1.4em + 20px);
+  overflow-y: auto;
 }
 
 .chat-input:focus {

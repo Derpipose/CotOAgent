@@ -161,7 +161,7 @@ const ChatBar = () => {
     }
   }
 
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement | HTMLInputElement>) => {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault()
       handleSendMessage()
@@ -221,14 +221,14 @@ const ChatBar = () => {
 
             <div className="chat-input-area">
               <div className="chat-input-wrapper">
-                <input
-                  type="text"
+                <textarea
                   className="chat-input"
                   placeholder="Type your message..."
                   value={inputValue}
                   onChange={(e) => setInputValue(e.target.value)}
                   onKeyDown={handleKeyDown}
                   disabled={isLoading}
+                  rows={1}
                 />
                 <button
                   className="chat-send-btn"
