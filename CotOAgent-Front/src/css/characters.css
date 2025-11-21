@@ -1,5 +1,6 @@
 /* Characters Page Container */
 .characters-container {
+  /* width: calc(100vw - 350px); */
   height: 100vh;
   padding: 2rem;
   background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
