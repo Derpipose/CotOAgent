@@ -184,8 +184,8 @@ I have gotten character validation and error handling of invalid characters done
 #### Estimates:
 
 Rubric items:
-- [ ] Mobile responsive design (all experiences mobile friendly)
-- [ ] 3 instances of element re-ordering on smaller screens
+- [x] Mobile responsive design (all experiences mobile friendly)
+- [x] 3 instances of element re-ordering on smaller screens
 - [ ] Semi-optimal stat assignment algorithm
 - [ ] Spell management and filtering
 - [ ] Audit log for character actions
