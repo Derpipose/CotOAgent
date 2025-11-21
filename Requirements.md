@@ -192,8 +192,6 @@ Rubric items:
 
 
 Features:
-- [ ] Mobile-optimized character creation flow
-- [ ] Touch-friendly stat rolling interface
 - [ ] Responsive character sheet layout
 
 #### Delivered
@@ -217,6 +215,7 @@ Features:
 - [ ] Performance optimization
 - [ ] User onboarding improvements
 - [ ] Character comparison view
+- [ ] Mobile-optimized character creation flow
 
 #### Delivered
 
