@@ -49,10 +49,11 @@ export const useCharacters = (): UseCharactersReturn => {
 
   // Sync fetched data to local state for mutations
   useEffect(() => {
-    if (characterData?.characters && Array.isArray(characterData.characters)) {
+    // Only sync if authenticated and have character data
+    if (isAuthenticated && characterData?.characters && Array.isArray(characterData.characters)) {
       setCharacters(characterData.characters)
     }
-  }, [characterData?.characters])
+  }, [characterData, isAuthenticated])
 
   const refetch = async () => {
     try {

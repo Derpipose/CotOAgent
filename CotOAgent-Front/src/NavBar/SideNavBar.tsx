@@ -6,22 +6,22 @@ interface NavLink {
   label: string
   path: string
   requiresAdmin?: boolean
+  requiresAuth?: boolean
 }
 
 const SideNavBar = () => {
   const location = useLocation()
-  const { isAdmin } = useAuth()
-
+  const { isAdmin, isAuthenticated } = useAuth()
+  
   const navLinks: NavLink[] = [
     { label: 'Home', path: '/' },
-    { label: 'Races', path: '/races' },
-    { label: 'Classes', path: '/classes' },
-    { label: 'Spells', path: '/spells' },
-    { label: 'My Characters', path: '/characters' },
-    { label: 'Character Sheet', path: '/character-sheet' },
     { label: 'About', path: '/about' },
+    { label: 'Races', path: '/races', requiresAuth: true },
+    { label: 'Classes', path: '/classes', requiresAuth: true },
+    { label: 'Spells', path: '/spells', requiresAuth: true },
+    { label: 'Character Sheet', path: '/character-sheet', requiresAuth: true },
+    { label: 'My Characters', path: '/characters', requiresAuth: true },
     { label: 'Admin', path: '/admin', requiresAdmin: true },
-    { label: 'Contact', path: '/contact' },
   ]
 
   const isActive = (path: string) => {
@@ -31,6 +31,9 @@ const SideNavBar = () => {
   const visibleLinks = navLinks.filter((link) => {
     if (link.requiresAdmin) {
       return isAdmin === true
+    }
+    if (link.requiresAuth) {
+      return isAuthenticated === true
     }
     return true
   })

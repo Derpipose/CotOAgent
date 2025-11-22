@@ -1,7 +1,15 @@
 import { Link } from 'react-router-dom'
+import { useAuth } from '../context/useAuth'
+import keycloak from '../keycloak'
 import '../css/about.css'
 
 function About() {
+  const { isAuthenticated } = useAuth()
+
+  const handleLoginClick = () => {
+    keycloak.login()
+  }
+
   return (
     <div className="about-container">
       <div className="about-content">
@@ -91,7 +99,11 @@ function About() {
         <section className="about-section cta-section">
           <h2>Ready to Begin?</h2>
           <p>Start creating your unique character today and embark on an epic journey!</p>
-          <Link to="/character-sheet" className="btn btn-primary">Create Your Character</Link>
+          {isAuthenticated ? (
+            <Link to="/character-sheet" className="btn btn-primary">Create Your Character</Link>
+          ) : (
+            <button onClick={handleLoginClick} className="btn btn-primary">Login to Get Started</button>
+          )}
         </section>
       </div>
     </div>
