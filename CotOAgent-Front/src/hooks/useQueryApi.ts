@@ -14,6 +14,8 @@ export const useQueryApi = <T,>(
     errorMessage?: string;
     enabled?: boolean;
     headers?: Record<string, string>;
+    refetchInterval?: number;
+    refetchIntervalInBackground?: boolean;
   }
 ) => {
   const { addToast } = useToast();
@@ -48,6 +50,8 @@ export const useQueryApi = <T,>(
       }
     },
     enabled: options?.enabled !== false,
+    refetchInterval: options?.refetchInterval,
+    refetchIntervalInBackground: options?.refetchIntervalInBackground ?? true,
     ...options?.queryOptions,
   });
 

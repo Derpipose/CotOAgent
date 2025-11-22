@@ -1,6 +1,6 @@
 import React from 'react'
 import type { ChatMessage } from './types'
-import { renderMarkdown } from './markdownUtils'
+import { renderMarkdown } from '../utils/markdownUtils'
 
 interface MessageListProps {
   messages: ChatMessage[]

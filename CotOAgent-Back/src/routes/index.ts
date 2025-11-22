@@ -7,7 +7,7 @@ import spellsRouter from '../controllers/entities/spells.js';
 import spellbooksRouter from '../controllers/entities/spellbooks.js';
 import authRouter from '../controllers/auth.js';
 import discordRouter from '../controllers/discord/discord.js';
-import charactersRouter from '../controllers/database/characters.js';
+import charactersRouter from '../controllers/database/charactersDatabase.js';
 import randomNumberRouter from '../controllers/randomNumberGenerator.js';
 import chatRouter from '../controllers/chat/chat.js';
 

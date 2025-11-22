@@ -1,4 +1,5 @@
 import type { ConversationResponse, MessageResponse } from './types'
+import { executeTool, tools } from './ToolCalls'
 
 const API_BASE_URL = '/api/chat'
 
@@ -7,37 +8,6 @@ const API_BASE_URL = '/api/chat'
  */
 export const isValidMessage = (message: string | undefined): message is string => {
   return !!message?.trim()
-}
-
-/**
- * Define available tools that the AI can call
- */
-export const tools = [
-  {
-    name: 'log_message',
-    description: 'Logs a message to the console',
-    parameters: {
-      type: 'object',
-      properties: {
-        message: { type: 'string', description: 'The message to log' }
-      },
-      required: ['message']
-    }
-  }
-]
-
-/**
- * Execute a tool call
- * @param toolName - The name of the tool to execute
- * @param args - The arguments for the tool
- * @returns The result of the tool execution
- */
-export const executeTool = (toolName: string, args: Record<string, unknown>) => {
-  if (toolName === 'log_message') {
-    console.log(args.message)
-    return { success: true, message: `Logged: ${args.message}` }
-  }
-  throw new Error(`Unknown tool: ${toolName}`)
 }
 
 /**
@@ -73,7 +43,7 @@ export const initializeConversation = async (
  * @param conversationId - The conversation ID
  * @param userEmail - The email of the user
  * @param message - The message to send
- * @returns Promise with user and final AI responses
+ * @returns Promise with user and final AI responses (after all tool calls are handled)
  */
 export const sendMessage = async (
   conversationId: string,
@@ -85,6 +55,7 @@ export const sendMessage = async (
 
 /**
  * Internal function that handles the agentic loop
+ * Continues automatically until there are no more tool calls
  */
 async function sendMessageWithLoop(
   conversationId: string,
@@ -94,18 +65,18 @@ async function sendMessageWithLoop(
 ): Promise<MessageResponse> {
   const requestBody: Record<string, unknown> = {
     message,
-  };
+  }
 
   // Only include tools on the initial user message (not on tool result continuations)
   if (!toolResult) {
-    requestBody.tools = tools;
+    requestBody.tools = tools
   }
 
   // If we're sending a tool result, include it and set message to empty
   // This tells the backend to continue the conversation without adding a new user message
   if (toolResult) {
-    requestBody.toolResult = toolResult;
-    requestBody.message = ''; // Empty message when continuing with tool result
+    requestBody.toolResult = toolResult
+    requestBody.message = '' // Empty message when continuing with tool result
   }
 
   const response = await fetch(
@@ -130,12 +101,16 @@ async function sendMessageWithLoop(
   // Handle tool calls if present in the response
   if (data.toolCall && Array.isArray(data.toolCall) && data.toolCall.length > 0) {
     const firstToolCall = data.toolCall[0]
-    const toolResult = executeTool(firstToolCall.name, firstToolCall.parameters.properties)
-    console.log('[ChatAPI] Tool executed:', firstToolCall.name, 'Result:', toolResult)
+    const toolResultValue = await executeTool(
+      firstToolCall.name,
+      firstToolCall.parameters.properties,
+      userEmail
+    )
+    console.log('[ChatAPI] Tool executed:', firstToolCall.name, 'Result:', toolResultValue)
 
     // Continue the agentic loop by sending the tool result back
-    // Pass empty string and toolResult to indicate this is a continuation
-    return await sendMessageWithLoop(conversationId, userEmail, '', toolResult)
+    // This will recursively handle any further tool calls until we get a final response
+    return await sendMessageWithLoop(conversationId, userEmail, '', toolResultValue)
   }
 
   // No tool call, return the final response

@@ -44,6 +44,8 @@ export const useCharacters = (): UseCharactersReturn => {
       showError: true,
       errorMessage: 'Failed to load characters',
       headers: userEmail ? { 'x-user-email': userEmail } : undefined,
+      refetchInterval: 30000, // Poll every 30 seconds
+      refetchIntervalInBackground: true, // Continue polling even when tab is unfocused
     }
   )
 
@@ -53,7 +55,7 @@ export const useCharacters = (): UseCharactersReturn => {
     if (isAuthenticated && characterData?.characters && Array.isArray(characterData.characters)) {
       setCharacters(characterData.characters)
     }
-  }, [characterData, isAuthenticated])
+  }, [characterData?.characters, isAuthenticated])
 
   const refetch = async () => {
     try {

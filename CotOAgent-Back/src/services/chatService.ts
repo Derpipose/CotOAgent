@@ -204,6 +204,7 @@ async function callAI(messages: AIMessage[], tools?: Tool[]): Promise<{ text: st
 
 /**
  * Send a message and get AI response
+ * Handles the complete agentic loop on the backend - frontend gets final response only
  */
 export async function sendMessageAndGetResponse(
   conversationId: string,

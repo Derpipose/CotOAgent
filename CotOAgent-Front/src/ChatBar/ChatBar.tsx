@@ -14,6 +14,38 @@ const ERROR_MESSAGE: ChatMessage = {
   createdAt: new Date().toISOString(),
 }
 
+// Helper function to create a temporary user message
+const createTemporaryUserMessage = (message: string): ChatMessage => ({
+  id: -1,
+  sender: 'user',
+  message,
+  createdAt: new Date().toISOString(),
+})
+
+// Helper function to update messages after API response
+const updateMessagesWithResponse = (
+  previousMessages: ChatMessage[],
+  responseData: Awaited<ReturnType<typeof sendMessage>>
+): ChatMessage[] => {
+  // Start with all messages except the temporary user message
+  const baseMessages = previousMessages.slice(0, -1)
+
+  // Add the user message if it has content
+  if (isValidMessage(responseData.userMessage.message)) {
+    baseMessages.push(responseData.userMessage)
+  } else {
+    // Keep the temporary user message from earlier
+    baseMessages.push(previousMessages[previousMessages.length - 1])
+  }
+
+  // Add the AI response if it has content
+  if (isValidMessage(responseData.aiResponse.message)) {
+    baseMessages.push(responseData.aiResponse)
+  }
+
+  return baseMessages
+}
+
 const ChatBar = () => {
   const { userEmail } = useAuth()
   const [conversationId, setConversationId] = useState<string | null>(null)
@@ -27,7 +59,7 @@ const ChatBar = () => {
   // Auto-scroll to bottom when messages change
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
-  }, [messages, messagesEndRef])
+  }, [messages])
 
   // Initialize chat on component mount
   useEffect(() => {
@@ -70,38 +102,16 @@ const ChatBar = () => {
 
     const userMessage = inputValue.trim()
     setInputValue('')
-    setMessages((prev) => [
-      ...prev,
-      {
-        id: -1,
-        sender: 'user',
-        message: userMessage,
-        createdAt: new Date().toISOString(),
-      },
-    ])
+
+    // Add temporary user message to the UI
+    setMessages((prev) => [...prev, createTemporaryUserMessage(userMessage)])
 
     setIsLoading(true)
     try {
       const data = await sendMessage(conversationId, userEmail || '', userMessage)
-      setMessages((prev) => {
-        // Start with all messages except the temporary user message
-        const baseMessages = prev.slice(0, -1)
-        
-        // Add the user message if it has content
-        if (isValidMessage(data.userMessage.message)) {
-          baseMessages.push(data.userMessage)
-        } else {
-          // Keep the temporary user message from earlier
-          baseMessages.push(prev[prev.length - 1])
-        }
-        
-        // Add the AI response if it has content
-        if (isValidMessage(data.aiResponse.message)) {
-          baseMessages.push(data.aiResponse)
-        }
-        
-        return baseMessages
-      })
+      // updateMessagesWithResponse handles the agentic loop internally (tool calls are hidden)
+      // Only the final response is returned and displayed
+      setMessages((prev) => updateMessagesWithResponse(prev, data))
     } catch (error) {
       console.error('Error sending message:', error)
       // Remove the failed message

@@ -58,8 +58,8 @@ charactersRouter.post('/', asyncHandler(async (req: Request, res: Response) => {
 
     // Create character with just the name
     const createCharacterQuery = `
-      INSERT INTO characters (user_id, name, approval_status)
-      VALUES ($1, $2, 'Not Submitted')
+      INSERT INTO characters (user_id, name)
+      VALUES ($1, $2)
       RETURNING id, user_id, name, created_at
     `;
 
