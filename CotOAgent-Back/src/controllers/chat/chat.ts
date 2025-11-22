@@ -9,6 +9,17 @@ import {
 import * as chatDatabase from './chatDatabase.js';
 import * as chatService from '../../services/chatService.js';
 
+// Tool interface definition
+interface Tool {
+  name: string;
+  description: string;
+  parameters: {
+    type: string;
+    properties: Record<string, unknown>;
+    required?: string[];
+  };
+}
+
 // Augment Express Request type
 declare module 'express' {
   interface Request {
@@ -120,8 +131,16 @@ router.post(
       // Validate request body
       const dto = SendMessageDtoSchema.parse(req.body) as SendMessageDto;
 
-      // Send message and get AI response
-      const response = await chatService.sendMessageAndGetResponse(conversationId, dto.message);
+      // Extract tools from request if provided
+      const tools = (req.body as Record<string, unknown>).tools as Tool[] | undefined;
+
+      // Send message and get AI response (with optional tool result for agentic loop)
+      const response = await chatService.sendMessageAndGetResponse(
+        conversationId,
+        dto.message,
+        tools,
+        dto.toolResult
+      );
 
       res.status(200).json(response);
     } catch (error) {

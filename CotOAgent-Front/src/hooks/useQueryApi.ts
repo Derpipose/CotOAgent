@@ -19,7 +19,7 @@ export const useQueryApi = <T,>(
   const { addToast } = useToast();
 
   const query = useQuery<T>({
-    queryKey: [endpoint, options?.headers],
+    queryKey: [endpoint, options?.headers ? JSON.stringify(options.headers) : undefined],
     queryFn: async () => {
       try {
         const url = buildApiUrl(endpoint);

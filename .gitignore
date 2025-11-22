@@ -31,5 +31,6 @@ dist-server/
 
 ProsAndCons.md
 *.env
+temp.json
 
 Documentation/

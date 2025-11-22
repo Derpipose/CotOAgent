@@ -1,9 +1,8 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useAuth } from '../context/useAuth'
 import type { ChatMessage } from './types'
-import { initializeConversation, sendMessage } from './chatAPI'
+import { initializeConversation, sendMessage, isValidMessage } from './chatAPI'
 import { useLoadingDots } from './useLoadingDots'
-import { useAutoScrollRef } from './useAutoScroll'
 import { MessageList } from './MessageList'
 import { ChatInput } from './ChatInput'
 import '../css/chatbar.css'
@@ -23,12 +22,12 @@ const ChatBar = () => {
   const [isLoading, setIsLoading] = useState(false)
   const [isInitializing, setIsInitializing] = useState(false)
   const loadingDots = useLoadingDots(isLoading)
-  const messagesEndRef = useAutoScrollRef()
+  const messagesEndRef = useRef<HTMLDivElement>(null)
 
   // Auto-scroll to bottom when messages change
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
-  }, [messages])
+  }, [messages, messagesEndRef])
 
   // Initialize chat on component mount
   useEffect(() => {
@@ -84,11 +83,25 @@ const ChatBar = () => {
     setIsLoading(true)
     try {
       const data = await sendMessage(conversationId, userEmail || '', userMessage)
-      setMessages((prev) => [
-        ...prev.slice(0, -1), // Remove the temporary user message
-        data.userMessage,
-        data.aiResponse,
-      ])
+      setMessages((prev) => {
+        // Start with all messages except the temporary user message
+        const baseMessages = prev.slice(0, -1)
+        
+        // Add the user message if it has content
+        if (isValidMessage(data.userMessage.message)) {
+          baseMessages.push(data.userMessage)
+        } else {
+          // Keep the temporary user message from earlier
+          baseMessages.push(prev[prev.length - 1])
+        }
+        
+        // Add the AI response if it has content
+        if (isValidMessage(data.aiResponse.message)) {
+          baseMessages.push(data.aiResponse)
+        }
+        
+        return baseMessages
+      })
     } catch (error) {
       console.error('Error sending message:', error)
       // Remove the failed message
