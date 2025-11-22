@@ -31,6 +31,17 @@ export const tools = [
       required: ['character_name']
     }
   }
+//   {
+//     name: 'get_background_info_on_world',
+//     description: 'Retrieves background information on the game world',
+//     parameters: {
+//       type: 'object',
+//       properties: {
+//         paramName: { type: 'string', description: 'Description of parameter' }
+//       },
+//       required: ['paramName']
+//     }
+//   }
 ]
 
 /**
