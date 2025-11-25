@@ -26,7 +26,12 @@ export async function saveRacesToDatabase(races: unknown[]): Promise<number> {
     // Validate the races data using Zod
     const validatedRaces = RacesImportSchema.parse(races);
 
-    for (const race of validatedRaces) {
+    // Filter to only include races with 'fantasy' campaign
+    const filteredRaces = validatedRaces.filter(
+      (race) => race.Campaign.toLowerCase() === 'fantasy'
+    );
+
+    for (const race of filteredRaces) {
       const query = `
         INSERT INTO races (campaign, name, description)
         VALUES ($1, $2, $3)
@@ -81,7 +86,12 @@ export async function saveClassesToDatabase(classes: unknown[]): Promise<number>
     // Validate the classes data using Zod
     const validatedClasses = ClassesImportSchema.parse(classes);
 
-    for (const classData of validatedClasses) {
+    // Filter to only include classes with 'fantasy' campaign
+    const filteredClasses = validatedClasses.filter(
+      (classData) => classData.WIP.toLowerCase() === 'no'
+    );
+
+    for (const classData of filteredClasses) {
       const query = `
         INSERT INTO classes (classification, class_name, description)
         VALUES ($1, $2, $3)

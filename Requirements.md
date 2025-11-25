@@ -186,20 +186,22 @@ I have gotten character validation and error handling of invalid characters done
 Rubric items:
 - [x] Mobile responsive design (all experiences mobile friendly)
 - [x] 3 instances of element re-ordering on smaller screens
-- [ ] Semi-optimal stat assignment algorithm
-- [ ] Spell management and filtering
-- [ ] Audit log for character actions
+- [x] Audit log for character actions
 
 
 Features:
-- [ ] Responsive character sheet layout
+- [x] Responsive character sheet layout
 
 #### Delivered
 
 Rubric Items:
-
+I have everything able to go to a mobile responsive design. The only thing that
+might not be mobile responsive is the nav bar but I'm going to be
+working on that later. 
+I have an audit log for admins to see all characters
 
 Features:
+The characters are displayed in a dynamic sheet layout
 
 ---
 ### Checkpoint 9: `Nov. 25, 2025`
@@ -211,6 +213,9 @@ Rubric items:
 - [ ] Final view count verification (10+ pages/views)
 
 Features:
+- [ ] Semi-optimal stat assignment algorithm
+- [ ] Spell management and filtering
+
 - [ ] UI/UX polish and refinement
 - [ ] Performance optimization
 - [ ] User onboarding improvements
@@ -234,6 +239,7 @@ Rubric items:
 - [ ] Documentation completion
 
 Features:
+- [ ] AI agent has all tool calls
 - [ ] AI agent behavior refinement
 - [ ] Final Discord integration testing
 

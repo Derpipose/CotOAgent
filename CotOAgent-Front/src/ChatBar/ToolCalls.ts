@@ -5,6 +5,7 @@
 
 /**
  * Define available tools that the AI can call
+ * I am just going to leave these comments in, they are useful for now.
  */
 export const tools = [
     // testing log tool call Should be removed later.
@@ -22,7 +23,7 @@ export const tools = [
   //create new character tool
   {
     name: 'create_new_character',
-    description: 'Creates a new character in the system',
+    description: 'Creates a new character with a name in the system',
     parameters: {
       type: 'object',
       properties: {
@@ -30,10 +31,21 @@ export const tools = [
       },
       required: ['character_name']
     }
+  },
+  {
+    name: 'get_closest_classes_to_description',
+    description: 'Retrieves the 10 closest matching classes based on a description provided.',
+    parameters: {
+      type: 'object',
+      properties: {
+        description: { type: 'string', description: 'The description to match classes against' }
+      },
+      required: ['description']
+    }
   }
 //   {
-//     name: 'get_background_info_on_world',
-//     description: 'Retrieves background information on the game world',
+//     name: 'get_background_info_on_classes',
+//     description: 'Retrieves background information on the classes available in the Chronicles of the Omuns.',
 //     parameters: {
 //       type: 'object',
 //       properties: {
@@ -60,8 +72,13 @@ export const executeTool = async (
     return executeLogMessage(args)
   }
   if (toolName === 'create_new_character') {
+    console.log('Creating a new character');
     return executeCreateNewCharacter(args, userEmail)
   }
+  if(toolName === 'get_closest_classes_to_description') {
+    return executeGetClosestClassesToDescription(args)
+  }
+
   throw new Error(`Unknown tool: ${toolName}`)
 }
 
@@ -108,3 +125,37 @@ const executeCreateNewCharacter = async (
     }
   }
 }
+
+/** 
+ * Get the 10 closest classes to a given description
+ */
+const executeGetClosestClassesToDescription = async (
+  args: Record<string, unknown>
+) => {
+  const description = args.description as string
+  try {
+    const response = await fetch('/api/classes/search', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ query: description }),
+    })
+
+    if (!response.ok) {
+      const error = await response.json().catch(() => ({}))
+      throw new Error(error.error || `Failed to get closest classes (${response.status})`)
+    }
+
+    const data = await response.json()
+    return {
+      success: true,
+      classes: data,
+    }
+  } catch (error) {
+    return {
+      success: false,
+      message: `Failed to get closest classes: ${error instanceof Error ? error.message : 'Unknown error'}`,
+    }
+  }
+}   

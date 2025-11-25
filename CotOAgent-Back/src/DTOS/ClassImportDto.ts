@@ -5,6 +5,7 @@ export const ClassImportSchema = z.object({
   Classification: z.string(),
   ClassName: z.string(),
   Description: z.string(),
+  WIP: z.string(),
 });
 
 // Zod schema for an array of classes
