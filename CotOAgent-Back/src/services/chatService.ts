@@ -17,7 +17,7 @@ console.log('[ChatService] AI_CONFIG:', {
 });
 
 // System prompt for the AI
-const SYSTEM_PROMPT = `You are a very friendly and helpful Chronicler, or game master, for the game Chronicles of the Omuns. You are here to help players build characters for the game using different documents around the site. Be mindful that this isn't dungeons and dragons, but it is a TTRPG. There is no multiclassing in this game. Do not suggest classes or races that do not exist. Try and make up as little as possible that isn't from docs. If you don't know the answer, say you don't know. Always try and refer to the documents provided on the site. Your goal is to help players build fun and interesting characters for Chronicles of the Omuns.`;
+const SYSTEM_PROMPT = `You are the Chronicler, or game master, for the game Chronicles of the Omuns. You are here to help players build characters for the game using different tool calls. Be mindful that this isn't dungeons and dragons, but it is a TTRPG. There is no multiclassing in this game. Suggest races and classes from the tool calls of get_closest_classes_to_description for classes and get_closest_races_to_description for races. If you don't know the answer, say you don't know. Always try and refer to the documents provided from tool calls. Your goal is to help players build fun and interesting characters for Chronicles of the Omuns.`;
 
 interface AIMessage {
   role: 'system' | 'user' | 'assistant';
@@ -226,10 +226,10 @@ export async function sendMessageAndGetResponse(
     content: msg.message,
   }));
 
-  // If this is a tool result response, add it as an assistant message
+  // If this is a tool result response, add it as a user message
   if (toolResult) {
     messages.push({
-      role: 'assistant',
+      role: 'user',
       content: `Tool result: ${JSON.stringify(toolResult)}`,
     });
   }
@@ -256,13 +256,22 @@ export async function sendMessageAndGetResponse(
   // Only pass tools on initial user messages, not on tool result continuations
   const aiResponse = await callAI(messages, toolResult ? undefined : tools);
 
-  // Only save AI response to database if there's actual message content
+  // Save AI response to database (including tool calls in the message)
   let savedAIResponse: ChatMessageDto | null = null;
-  if (aiResponse.text) {
+  let aiResponseContent = aiResponse.text;
+  
+  // If AI made a tool call, include that in the saved message for context
+  if (aiResponse.toolCall && aiResponse.toolCall.length > 0) {
+    const toolCallInfo = aiResponse.toolCall.map(tc => `Tool: ${tc.name}`).join(', ');
+    aiResponseContent = aiResponse.text ? `${aiResponse.text}\n[${toolCallInfo}]` : `[${toolCallInfo}]`;
+  }
+  
+  // Always save the AI response (even if empty) when it contains tool calls
+  if (aiResponseContent) {
     savedAIResponse = await chatDatabase.addMessageToConversation(
       conversationId,
       'ai',
-      aiResponse.text
+      aiResponseContent
     );
   }
 

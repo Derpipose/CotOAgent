@@ -164,7 +164,7 @@ const executeGetClosestClassesToDescription = async (
     const data = await response.json()
     return {
       success: true,
-      message: 'Closest classes retrieved successfully, check how to play for more details.',
+      message: 'Closest classes retrieved successfully, call the tool how to play the classes for more details.',
       classes: data,
     }
   } catch (error) {

@@ -65,11 +65,7 @@ async function sendMessageWithLoop(
 ): Promise<MessageResponse> {
   const requestBody: Record<string, unknown> = {
     message,
-  }
-
-  // Only include tools on the initial user message (not on tool result continuations)
-  if (!toolResult) {
-    requestBody.tools = tools
+    tools, // Always include tools so the backend has context for all requests
   }
 
   // If we're sending a tool result, include it and set message to empty
