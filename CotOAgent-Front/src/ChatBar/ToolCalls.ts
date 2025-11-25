@@ -42,18 +42,15 @@ export const tools = [
       },
       required: ['description']
     }
+  },
+  {
+    name: 'get_how_to_play_classes',
+    description: 'Retrieves information on how to play the classes available in the Chronicles of the Omuns.',
+    parameters: {
+      type: 'object',
+      properties: {}
+    }
   }
-//   {
-//     name: 'get_background_info_on_classes',
-//     description: 'Retrieves background information on the classes available in the Chronicles of the Omuns.',
-//     parameters: {
-//       type: 'object',
-//       properties: {
-//         paramName: { type: 'string', description: 'Description of parameter' }
-//       },
-//       required: ['paramName']
-//     }
-//   }
 ]
 
 /**
@@ -77,6 +74,9 @@ export const executeTool = async (
   }
   if(toolName === 'get_closest_classes_to_description') {
     return executeGetClosestClassesToDescription(args)
+  }
+  if (toolName === 'get_how_to_play_classes') {
+    return executeHowToPlayClasses();
   }
 
   throw new Error(`Unknown tool: ${toolName}`)
@@ -150,6 +150,7 @@ const executeGetClosestClassesToDescription = async (
     const data = await response.json()
     return {
       success: true,
+      message: 'Closest classes retrieved successfully, check how to play for more details.',
       classes: data,
     }
   } catch (error) {
@@ -158,4 +159,33 @@ const executeGetClosestClassesToDescription = async (
       message: `Failed to get closest classes: ${error instanceof Error ? error.message : 'Unknown error'}`,
     }
   }
-}   
+}
+
+/**
+ * Get how to play classes documentation
+ */
+const executeHowToPlayClasses = async () => {
+  try {
+    const response = await fetch('/api/classes/how-to-play', {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    })
+
+    if (!response.ok) {
+      throw new Error(`Failed to get how to play info (${response.status})`)
+    }
+
+    const data = await response.json()
+    return {
+      success: true,
+      message: data.content,
+    }
+  } catch (error) {
+    return {
+      success: false,
+      message: `Failed to get how to play info: ${error instanceof Error ? error.message : 'Unknown error'}`,
+    }
+  }
+}

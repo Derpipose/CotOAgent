@@ -1,6 +1,7 @@
 import { useLocation, Link } from 'react-router-dom'
+import { useState } from 'react'
 import { useAuth } from '../context/useAuth'
-import '../css/sidebar.css'
+import '../css/navbar.css'
 
 interface NavLink {
   label: string
@@ -12,6 +13,7 @@ interface NavLink {
 const SideNavBar = () => {
   const location = useLocation()
   const { isAdmin, isAuthenticated } = useAuth()
+  const [isMenuOpen, setIsMenuOpen] = useState(false)
   
   const navLinks: NavLink[] = [
     { label: 'Home', path: '/' },
@@ -38,16 +40,36 @@ const SideNavBar = () => {
     return true
   })
 
+  const handleLinkClick = () => {
+    setIsMenuOpen(false)
+  }
+
   return (
-    <nav className="sidebar">
-      <div className="sidebar-content">
-        <h2 className="sidebar-title">Menu</h2>
-        <ul className="nav-list">
+    <nav className="navbar">
+      <div className="navbar-container">
+        <div className="navbar-brand">
+          <Link to="/" className="brand-link">
+            Chronicles
+          </Link>
+        </div>
+
+        <button
+          className={`hamburger ${isMenuOpen ? 'active' : ''}`}
+          onClick={() => setIsMenuOpen(!isMenuOpen)}
+          aria-label="Toggle navigation menu"
+        >
+          <span></span>
+          <span></span>
+          <span></span>
+        </button>
+
+        <ul className={`nav-list ${isMenuOpen ? 'active' : ''}`}>
           {visibleLinks.map((link) => (
             <li key={link.path} className="nav-item">
               <Link
                 to={link.path}
                 className={`nav-link ${isActive(link.path) ? 'active' : ''}`}
+                onClick={handleLinkClick}
               >
                 {link.label}
               </Link>

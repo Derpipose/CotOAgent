@@ -61,4 +61,26 @@ router.post('/search', asyncHandler(async (req: Request, res: Response) => {
   res.json(mappedResults);
 }));
 
+/**
+ * GET /api/classes/how-to-play
+ * Returns information on how to play the classes in the game
+ */
+router.get('/how-to-play', asyncHandler(async (req: Request, res: Response) => {
+  const mdUrl = 'https://derpipose.github.io/HowToPlayTheClasses.md';
+  
+  const response = await fetch(mdUrl);
+  
+  if (!response.ok) {
+    throw new Error(`Failed to fetch markdown: ${response.status}`);
+  }
+
+  const content = await response.text();
+
+  res.json({
+    success: true,
+    content,
+    source: mdUrl,
+  });
+}));
+
 export default router;

@@ -7,6 +7,10 @@ import { MessageList } from './MessageList'
 import { ChatInput } from './ChatInput'
 import '../css/chatbar.css'
 
+interface ChatBarProps {
+  onCollapsedChange?: (isCollapsed: boolean) => void
+}
+
 const ERROR_MESSAGE: ChatMessage = {
   id: 0,
   sender: 'ai',
@@ -46,15 +50,21 @@ const updateMessagesWithResponse = (
   return baseMessages
 }
 
-const ChatBar = () => {
+const ChatBar = ({ onCollapsedChange }: ChatBarProps) => {
   const { userEmail } = useAuth()
   const [conversationId, setConversationId] = useState<string | null>(null)
   const [messages, setMessages] = useState<ChatMessage[]>([])
   const [inputValue, setInputValue] = useState('')
   const [isLoading, setIsLoading] = useState(false)
   const [isInitializing, setIsInitializing] = useState(false)
+  const [isCollapsed, setIsCollapsed] = useState(false)
   const loadingDots = useLoadingDots(isLoading)
   const messagesEndRef = useRef<HTMLDivElement>(null)
+
+  // Notify parent when collapsed state changes
+  useEffect(() => {
+    onCollapsedChange?.(isCollapsed)
+  }, [isCollapsed, onCollapsedChange])
 
   // Auto-scroll to bottom when messages change
   useEffect(() => {
@@ -139,7 +149,15 @@ const ChatBar = () => {
   }
 
   return (
-    <aside className="chatbar">
+    <aside className={`chatbar ${isCollapsed ? 'collapsed' : ''}`}>
+      <button
+        className={`chatbar-toggle ${isCollapsed ? 'active' : ''}`}
+        onClick={() => setIsCollapsed(!isCollapsed)}
+        aria-label="Toggle chat"
+      >
+        {isCollapsed ? '↑' : '↓'}
+      </button>
+      {isCollapsed && <div className="chatbar-collapsed-label">AI Agent</div>}
       <div className="chatbar-content">
         <h2 className="chatbar-title">Chronicler</h2>
 
