@@ -121,10 +121,11 @@
 /* Characters Grid */
 .characters-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
-  gap: 2rem;
+  grid-template-columns: repeat(auto-fit, minmax(clamp(320px, calc(100% - 2rem), 400px), 1fr));
+  gap: clamp(1rem, 3vw, 2rem);
   max-width: 1400px;
   margin: 0 auto;
+  padding: 0 clamp(0.5rem, 2vw, 1rem);
 }
 
 /* Character Card */
@@ -402,36 +403,22 @@
 
 /* Responsive Design */
 @media (max-width: 1024px) {
-  .characters-grid {
-    grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
-    gap: 1.5rem;
-    padding: 0 1rem;
-  }
-
   .characters-container {
-    padding: 1.5rem 1rem;
+    padding: clamp(1rem, 3vw, 1.5rem);
   }
 
   .characters-header h1 {
-    font-size: 2rem;
+    font-size: clamp(1.8rem, 5vw, 2rem);
   }
 }
 
 @media (max-width: 768px) {
-  .characters-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .characters-container {
-    padding: 1rem;
-  }
-
   .characters-header {
-    margin-bottom: 2rem;
+    margin-bottom: clamp(1.5rem, 4vw, 2rem);
   }
 
   .characters-header h1 {
-    font-size: 1.8rem;
+    font-size: clamp(1.5rem, 4vw, 1.8rem);
   }
 
   .character-card {
@@ -444,7 +431,7 @@
   }
 
   .character-name {
-    font-size: 1.4rem;
+    font-size: clamp(1.1rem, 3vw, 1.4rem);
   }
 
   .stats-grid {
@@ -462,22 +449,8 @@
 }
 
 @media (max-width: 480px) {
-  .characters-grid {
-    gap: 1rem;
-  }
-
-  .character-card {
-    border-radius: 8px;
-  }
-
-  .card-header,
-  .card-body,
-  .card-footer {
-    padding: 1rem;
-  }
-
   .character-name {
-    font-size: 1.2rem;
+    font-size: clamp(1rem, 3vw, 1.2rem);
   }
 
   .stats-grid {

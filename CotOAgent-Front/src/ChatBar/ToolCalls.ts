@@ -50,6 +50,17 @@ export const tools = [
       type: 'object',
       properties: {}
     }
+  },
+  {
+    name: 'get_closest_races_to_description',
+    description: 'Retrieves the 10 closest matching races available in the Chronicles of the Omuns.',
+    parameters: {
+      type: 'object',
+      properties: {
+        description: { type: 'string', description: 'The description to match races against' }
+      },
+      required: ['description']
+    }
   }
 ]
 
@@ -77,6 +88,9 @@ export const executeTool = async (
   }
   if (toolName === 'get_how_to_play_classes') {
     return executeHowToPlayClasses();
+  }
+  if (toolName === 'get_closest_races_to_description') {
+    return executeGetClosestRacesToDescription(args)
   }
 
   throw new Error(`Unknown tool: ${toolName}`)
@@ -186,6 +200,42 @@ const executeHowToPlayClasses = async () => {
     return {
       success: false,
       message: `Failed to get how to play info: ${error instanceof Error ? error.message : 'Unknown error'}`,
+    }
+  }
+}
+
+/**
+ * get the 10 closest races to a given description
+ */
+const executeGetClosestRacesToDescription = async (
+  args: Record<string, unknown>
+) => {
+  console.log('Executing get closest races to description with args:', args);
+  const description = args.description as string
+  try {
+    const response = await fetch('/api/races/search', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ query: description }),
+    })
+
+    if (!response.ok) {
+      const error = await response.json().catch(() => ({}))
+      throw new Error(error.error || `Failed to get closest races (${response.status})`)
+    }
+
+    const data = await response.json()
+    return {
+      success: true,
+      message: 'Closest races retrieved successfully.',
+      races: data,
+    }
+  } catch (error) {
+    return {
+      success: false,
+      message: `Failed to get closest races: ${error instanceof Error ? error.message : 'Unknown error'}`,
     }
   }
 }
