@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { useAuth } from '../context/useAuth'
 import type { ChatMessage } from './types'
-import { initializeConversation, sendUserMessage, saveUserMessage, isValidMessage } from './chatAPI'
+import { initializeConversation, handleAiResponseLoop, saveUserMessage, isValidMessage } from './chatAPI'
 import { useLoadingDots } from './useLoadingDots'
 import { MessageList } from './MessageList'
 import { ChatInput } from './ChatInput'
@@ -29,7 +29,7 @@ const createTemporaryUserMessage = (message: string): ChatMessage => ({
 // Helper function to update messages after API response
 const updateMessagesWithResponse = (
   previousMessages: ChatMessage[],
-  responseData: Awaited<ReturnType<typeof sendUserMessage>>
+  responseData: Awaited<ReturnType<typeof handleAiResponseLoop>>
 ): ChatMessage[] => {
   // Start with all messages except the temporary user message
   const baseMessages = previousMessages.slice(0, -1)
@@ -118,19 +118,14 @@ const ChatBar = ({ onCollapsedChange }: ChatBarProps) => {
 
     setIsLoading(true)
 
-    // Save User Message First
-    await saveUserMessage(conversationId, userEmail || '', userMessage)
-
     try {
-      // Get The AI Response Next
-      // const aiResponseData = await getAIResponse(conversationId, userEmail || '', userMessage)
-      // console.log('AI Response Data:', aiResponseData)
+      // Save user message first
+      await saveUserMessage(conversationId, userEmail || '', userMessage)
+      
+      // Get AI response (handles agentic loop with tool calls)
+      const data = await handleAiResponseLoop(conversationId, userEmail || '', userMessage)
 
-      // Old Method: Send and Save in One Call and loop in a dirty backend way
-      const data = await sendUserMessage(conversationId, userEmail || '', userMessage)
-
-      // updateMessagesWithResponse handles the agentic loop internally (tool calls are hidden)
-      // Only the final response is returned and displayed
+      // Update messages with AI response
       setMessages((prev) => updateMessagesWithResponse(prev, data))
     } finally {
       setIsLoading(false)

@@ -23,7 +23,7 @@ export const tools = [
   //create new character tool
   {
     name: 'create_new_character',
-    description: 'Creates a new character with a name in the system',
+    description: 'Creates a new character if the user has a name for the character.',
     parameters: {
       type: 'object',
       properties: {
@@ -62,6 +62,7 @@ export const tools = [
       required: ['description']
     }
   }
+  
 ]
 
 /**

@@ -209,25 +209,22 @@ The characters are displayed in a dynamic sheet layout
 #### Estimates:
 
 Rubric items:
-- [ ] Professional, organized and smooth experience
-- [ ] Final view count verification (10+ pages/views)
+- [x] Final view count verification (10+ pages/views)
 
 Features:
-- [ ] Semi-optimal stat assignment algorithm
-- [ ] Spell management and filtering
+- [x] AI calls underway
+- [o] Spell management and filtering
 
-- [ ] UI/UX polish and refinement
-- [ ] Performance optimization
-- [ ] User onboarding improvements
-- [ ] Character comparison view
-- [ ] Mobile-optimized character creation flow
 
 #### Delivered
 
 Rubric Items:
-
+I have my final 10 views and am refactoring the AI calling so 
+that I can better control things. 
 
 Features:
+The AI calls are underway and I didn't yet get to the spell management but
+that will be coming soon. I hope. 
 
 ---
 ### Checkpoint 10: `Dec. 3, 2025`
@@ -235,6 +232,7 @@ Features:
 #### Estimates:
 
 Rubric items:
+- [ ] Professional, organized and smooth experience
 - [ ] Final testing and bug fixes
 - [ ] Documentation completion
 
@@ -242,6 +240,10 @@ Features:
 - [ ] AI agent has all tool calls
 - [ ] AI agent behavior refinement
 - [ ] Final Discord integration testing
+- [ ] Performance optimization
+- [ ] User onboarding improvements
+- [ ] Character comparison view
+- [ ] Mobile-optimized character creation flow
 
 #### Delivered
 
@@ -257,7 +259,7 @@ Features:
 
 Rubric items:
 - [ ] Final project submission and presentation
-- [ ] Complete rubric compliance verification
+- [ ] UI/UX polish and refinement
 
 Features:
 - [ ] Final testing and deployment

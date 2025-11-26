@@ -72,25 +72,95 @@ export const saveUserMessage = async (
 }
 
 /**
+ * Save a tool call to the conversation
+ * @param conversationId - The conversation ID
+ * @param userEmail - The email of the user
+ * @param toolId - Unique ID for this tool call
+ * @param toolCall - The tool call data
+ * @returns Promise with the saved tool call
+ */
+export const saveToolCall = async (
+  conversationId: string,
+  userEmail: string,
+  toolId: string,
+  toolCall: unknown
+): Promise<void> => {
+  const response = await fetch(
+    `${API_BASE_URL}/conversations/${conversationId}/messages/save-tool-call`,
+    {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-user-email': userEmail,
+      },
+      body: JSON.stringify({ toolId, toolCall }),
+    }
+  )
+
+  if (!response.ok) {
+    const errorData = await response.json().catch(() => ({}))
+    console.error('[ChatAPI] Error saving tool call:', errorData)
+    throw new Error(
+      `Failed to save tool call: ${response.status} ${response.statusText}`
+    )
+  }
+}
+
+/**
+ * Save a tool result to the conversation
+ * @param conversationId - The conversation ID
+ * @param userEmail - The email of the user
+ * @param toolId - ID of the tool call this result is for
+ * @param toolResult - The tool result data
+ * @returns Promise with the saved tool result
+ */
+export const saveToolResult = async (
+  conversationId: string,
+  userEmail: string,
+  toolId: string,
+  toolResult: unknown
+): Promise<void> => {
+  const response = await fetch(
+    `${API_BASE_URL}/conversations/${conversationId}/messages/save-tool-result`,
+    {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-user-email': userEmail,
+      },
+      body: JSON.stringify({ toolId, toolResult }),
+    }
+  )
+
+  if (!response.ok) {
+    const errorData = await response.json().catch(() => ({}))
+    console.error('[ChatAPI] Error saving tool result:', errorData)
+    throw new Error(
+      `Failed to save tool result: ${response.status} ${response.statusText}`
+    )
+  }
+}
+
+/**
  * Send a message to the conversation (handles agentic loop)
  * @param conversationId - The conversation ID
  * @param userEmail - The email of the user
  * @param message - The message to send
  * @returns Promise with user and final AI responses (after all tool calls are handled)
  */
-export const sendUserMessage = async (
+export const handleAiResponseLoop = async (
   conversationId: string,
   userEmail: string,
   message: string
 ): Promise<MessageResponse> => {
-  return await sendMessageWithLoop(conversationId, userEmail, message)
+  return await sendAiMessageWithLoop(conversationId, userEmail, message)
 }
 
 /**
  * Internal function that handles the agentic loop
  * Continues automatically until there are no more tool calls
  */
-async function sendMessageWithLoop(
+async function sendAiMessageWithLoop(
   conversationId: string,
   userEmail: string,
   message: string,
@@ -105,7 +175,7 @@ async function sendMessageWithLoop(
   // This tells the backend to continue the conversation without adding a new user message
   if (toolResult) {
     requestBody.toolResult = toolResult
-    requestBody.message = '' // Empty message when continuing with tool result maybe undefined
+    requestBody.message = '' // Empty message when continuing with tool result
   }
 
   const response = await fetch(
@@ -129,21 +199,30 @@ async function sendMessageWithLoop(
 
   // Handle tool calls if present in the response
   if (data.toolCall && Array.isArray(data.toolCall) && data.toolCall.length > 0) {
-    const toolResults = await Promise.all(
-      data.toolCall.map(async (tool: { name: string; parameters: { properties: Record<string, unknown> } }) => {
-        const result = await executeTool(
-          tool.name,
-          tool.parameters.properties,
-          userEmail
-        )
-        console.log('[ChatAPI] Tool executed:', tool.name, 'Result:', result)
-        return result
-      })
-    )
+    // Save tool calls and execute them
+    for (const tool of data.toolCall) {
+      // Use the tool ID from the AI response, or generate one as fallback
+      const toolId = tool.id || `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`
+      
+      // Save tool call to database
+      await saveToolCall(conversationId, userEmail, toolId, tool)
+      
+      // Execute the tool
+      const result = await executeTool(
+        tool.name,
+        tool.parameters.properties,
+        userEmail
+      )
+      console.log('[ChatAPI] Tool executed:', tool.name, 'Result:', result)
+      
+      // Save tool result to database
+      await saveToolResult(conversationId, userEmail, toolId, result)
+    }
 
     // Continue the agentic loop by sending the tool results back
     // This will recursively handle any further tool calls until we get a final response
-    return await sendMessageWithLoop(conversationId, userEmail, '', toolResults)
+    // Note: we don't pass individual tool results, just continue without a message
+    return await sendAiMessageWithLoop(conversationId, userEmail, '', true)
   }
 
   // No tool call, return the final response

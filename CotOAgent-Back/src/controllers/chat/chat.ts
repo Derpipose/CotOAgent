@@ -175,6 +175,98 @@ router.post(
 );
 
 /**
+ * POST /api/chat/conversations/:conversationId/messages/save-tool-call
+ * Save a tool call to the database
+ */
+router.post(
+  '/conversations/:conversationId/messages/save-tool-call',
+  validateConversationId,
+  extractUserFromEmail,
+  async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+    try {
+      const userId = req.userId!;
+      const { conversationId } = req.params as { conversationId: string };
+      const { toolId, toolCall } = req.body as { toolId: string; toolCall: unknown };
+
+      // Validate that user owns this conversation
+      const ownsConversation = await chatDatabase.userOwnsConversation(userId, conversationId);
+      if (!ownsConversation) {
+        res.status(403).json({ error: 'Unauthorized: You do not own this conversation' });
+        return;
+      }
+
+      // Validate tool call data
+      if (!toolId || !toolCall) {
+        res.status(400).json({ error: 'Tool ID and tool call data are required' });
+        return;
+      }
+
+      // Save tool call to database
+      const savedToolCall = await chatDatabase.addMessageToConversation(
+        conversationId,
+        'assistant',
+        JSON.stringify(toolCall),
+        toolId,
+        undefined
+      );
+
+      res.status(201).json({
+        success: true,
+        message: savedToolCall,
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
+);
+
+/**
+ * POST /api/chat/conversations/:conversationId/messages/save-tool-result
+ * Save a tool result to the database
+ */
+router.post(
+  '/conversations/:conversationId/messages/save-tool-result',
+  validateConversationId,
+  extractUserFromEmail,
+  async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+    try {
+      const userId = req.userId!;
+      const { conversationId } = req.params as { conversationId: string };
+      const { toolId, toolResult } = req.body as { toolId: string; toolResult: unknown };
+
+      // Validate that user owns this conversation
+      const ownsConversation = await chatDatabase.userOwnsConversation(userId, conversationId);
+      if (!ownsConversation) {
+        res.status(403).json({ error: 'Unauthorized: You do not own this conversation' });
+        return;
+      }
+
+      // Validate tool result data
+      if (!toolId || toolResult === undefined) {
+        res.status(400).json({ error: 'Tool ID and tool result are required' });
+        return;
+      }
+
+      // Save tool result to database
+      const savedToolResult = await chatDatabase.addMessageToConversation(
+        conversationId,
+        'user',
+        JSON.stringify(toolResult),
+        undefined,
+        toolId
+      );
+
+      res.status(201).json({
+        success: true,
+        message: savedToolResult,
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
+);
+
+/**
  * GET /api/chat/conversations/:conversationId/history
  * Get conversation history
  */

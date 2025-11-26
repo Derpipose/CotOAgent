@@ -32,6 +32,7 @@ interface Tool {
     properties: Record<string, unknown>;
     required?: string[];
   };
+  id?: string; // Optional ID from AI tool call response
 }
 
 interface AIRequestBody {
@@ -231,7 +232,7 @@ async function callAI(messages: AIMessage[], tools?: Tool[]): Promise<{ text: st
                 type: 'object',
                 properties: parsedArguments,
               },
-              // id: toolCall.id, //or something like this for the tool call tracking TODO: FIX THIS
+              id: toolCall.id, // Tool call ID from the AI response
             },
           ],
         };
