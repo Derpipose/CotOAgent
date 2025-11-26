@@ -231,6 +231,7 @@ async function callAI(messages: AIMessage[], tools?: Tool[]): Promise<{ text: st
                 type: 'object',
                 properties: parsedArguments,
               },
+              id: toolCall.id, //or something like this for the tool call tracking
             },
           ],
         };
@@ -316,9 +317,9 @@ export async function sendMessageAndGetResponse(
   }
 
   // Call AI and get response
-  // Only pass tools on initial user messages, not on tool result continuations
-  const aiResponse = await callAI(messages, toolResult ? undefined : tools);
-
+  // Always pass tools so the AI can make tool calls or follow-up tool calls
+  const aiResponse = await callAI(messages, tools);
+ 
   // Save AI response to database (including tool calls in the message)
   let savedAIResponse: ChatMessageDto | null = null;
   let aiResponseContent = aiResponse.text;
@@ -337,7 +338,7 @@ export async function sendMessageAndGetResponse(
   if (aiResponseContent) {
     savedAIResponse = await chatDatabase.addMessageToConversation(
       conversationId,
-      'ai',
+      'assistant',
       aiResponseContent
     );
   }
@@ -360,7 +361,7 @@ export async function sendMessageAndGetResponse(
         },
     aiResponse: savedAIResponse || {
       id: 0,
-      sender: 'ai',
+      sender: 'assistant',
       message: aiResponse.text || '',
       createdAt: new Date(),
     },

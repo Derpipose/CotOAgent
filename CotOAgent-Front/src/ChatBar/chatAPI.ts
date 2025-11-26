@@ -72,7 +72,7 @@ async function sendMessageWithLoop(
   // This tells the backend to continue the conversation without adding a new user message
   if (toolResult) {
     requestBody.toolResult = toolResult
-    requestBody.message = '' // Empty message when continuing with tool result
+    requestBody.message = '' // Empty message when continuing with tool result maybe undefined
   }
 
   const response = await fetch(
@@ -96,17 +96,21 @@ async function sendMessageWithLoop(
 
   // Handle tool calls if present in the response
   if (data.toolCall && Array.isArray(data.toolCall) && data.toolCall.length > 0) {
-    const firstToolCall = data.toolCall[0]
-    const toolResultValue = await executeTool(
-      firstToolCall.name,
-      firstToolCall.parameters.properties,
-      userEmail
+    const toolResults = await Promise.all(
+      data.toolCall.map(async (tool: { name: string; parameters: { properties: Record<string, unknown> } }) => {
+        const result = await executeTool(
+          tool.name,
+          tool.parameters.properties,
+          userEmail
+        )
+        console.log('[ChatAPI] Tool executed:', tool.name, 'Result:', result)
+        return result
+      })
     )
-    console.log('[ChatAPI] Tool executed:', firstToolCall.name, 'Result:', toolResultValue)
 
-    // Continue the agentic loop by sending the tool result back
+    // Continue the agentic loop by sending the tool results back
     // This will recursively handle any further tool calls until we get a final response
-    return await sendMessageWithLoop(conversationId, userEmail, '', toolResultValue)
+    return await sendMessageWithLoop(conversationId, userEmail, '', toolResults)
   }
 
   // No tool call, return the final response
