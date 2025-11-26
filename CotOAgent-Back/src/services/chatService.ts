@@ -65,57 +65,6 @@ interface AIResponse {
 }
 
 /**
- * Detect tool calls from text response (fallback for models that don't support proper tool calling)
- * Looks for patterns like "get_closest_classes_to_description" in the text
- */
-function detectToolCallFromText(text: string, tools: Tool[]): Tool | null {
-  const lowerText = text.toLowerCase();
-  
-  // Look for any tool name in the text
-  for (const tool of tools) {
-    const toolNameLower = tool.name.toLowerCase();
-    if (lowerText.includes(toolNameLower)) {
-      // Try to extract parameters from the text
-      // For now, extract any quoted strings or mentioned values as potential parameters
-      const properties: Record<string, unknown> = {};
-      
-      // Look for common parameter names and extract their values
-      for (const [paramKey, paramDef] of Object.entries(tool.parameters.properties || {})) {
-        // Look for the parameter name followed by a colon or quoted value
-        const paramPattern = new RegExp(`${paramKey}[:\\s]+["\']?([^"',\\n]+)["\']?`, 'i');
-        const match = text.match(paramPattern);
-        if (match && match[1]) {
-          properties[paramKey] = match[1].trim();
-        }
-      }
-      
-      // If no properties found but tool has required params, try to extract from context
-      if (Object.keys(properties).length === 0 && tool.parameters.required && tool.parameters.required.length > 0) {
-        // Look for quoted strings in the text that might be parameter values
-        const quotedStrings = text.match(/"([^"]+)"|'([^']+)'/g);
-        if (quotedStrings && tool.parameters.required[0]) {
-          const value = quotedStrings[0]?.replace(/["']/g, '');
-          if (value) {
-            properties[tool.parameters.required[0]] = value;
-          }
-        }
-      }
-      
-      return {
-        name: tool.name,
-        description: tool.description,
-        parameters: {
-          ...tool.parameters,
-          properties: properties.length === 0 ? tool.parameters.properties : properties,
-        },
-      };
-    }
-  }
-  
-  return null;
-}
-
-/**
  * Call the local LLM AI service
  */
 async function callAI(messages: AIMessage[], tools?: Tool[]): Promise<{ text: string; toolCall?: Tool[] }> {
@@ -235,18 +184,6 @@ async function callAI(messages: AIMessage[], tools?: Tool[]): Promise<{ text: st
               id: toolCall.id, // Tool call ID from the AI response
             },
           ],
-        };
-      }
-    }
-
-    // Fallback: Try to detect tool calls from text response if model doesn't support proper tool calling
-    if (tools && tools.length > 0 && aiMessage) {
-      const detectedToolCall = detectToolCallFromText(aiMessage, tools);
-      if (detectedToolCall) {
-        console.log('[ChatService] Fallback tool call detected from text:', detectedToolCall.name);
-        return {
-          text: aiMessage,
-          toolCall: [detectedToolCall],
         };
       }
     }
