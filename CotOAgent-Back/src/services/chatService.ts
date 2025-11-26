@@ -231,7 +231,7 @@ async function callAI(messages: AIMessage[], tools?: Tool[]): Promise<{ text: st
                 type: 'object',
                 properties: parsedArguments,
               },
-              id: toolCall.id, //or something like this for the tool call tracking
+              // id: toolCall.id, //or something like this for the tool call tracking TODO: FIX THIS
             },
           ],
         };
@@ -401,7 +401,7 @@ export async function initializeChat(
     initialAIResponse: {
       id: 0,
       message: initialGreeting,
-      sender: 'ai',
+      sender: 'assistant',
       createdAt: new Date(),
     },
   };

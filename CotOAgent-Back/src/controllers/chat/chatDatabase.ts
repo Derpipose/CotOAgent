@@ -39,7 +39,7 @@ export async function createConversation(
  */
 export async function addMessageToConversation(
   conversationId: string,
-  sender: 'user' | 'ai' | 'system',
+  sender: 'user' | 'assistant' | 'system',
   message: string
 ): Promise<ChatMessageDto> {
   if (!message || message.trim().length === 0) {

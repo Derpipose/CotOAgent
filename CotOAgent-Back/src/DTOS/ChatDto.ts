@@ -30,7 +30,7 @@ export type SendMessageDto = z.infer<typeof SendMessageDtoSchema>;
 // Response DTOs
 export interface ChatMessageDto {
   id: number;
-  sender: 'user' | 'ai';
+  sender: 'user' | 'assistant' | 'system';
   message: string;
   createdAt: Date;
 }

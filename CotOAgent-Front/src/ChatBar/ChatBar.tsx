@@ -13,7 +13,7 @@ interface ChatBarProps {
 
 const ERROR_MESSAGE: ChatMessage = {
   id: 0,
-  sender: 'ai',
+  sender: 'assistant',
   message: 'Failed to initialize chat. Please refresh the page and try again.',
   createdAt: new Date().toISOString(),
 }
