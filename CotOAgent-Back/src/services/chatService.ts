@@ -1,5 +1,5 @@
 import type { SendMessageResponseDto, CreateConversationResponseDto, ChatMessageDto } from '../DTOS/ChatDto.js';
-import * as chatDatabase from '../controllers/chat/chatDatabase.js';
+import * as chatDatabase from '../controllers/database/chatDatabase.js';
 
 // AI Service Configuration
 const AI_CONFIG = {
@@ -295,6 +295,7 @@ export async function sendMessageAndGetResponse(
     messages.push({
       role: 'user',
       content: `Tool result: ${JSON.stringify(toolResult)}`,
+      
     });
   }
 
@@ -304,16 +305,6 @@ export async function sendMessageAndGetResponse(
       role: 'user',
       content: userMessage.trim(),
     });
-  }
-
-  // Only save user message to database if it's not a tool result continuation
-  let savedUserMessage: ChatMessageDto | null = null;
-  if (!toolResult && userMessage.trim()) {
-    savedUserMessage = await chatDatabase.addMessageToConversation(
-      conversationId,
-      'user',
-      userMessage
-    );
   }
 
   // Call AI and get response
@@ -353,7 +344,7 @@ export async function sendMessageAndGetResponse(
           message: '',
           createdAt: new Date(),
         }
-      : savedUserMessage || {
+      : {
           id: 0,
           sender: 'user',
           message: userMessage,

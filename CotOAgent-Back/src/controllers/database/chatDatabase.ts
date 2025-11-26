@@ -67,6 +67,17 @@ export async function addMessageToConversation(
 }
 
 /**
+ * Save a user message to a conversation
+ * Wrapper around addMessageToConversation for explicit user message storage
+ */
+export async function saveUserMessage(
+  conversationId: string,
+  message: string
+): Promise<ChatMessageDto> {
+  return addMessageToConversation(conversationId, 'user', message);
+}
+
+/**
  * Get all messages in a conversation
  */
 export async function getConversationHistory(

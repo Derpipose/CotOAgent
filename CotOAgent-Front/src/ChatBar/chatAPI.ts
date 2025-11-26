@@ -39,13 +39,46 @@ export const initializeConversation = async (
 }
 
 /**
+ * Save a user message to the conversation
+ * @param conversationId - The conversation ID
+ * @param userEmail - The email of the user
+ * @param message - The message to save
+ * @returns Promise with the saved message
+ */
+export const saveUserMessage = async (
+  conversationId: string,
+  userEmail: string,
+  message: string
+): Promise<void> => {
+  const response = await fetch(
+    `${API_BASE_URL}/conversations/${conversationId}/messages/save-user-message`,
+    {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-user-email': userEmail,
+      },
+      body: JSON.stringify({ message }),
+    }
+  )
+
+  if (!response.ok) {
+    const errorData = await response.json().catch(() => ({}))
+    console.error('[ChatAPI] Error saving user message:', errorData)
+    throw new Error(
+      `Failed to save user message: ${response.status} ${response.statusText}`
+    )
+  }
+}
+
+/**
  * Send a message to the conversation (handles agentic loop)
  * @param conversationId - The conversation ID
  * @param userEmail - The email of the user
  * @param message - The message to send
  * @returns Promise with user and final AI responses (after all tool calls are handled)
  */
-export const sendMessage = async (
+export const sendUserMessage = async (
   conversationId: string,
   userEmail: string,
   message: string
