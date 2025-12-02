@@ -12,7 +12,6 @@ import Characters from './pages/Characters'
 import CharacterSheet from './pages/CharacterSheet'
 import Admin from './pages/Admin'
 import App from './App'
-import SideNavBar from './NavBar/SideNavBar'
 import MainLayout from './components/MainLayout'
 import ProtectedRoute from './components/ProtectedRoute'
 import AuthRequiredRoute from './components/AuthRequiredRoute'
@@ -34,7 +33,7 @@ createRoot(document.getElementById('root')!).render(
           <ToastProvider>
             <BrowserRouter>
               <AuthProvider>
-              <SideNavBar />
+          
               <ToastContainer />
               <MainLayout>
                 <Routes>
