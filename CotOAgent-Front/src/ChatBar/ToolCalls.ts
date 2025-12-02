@@ -3,6 +3,84 @@
  * Handles execution of all available tools and their results
  */
 
+// Store for pending responses - maps toolId to a promise resolver
+const pendingResponses: Map<string, (response: string) => void> = new Map()
+
+/**
+ * Send a message to the chat (for approval requests, etc.)
+ * @param conversationId - The conversation ID
+ * @param userEmail - The user's email
+ * @param message - The message to send
+ */
+const sendMessageToChat = async (
+  conversationId: string,
+  userEmail: string,
+  message: string
+): Promise<void> => {
+  try {
+    const response = await fetch(`/api/chat/conversations/${conversationId}/messages/save-user-message`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-user-email': userEmail,
+      },
+      body: JSON.stringify({ message }),
+    })
+
+    if (!response.ok) {
+      throw new Error(`Failed to send message: ${response.status}`)
+    }
+  } catch (error) {
+    console.error('[ToolCalls] Error sending message to chat:', error)
+    throw error
+  }
+}
+
+/**
+ * Wait for a user response from the chat
+ * This creates a promise that resolves when the user responds to a specific tool call
+ * @param toolId - The tool call ID to wait for a response on
+ * @param timeoutMs - Timeout in milliseconds (default: 5 minutes)
+ * @returns Promise that resolves with the user's response message
+ */
+const getMessageResponseFromChat = (toolId: string, timeoutMs: number = 300000): Promise<string> => {
+  return new Promise((resolve, reject) => {
+    // Mark this toolId as pending in sessionStorage so the chat UI knows about it
+    sessionStorage.setItem(`pending_tool_${toolId}`, 'true')
+
+    // Set up timeout
+    const timeout = setTimeout(() => {
+      pendingResponses.delete(toolId)
+      sessionStorage.removeItem(`pending_tool_${toolId}`)
+      reject(new Error(`Timeout waiting for user response to tool ${toolId}`))
+    }, timeoutMs)
+
+    // Create resolver that clears timeout
+    const resolver = (response: string) => {
+      clearTimeout(timeout)
+      pendingResponses.delete(toolId)
+      sessionStorage.removeItem(`pending_tool_${toolId}`)
+      resolve(response)
+    }
+
+    // Store the resolver for later when the response comes in
+    pendingResponses.set(toolId, resolver)
+  })
+}
+
+/**
+ * Process a user response for a pending tool approval
+ * This should be called when the chat receives a new user message that might be a response to an approval
+ * @param toolId - The tool call ID this response is for
+ * @param message - The user's response message
+ */
+export const processToolApprovalResponse = (toolId: string, message: string): void => {
+  const resolver = pendingResponses.get(toolId)
+  if (resolver) {
+    resolver(message)
+  }
+}
+
 /**
  * Define available tools that the AI can call
  * I am just going to leave these comments in, they are useful for now.
@@ -126,13 +204,15 @@ export const tools = [
  * @param args - The arguments for the tool
  * @param userEmail - The email of the user (required for character creation)
  * @param toolId - The ID of this tool call from the AI
+ * @param conversationId - The conversation ID (required for chat-based tools)
  * @returns The result of the tool execution
  */
 export const executeTool = async (
   toolName: string,
   args: Record<string, unknown>,
   userEmail?: string,
-  toolId?: string
+  toolId?: string,
+  conversationId?: string
 ) => {
   if (toolName === 'log_message') {
     return executeLogMessage(args, toolId)
@@ -154,14 +234,14 @@ export const executeTool = async (
     return executeAssignCharacterRace(args, userEmail, toolId)
   }
   if (toolName === 'assign_character_class') {
-    return executeAssignCharacterClass(args, userEmail, toolId)
+    return executeAssignCharacterClass(args, userEmail, toolId, conversationId)
   }
   if (toolName === 'get_stats_to_assign') {
     // call the random number generator api to get 6 random numbers between 10 and 18
     return executeGetStatNumbers(toolId)
   }
   if (toolName === 'assign_character_stats') {
-    return executeAssignCharacterStats(args, userEmail, toolId)
+    return executeAssignCharacterStats(args, userEmail, toolId, conversationId)
   }
 
   throw new Error(`Unknown tool: ${toolName}`)
@@ -453,7 +533,8 @@ const executeAssignCharacterRace = async (
 const executeAssignCharacterClass = async (
   args: Record<string, unknown>,
   userEmail?: string,
-  toolId?: string
+  toolId?: string,
+  conversationId?: string
 ) => {
   const characterId = args.character_id as string | undefined
   const className = args.class_name as string | undefined
@@ -472,6 +553,29 @@ const executeAssignCharacterClass = async (
       success: false,
       message: 'Class name is required to assign a class to the character',
       toolId,
+    }
+  }
+
+  // Request user approval
+  if (userEmail && toolId && conversationId) {
+    const approvalMessage = `I'm about to assign the class "${className}" to your character. Do you approve? (Please respond with "yes" or "no")`
+    try {
+      await sendMessageToChat(conversationId, userEmail, approvalMessage)
+      const userResponse = await getMessageResponseFromChat(toolId)
+      
+      if (!userResponse.toLowerCase().includes('yes')) {
+        return {
+          success: false,
+          message: `User did not approve class assignment. Response: "${userResponse}"`,
+          toolId,
+        }
+      }
+    } catch (error) {
+      return {
+        success: false,
+        message: `Error during approval process: ${error instanceof Error ? error.message : 'Unknown error'}`,
+        toolId,
+      }
     }
   }
 
@@ -602,7 +706,8 @@ const executeGetStatNumbers = async (toolId?: string) => {
 const executeAssignCharacterStats = async (
   args: Record<string, unknown>,
   userEmail?: string,
-  toolId?: string
+  toolId?: string,
+  conversationId?: string
 ) => {
   const characterId = args.character_id as string | undefined
   const stats = args.stats as Record<string, number> | undefined
@@ -621,6 +726,30 @@ const executeAssignCharacterStats = async (
       success: false,
       message: 'Stats object is required to assign stats to the character',
       toolId,
+    }
+  }
+
+  // Request user approval
+  if (userEmail && toolId && conversationId) {
+    const statsDisplay = `Strength: ${stats.Strength}, Dexterity: ${stats.Dexterity}, Constitution: ${stats.Constitution}, Intelligence: ${stats.Intelligence}, Wisdom: ${stats.Wisdom}, Charisma: ${stats.Charisma}`
+    const approvalMessage = `I'm about to assign these stats to your character: ${statsDisplay}. Do you approve? (Please respond with "yes" or "no")`
+    try {
+      await sendMessageToChat(conversationId, userEmail, approvalMessage)
+      const userResponse = await getMessageResponseFromChat(toolId)
+      
+      if (!userResponse.toLowerCase().includes('yes')) {
+        return {
+          success: false,
+          message: `User did not approve stats assignment. Response: "${userResponse}"`,
+          toolId,
+        }
+      }
+    } catch (error) {
+      return {
+        success: false,
+        message: `Error during approval process: ${error instanceof Error ? error.message : 'Unknown error'}`,
+        toolId,
+      }
     }
   }
 

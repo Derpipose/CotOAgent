@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import { useAuth } from '../context/useAuth'
 import type { ChatMessage } from './types'
 import { initializeConversation, handleAiResponseLoop, saveUserMessage, isValidMessage } from './chatAPI'
+import { processToolApprovalResponse } from './ToolCalls'
 import { useLoadingDots } from './useLoadingDots'
 import { MessageList } from './MessageList'
 import { ChatInput } from './ChatInput'
@@ -119,6 +120,18 @@ const ChatBar = ({ onCollapsedChange }: ChatBarProps) => {
     setIsLoading(true)
 
     try {
+      // Check if this message is a response to a pending tool approval
+      // by processing it as a potential approval response
+      // The processToolApprovalResponse function will handle matching if applicable
+      const storedToolIds = Object.keys(sessionStorage).filter(
+        (key) => key.startsWith('pending_tool_')
+      )
+      if (storedToolIds.length > 0) {
+        const toolId = storedToolIds[0].replace('pending_tool_', '')
+        processToolApprovalResponse(toolId, userMessage)
+        sessionStorage.removeItem(`pending_tool_${toolId}`)
+      }
+
       // Save user message first
       await saveUserMessage(conversationId, userEmail || '', userMessage)
       

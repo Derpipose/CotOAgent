@@ -210,12 +210,13 @@ async function sendAiMessageWithLoop(
       // Save tool call to database
       await saveToolCall(conversationId, userEmail, toolId, tool)
       
-      // Execute the tool with the toolId
+      // Execute the tool with the toolId and conversationId
       const result = await executeTool(
         tool.name,
         tool.parameters.properties,
         userEmail,
-        toolId
+        toolId,
+        conversationId
       )
       console.log('[ChatAPI] Tool executed:', tool.name, 'Result:', result)
       
