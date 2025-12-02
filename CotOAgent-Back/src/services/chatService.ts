@@ -1,5 +1,5 @@
 import type { SendMessageResponseDto, CreateConversationResponseDto, ChatMessageDto } from '../DTOS/ChatDto.js';
-import * as chatDatabase from '../controllers/chat/chatDatabase.js';
+import * as chatDatabase from '../controllers/database/chatDatabase.js';
 
 // AI Service Configuration
 const AI_CONFIG = {
@@ -17,7 +17,7 @@ console.log('[ChatService] AI_CONFIG:', {
 });
 
 // System prompt for the AI
-const SYSTEM_PROMPT = `You are a very friendly and helpful Chronicler, or game master, for the game Chronicles of the Omuns. You are here to help players build characters for the game using different documents around the site. Be mindful that this isn't dungeons and dragons, but it is a TTRPG. There is no multiclassing in this game. Do not suggest classes or races that do not exist. Try and make up as little as possible that isn't from docs. If you don't know the answer, say you don't know. Always try and refer to the documents provided on the site. Your goal is to help players build fun and interesting characters for Chronicles of the Omuns.`;
+const SYSTEM_PROMPT = `You are the Chronicler, or game master, for the game Chronicles of the Omuns. You are here to help players build characters for the game using different tool calls. Be mindful that this isn't dungeons and dragons, but it is a TTRPG. There is no multiclassing in this game. Suggest races and classes from the tool calls of get_closest_classes_to_description for classes and get_closest_races_to_description for races. If you don't know the answer, say you don't know. Always try and refer to the documents provided from tool calls. Your goal is to help players build fun and interesting characters for Chronicles of the Omuns.`;
 
 interface AIMessage {
   role: 'system' | 'user' | 'assistant';
@@ -32,6 +32,7 @@ interface Tool {
     properties: Record<string, unknown>;
     required?: string[];
   };
+  id?: string; // Optional ID from AI tool call response
 }
 
 interface AIRequestBody {
@@ -156,7 +157,7 @@ async function callAI(messages: AIMessage[], tools?: Tool[]): Promise<{ text: st
 
     const aiMessage = choice.message.content?.trim() || '';
 
-    // Check if AI made a tool call
+    // Check if AI made a proper tool call
     if (choice.message.tool_calls && choice.message.tool_calls.length > 0) {
       const toolCall = choice.message.tool_calls[0];
       if (toolCall && toolCall.function) {
@@ -180,9 +181,46 @@ async function callAI(messages: AIMessage[], tools?: Tool[]): Promise<{ text: st
                 type: 'object',
                 properties: parsedArguments,
               },
+              id: toolCall.id, // Tool call ID from the AI response
             },
           ],
         };
+      }
+    }
+
+    // Fallback: Check if tool calls are embedded in the message content as JSON
+    if (aiMessage) {
+      const toolCallPattern = /\{\s*"tool"\s*:\s*"([^"]+)"\s*,\s*"arguments"\s*:\s*({[^}]*})\s*\}/g;
+      const matches = Array.from(aiMessage.matchAll(toolCallPattern));
+      
+      if (matches.length > 0) {
+        console.log('[ChatService] Detected tool call in message content:', matches.length);
+        const match = matches[0];
+        const toolName = match?.[1];
+        const argumentsStr = match?.[2];
+        
+        if (toolName && argumentsStr) {
+          let parsedArguments: Record<string, unknown> = {};
+          parsedArguments = JSON.parse(argumentsStr);
+
+          // Generate a tool ID
+          const generatedToolId = `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+
+          return {
+            text: aiMessage,
+            toolCall: [
+              {
+                name: toolName,
+                description: 'Tool call from AI',
+                parameters: {
+                  type: 'object',
+                  properties: parsedArguments,
+                },
+                id: generatedToolId,
+              },
+            ],
+          };
+        }
       }
     }
 
@@ -226,11 +264,16 @@ export async function sendMessageAndGetResponse(
     content: msg.message,
   }));
 
-  // If this is a tool result response, add it as an assistant message
+  // If this is a tool result response, add it as a user message
   if (toolResult) {
+    // Handle both single result and array of results
+    const resultContent = Array.isArray(toolResult)
+      ? toolResult.map(r => `Tool result: ${JSON.stringify(r)}`).join('\n')
+      : `Tool result: ${JSON.stringify(toolResult)}`;
+    
     messages.push({
-      role: 'assistant',
-      content: `Tool result: ${JSON.stringify(toolResult)}`,
+      role: 'user',
+      content: resultContent,
     });
   }
 
@@ -242,27 +285,30 @@ export async function sendMessageAndGetResponse(
     });
   }
 
-  // Only save user message to database if it's not a tool result continuation
-  let savedUserMessage: ChatMessageDto | null = null;
-  if (!toolResult && userMessage.trim()) {
-    savedUserMessage = await chatDatabase.addMessageToConversation(
-      conversationId,
-      'user',
-      userMessage
-    );
-  }
-
   // Call AI and get response
-  // Only pass tools on initial user messages, not on tool result continuations
-  const aiResponse = await callAI(messages, toolResult ? undefined : tools);
-
-  // Only save AI response to database if there's actual message content
+  // Always pass tools so the AI can make tool calls or follow-up tool calls
+  const aiResponse = await callAI(messages, tools);
+ 
+  // Save AI response to database (including tool calls in the message)
   let savedAIResponse: ChatMessageDto | null = null;
-  if (aiResponse.text) {
+  let aiResponseContent = aiResponse.text;
+  
+  // If AI made a tool call, include the full tool call data in the saved message for context
+  if (aiResponse.toolCall && aiResponse.toolCall.length > 0) {
+    const toolCallData = aiResponse.toolCall.map(tc => 
+      JSON.stringify({ tool: tc.name, arguments: tc.parameters.properties })
+    ).join('\n');
+    aiResponseContent = aiResponse.text 
+      ? `${aiResponse.text}\n${toolCallData}` 
+      : toolCallData;
+  }
+  
+  // Always save the AI response (even if empty) when it contains tool calls
+  if (aiResponseContent) {
     savedAIResponse = await chatDatabase.addMessageToConversation(
       conversationId,
-      'ai',
-      aiResponse.text
+      'assistant',
+      aiResponseContent
     );
   }
 
@@ -276,7 +322,7 @@ export async function sendMessageAndGetResponse(
           message: '',
           createdAt: new Date(),
         }
-      : savedUserMessage || {
+      : {
           id: 0,
           sender: 'user',
           message: userMessage,
@@ -284,7 +330,7 @@ export async function sendMessageAndGetResponse(
         },
     aiResponse: savedAIResponse || {
       id: 0,
-      sender: 'ai',
+      sender: 'assistant',
       message: aiResponse.text || '',
       createdAt: new Date(),
     },
@@ -324,7 +370,7 @@ export async function initializeChat(
     initialAIResponse: {
       id: 0,
       message: initialGreeting,
-      sender: 'ai',
+      sender: 'assistant',
       createdAt: new Date(),
     },
   };

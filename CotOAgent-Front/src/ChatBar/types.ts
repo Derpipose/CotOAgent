@@ -1,6 +1,6 @@
 export interface ChatMessage {
   id: number
-  sender: 'user' | 'ai' | 'system'
+  sender: 'user' | 'assistant' | 'system'
   message: string
   createdAt: string
 }

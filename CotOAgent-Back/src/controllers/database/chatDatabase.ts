@@ -39,20 +39,22 @@ export async function createConversation(
  */
 export async function addMessageToConversation(
   conversationId: string,
-  sender: 'user' | 'ai' | 'system',
-  message: string
+  sender: 'user' | 'assistant' | 'system',
+  message: string,
+  toolId?: string,
+  toolResult?: string
 ): Promise<ChatMessageDto> {
   if (!message || message.trim().length === 0) {
     throw new Error('Message cannot be empty');
   }
 
   const query = `
-    INSERT INTO user_chat_messages (conversation_id, sender, message)
-    VALUES ($1, $2, $3)
+    INSERT INTO user_chat_messages (conversation_id, sender, message, tool_id, tool_result)
+    VALUES ($1, $2, $3, $4, $5)
     RETURNING id, sender, message, created_at as "createdAt"
   `;
 
-  const result = await pool.query(query, [conversationId, sender, message.trim()]);
+  const result = await pool.query(query, [conversationId, sender, message.trim(), toolId || null, toolResult || null]);
 
   if (result.rows.length === 0) {
     throw new Error('Failed to add message');
@@ -64,6 +66,17 @@ export async function addMessageToConversation(
     message: result.rows[0].message,
     createdAt: result.rows[0].createdAt,
   };
+}
+
+/**
+ * Save a user message to a conversation
+ * Wrapper around addMessageToConversation for explicit user message storage
+ */
+export async function saveUserMessage(
+  conversationId: string,
+  message: string
+): Promise<ChatMessageDto> {
+  return addMessageToConversation(conversationId, 'user', message);
 }
 
 /**

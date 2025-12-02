@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { useAuth } from '../context/useAuth'
 import type { ChatMessage } from './types'
-import { initializeConversation, sendMessage, isValidMessage } from './chatAPI'
+import { initializeConversation, handleAiResponseLoop, saveUserMessage, isValidMessage } from './chatAPI'
 import { useLoadingDots } from './useLoadingDots'
 import { MessageList } from './MessageList'
 import { ChatInput } from './ChatInput'
@@ -13,7 +13,7 @@ interface ChatBarProps {
 
 const ERROR_MESSAGE: ChatMessage = {
   id: 0,
-  sender: 'ai',
+  sender: 'assistant',
   message: 'Failed to initialize chat. Please refresh the page and try again.',
   createdAt: new Date().toISOString(),
 }
@@ -29,7 +29,7 @@ const createTemporaryUserMessage = (message: string): ChatMessage => ({
 // Helper function to update messages after API response
 const updateMessagesWithResponse = (
   previousMessages: ChatMessage[],
-  responseData: Awaited<ReturnType<typeof sendMessage>>
+  responseData: Awaited<ReturnType<typeof handleAiResponseLoop>>
 ): ChatMessage[] => {
   // Start with all messages except the temporary user message
   const baseMessages = previousMessages.slice(0, -1)
@@ -117,15 +117,16 @@ const ChatBar = ({ onCollapsedChange }: ChatBarProps) => {
     setMessages((prev) => [...prev, createTemporaryUserMessage(userMessage)])
 
     setIsLoading(true)
+
     try {
-      const data = await sendMessage(conversationId, userEmail || '', userMessage)
-      // updateMessagesWithResponse handles the agentic loop internally (tool calls are hidden)
-      // Only the final response is returned and displayed
+      // Save user message first
+      await saveUserMessage(conversationId, userEmail || '', userMessage)
+      
+      // Get AI response (handles agentic loop with tool calls)
+      const data = await handleAiResponseLoop(conversationId, userEmail || '', userMessage)
+
+      // Update messages with AI response
       setMessages((prev) => updateMessagesWithResponse(prev, data))
-    } catch (error) {
-      console.error('Error sending message:', error)
-      // Remove the failed message
-      setMessages((prev) => prev.slice(0, -1))
     } finally {
       setIsLoading(false)
     }

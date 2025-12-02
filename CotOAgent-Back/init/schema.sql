@@ -88,6 +88,8 @@ CREATE TABLE IF NOT EXISTS user_chat_messages (
     conversation_id UUID NOT NULL REFERENCES user_chat_conversations(id) ON DELETE CASCADE,
     sender VARCHAR(50) NOT NULL,
     message TEXT NOT NULL,
+    tool_id VARCHAR(255),
+    tool_result TEXT,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
