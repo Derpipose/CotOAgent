@@ -113,3 +113,25 @@ export async function processCharacterRevision(revisionData: RevisionData) {
   };
   
 }
+
+export async function approveCharacter(characterId: number) {
+  const client = await pool.connect();
+
+  try {
+    const result = await client.query(
+      `UPDATE characters 
+       SET approval_status = $1, feedback = NULL, last_modified = CURRENT_TIMESTAMP 
+       WHERE id = $2 
+       RETURNING id, name, user_id, approval_status, feedback`,
+      ['Approved', characterId]
+    );
+
+    if (result.rows.length === 0) {
+      throw new Error(`Character with ID ${characterId} not found`);
+    }
+
+    return result.rows[0];
+  } finally {
+    client.release();
+  }
+} 

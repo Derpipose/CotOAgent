@@ -264,46 +264,4 @@ router.post(
   }
 );
 
-/**
- * GET /api/chat/conversations/:conversationId/history
- * Get conversation history
- */
-router.get(
-  '/conversations/:conversationId/history',
-  validateConversationId,
-  extractUserFromEmail,
-  async (req: Request, res: Response, next: NextFunction): Promise<void> => {
-    try {
-      const userId = req.userId!;
-      const { conversationId } = req.params as { conversationId: string };
-
-      // Validate that user owns this conversation
-      const ownsConversation = await chatDatabase.userOwnsConversation(userId, conversationId);
-      const admin = process.env.ADMIN_USER_IDS?.split(',').map(id => parseInt(id)).includes(userId);
-      if (!ownsConversation && !admin) {
-        res.status(403).json({ error: 'Unauthorized: You do not own this conversation' });
-        return;
-      }
-
-      // Get conversation details
-      const conversation = await chatDatabase.getConversation(conversationId);
-      if (!conversation) {
-        res.status(404).json({ error: 'Conversation not found' });
-        return;
-      }
-
-      // Get message history
-      const messages = await chatDatabase.getConversationHistory(conversationId);
-
-      res.status(200).json({
-        conversationId,
-        conversationName: conversation.conversationName,
-        messages,
-      });
-    } catch (error) {
-      next(error);
-    }
-  }
-);
-
 export default router;
