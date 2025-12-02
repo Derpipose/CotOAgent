@@ -164,17 +164,17 @@ async function sendAiMessageWithLoop(
   conversationId: string,
   userEmail: string,
   message: string,
-  toolResult?: unknown
+  toolResults?: unknown[]
 ): Promise<MessageResponse> {
   const requestBody: Record<string, unknown> = {
     message,
     tools, // Always include tools so the backend has context for all requests
   }
 
-  // If we're sending a tool result, include it and set message to empty
+  // If we're sending tool results, include them and set message to empty
   // This tells the backend to continue the conversation without adding a new user message
-  if (toolResult) {
-    requestBody.toolResult = toolResult
+  if (toolResults && toolResults.length > 0) {
+    requestBody.toolResult = toolResults
     requestBody.message = '' // Empty message when continuing with tool result
   }
 
@@ -199,6 +199,9 @@ async function sendAiMessageWithLoop(
 
   // Handle tool calls if present in the response
   if (data.toolCall && Array.isArray(data.toolCall) && data.toolCall.length > 0) {
+    // Collect all tool results from this batch
+    const results: unknown[] = []
+    
     // Save tool calls and execute them
     for (const tool of data.toolCall) {
       // Use the tool ID from the AI response, or generate one as fallback
@@ -207,22 +210,25 @@ async function sendAiMessageWithLoop(
       // Save tool call to database
       await saveToolCall(conversationId, userEmail, toolId, tool)
       
-      // Execute the tool
+      // Execute the tool with the toolId
       const result = await executeTool(
         tool.name,
         tool.parameters.properties,
-        userEmail
+        userEmail,
+        toolId
       )
       console.log('[ChatAPI] Tool executed:', tool.name, 'Result:', result)
       
       // Save tool result to database
       await saveToolResult(conversationId, userEmail, toolId, result)
+      
+      // Collect the result
+      results.push(result)
     }
 
     // Continue the agentic loop by sending the tool results back
     // This will recursively handle any further tool calls until we get a final response
-    // Note: we don't pass individual tool results, just continue without a message
-    return await sendAiMessageWithLoop(conversationId, userEmail, '', true)
+    return await sendAiMessageWithLoop(conversationId, userEmail, '', results)
   }
 
   // No tool call, return the final response

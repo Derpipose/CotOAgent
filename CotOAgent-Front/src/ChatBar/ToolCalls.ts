@@ -61,8 +61,31 @@ export const tools = [
       },
       required: ['description']
     }
+  },
+  {
+    name: 'assign_character_race',
+    description: 'Assigns a race to a character based on either the last created character id or a given character id and the race that the user has provided or the last suggested race. The user must approve of the character race assignment before calling this tool.',
+    parameters: {
+      type: 'object',
+      properties: {
+        character_id: { type: 'string', description: 'The ID of the character to assign the race to. If not provided, the last created character will be used.' },
+        race_name: { type: 'string', description: 'The name of the race to assign to the character. If not provided, the last suggested race will be used.' }
+      },
+      required: ['character_id', 'race_name'] 
+    }
+  },
+  {
+    name: 'assign_character_class',
+    description: 'Assigns a class to a character. Must be called before assigning a race.',
+    parameters: {
+      type: 'object',
+      properties: {
+        character_id: { type: 'string', description: 'The ID of the character to assign the class to.' },
+        class_name: { type: 'string', description: 'The name of the class to assign to the character.' }
+      },
+      required: ['character_id', 'class_name'] 
+    }
   }
-  
 ]
 
 /**
@@ -70,28 +93,36 @@ export const tools = [
  * @param toolName - The name of the tool to execute
  * @param args - The arguments for the tool
  * @param userEmail - The email of the user (required for character creation)
+ * @param toolId - The ID of this tool call from the AI
  * @returns The result of the tool execution
  */
 export const executeTool = async (
   toolName: string,
   args: Record<string, unknown>,
-  userEmail?: string
+  userEmail?: string,
+  toolId?: string
 ) => {
   if (toolName === 'log_message') {
-    return executeLogMessage(args)
+    return executeLogMessage(args, toolId)
   }
   if (toolName === 'create_new_character') {
     console.log('Creating a new character');
-    return executeCreateNewCharacter(args, userEmail)
+    return executeCreateNewCharacter(args, userEmail, toolId)
   }
   if(toolName === 'get_closest_classes_to_description') {
-    return executeGetClosestClassesToDescription(args)
+    return executeGetClosestClassesToDescription(args, toolId)
   }
   if (toolName === 'get_how_to_play_classes') {
-    return executeHowToPlayClasses();
+    return executeHowToPlayClasses(toolId);
   }
   if (toolName === 'get_closest_races_to_description') {
-    return executeGetClosestRacesToDescription(args)
+    return executeGetClosestRacesToDescription(args, toolId)
+  }
+  if (toolName === 'assign_character_race') {
+    return executeAssignCharacterRace(args, userEmail, toolId)
+  }
+  if (toolName === 'assign_character_class') {
+    return executeAssignCharacterClass(args, userEmail, toolId)
   }
 
   throw new Error(`Unknown tool: ${toolName}`)
@@ -100,9 +131,9 @@ export const executeTool = async (
 /**
  * Log a message to the console
  */
-const executeLogMessage = (args: Record<string, unknown>) => {
+const executeLogMessage = (args: Record<string, unknown>, toolId?: string) => {
   console.log(args.message)
-  return { success: true, message: `Logged: ${args.message}` }
+  return { success: true, message: `Logged: ${args.message}`, toolId }
 }
 
 /**
@@ -110,7 +141,8 @@ const executeLogMessage = (args: Record<string, unknown>) => {
  */
 const executeCreateNewCharacter = async (
   args: Record<string, unknown>,
-  userEmail?: string
+  userEmail?: string,
+  toolId?: string
 ) => {
   const characterName = args.character_name as string
   try {
@@ -132,11 +164,13 @@ const executeCreateNewCharacter = async (
     return {
       success: true,
       message: `Character "${characterName}" created successfully with ID ${data.character.id}`,
+      toolId,
     }
   } catch (error) {
     return {
       success: false,
       message: `Failed to create character: ${error instanceof Error ? error.message : 'Unknown error'}`,
+      toolId,
     }
   }
 }
@@ -145,7 +179,8 @@ const executeCreateNewCharacter = async (
  * Get the 10 closest classes to a given description
  */
 const executeGetClosestClassesToDescription = async (
-  args: Record<string, unknown>
+  args: Record<string, unknown>,
+  toolId?: string
 ) => {
   const description = args.description as string
   try {
@@ -167,11 +202,13 @@ const executeGetClosestClassesToDescription = async (
       success: true,
       message: 'Closest classes retrieved successfully, call the tool how to play the classes for more details.',
       classes: data,
+      toolId,
     }
   } catch (error) {
     return {
       success: false,
       message: `Failed to get closest classes: ${error instanceof Error ? error.message : 'Unknown error'}`,
+      toolId,
     }
   }
 }
@@ -179,7 +216,7 @@ const executeGetClosestClassesToDescription = async (
 /**
  * Get how to play classes documentation
  */
-const executeHowToPlayClasses = async () => {
+const executeHowToPlayClasses = async (toolId?: string) => {
   try {
     const response = await fetch('/api/classes/how-to-play', {
       method: 'GET',
@@ -196,11 +233,13 @@ const executeHowToPlayClasses = async () => {
     return {
       success: true,
       message: data.content,
+      toolId,
     }
   } catch (error) {
     return {
       success: false,
       message: `Failed to get how to play info: ${error instanceof Error ? error.message : 'Unknown error'}`,
+      toolId,
     }
   }
 }
@@ -209,7 +248,8 @@ const executeHowToPlayClasses = async () => {
  * get the 10 closest races to a given description
  */
 const executeGetClosestRacesToDescription = async (
-  args: Record<string, unknown>
+  args: Record<string, unknown>,
+  toolId?: string
 ) => {
   console.log('Executing get closest races to description with args:', args);
   const description = args.description as string
@@ -232,11 +272,254 @@ const executeGetClosestRacesToDescription = async (
       success: true,
       message: 'Closest races retrieved successfully.',
       races: data,
+      toolId,
     }
   } catch (error) {
     return {
       success: false,
       message: `Failed to get closest races: ${error instanceof Error ? error.message : 'Unknown error'}`,
+      toolId,
+    }
+  }
+}
+
+/**
+ * Assign a race to a character
+ */
+const executeAssignCharacterRace = async (
+  args: Record<string, unknown>,
+  userEmail?: string,
+  toolId?: string
+) => {
+  const characterId = args.character_id as string | undefined
+  const raceName = args.race_name as string | undefined
+
+  // Validate required parameters
+  if (!characterId) {
+    return {
+      success: false,
+      message: 'Character ID is required to assign a race',
+      toolId,
+    }
+  }
+
+  if (!raceName) {
+    return {
+      success: false,
+      message: 'Race name is required to assign a race to the character',
+      toolId,
+    }
+  }
+
+  try {
+    // First, fetch the current character data
+    const getResponse = await fetch(`/api/characters`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-user-email': userEmail || '',
+      },
+    })
+
+    if (!getResponse.ok) {
+      let errorMessage = `Failed to fetch characters (${getResponse.status})`
+      try {
+        const error = await getResponse.json()
+        errorMessage = error.error || errorMessage
+      } catch {
+        // Continue with default error message
+      }
+      throw new Error(errorMessage)
+    }
+
+    const response = await getResponse.json()
+    const characters = response.characters || []
+    const character = characters.find((c: Record<string, unknown>) => String(c.id) === characterId)
+
+    if (!character) {
+      throw new Error(`Character with ID ${characterId} not found`)
+    }
+
+    console.log('[ToolCalls] Found character:', character)
+
+    // Check if character has a class assigned
+    if (!character.class_name) {
+      return {
+        success: false,
+        message: `Character "${character.name}" does not have a class assigned yet. Please assign a class before assigning a race.`,
+        toolId,
+      }
+    }
+
+    // Now update with the new race name
+    const updateBody = {
+      name: character.name,
+      class: character.class_name,
+      race: raceName,
+      stats: {
+        Strength: character.strength || 0,
+        Dexterity: character.dexterity || 0,
+        Constitution: character.constitution || 0,
+        Intelligence: character.intelligence || 0,
+        Wisdom: character.wisdom || 0,
+        Charisma: character.charisma || 0,
+      },
+    }
+
+    console.log('[ToolCalls] Update body:', updateBody)
+
+    const updateResponse = await fetch(`/api/characters/${characterId}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-user-email': userEmail || '',
+      },
+      body: JSON.stringify(updateBody),
+    })
+
+    if (!updateResponse.ok) {
+      let errorMessage = `Failed to assign race (${updateResponse.status})`
+      try {
+        const error = await updateResponse.json()
+        console.error('[ToolCalls] Update error response:', error)
+        errorMessage = error.error || error.message || JSON.stringify(error) || errorMessage
+      } catch (parseError) {
+        console.error('[ToolCalls] Failed to parse error response:', parseError)
+        // Continue with default error message
+      }
+      throw new Error(errorMessage)
+    }
+
+    const data = await updateResponse.json()
+    return {
+      success: data.success,
+      message: data.message,
+      characterId: data.characterId,
+      raceName,
+      toolId,
+    }
+  } catch (error) {
+    const errorMessage = error instanceof Error ? error.message : String(error)
+    return {
+      success: false,
+      message: `Failed to assign race: ${errorMessage}`,
+      toolId,
+    }
+  }
+}
+
+/**
+ * Assign a class to a character
+ */
+const executeAssignCharacterClass = async (
+  args: Record<string, unknown>,
+  userEmail?: string,
+  toolId?: string
+) => {
+  const characterId = args.character_id as string | undefined
+  const className = args.class_name as string | undefined
+
+  // Validate required parameters
+  if (!characterId) {
+    return {
+      success: false,
+      message: 'Character ID is required to assign a class',
+      toolId,
+    }
+  }
+
+  if (!className) {
+    return {
+      success: false,
+      message: 'Class name is required to assign a class to the character',
+      toolId,
+    }
+  }
+
+  try {
+    // First, fetch the current character data
+    const getResponse = await fetch(`/api/characters`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-user-email': userEmail || '',
+      },
+    })
+
+    if (!getResponse.ok) {
+      let errorMessage = `Failed to fetch characters (${getResponse.status})`
+      try {
+        const error = await getResponse.json()
+        errorMessage = error.error || errorMessage
+      } catch {
+        // Continue with default error message
+      }
+      throw new Error(errorMessage)
+    }
+
+    const response = await getResponse.json()
+    const characters = response.characters || []
+    const character = characters.find((c: Record<string, unknown>) => String(c.id) === characterId)
+
+    if (!character) {
+      throw new Error(`Character with ID ${characterId} not found`)
+    }
+
+    console.log('[ToolCalls] Found character:', character)
+
+    // Now update with the new class name
+    const updateBody = {
+      name: character.name,
+      class: className,
+      race: character.race_name || 'Human', // Use existing race or default to Human
+      stats: {
+        Strength: character.strength || 0,
+        Dexterity: character.dexterity || 0,
+        Constitution: character.constitution || 0,
+        Intelligence: character.intelligence || 0,
+        Wisdom: character.wisdom || 0,
+        Charisma: character.charisma || 0,
+      },
+    }
+
+    console.log('[ToolCalls] Update body:', updateBody)
+
+    const updateResponse = await fetch(`/api/characters/${characterId}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-user-email': userEmail || '',
+      },
+      body: JSON.stringify(updateBody),
+    })
+
+    if (!updateResponse.ok) {
+      let errorMessage = `Failed to assign class (${updateResponse.status})`
+      try {
+        const error = await updateResponse.json()
+        console.error('[ToolCalls] Update error response:', error)
+        errorMessage = error.error || error.message || JSON.stringify(error) || errorMessage
+      } catch (parseError) {
+        console.error('[ToolCalls] Failed to parse error response:', parseError)
+        // Continue with default error message
+      }
+      throw new Error(errorMessage)
+    }
+
+    const data = await updateResponse.json()
+    return {
+      success: data.success,
+      message: data.message,
+      characterId: data.characterId,
+      className,
+      toolId,
+    }
+  } catch (error) {
+    const errorMessage = error instanceof Error ? error.message : String(error)
+    return {
+      success: false,
+      message: `Failed to assign class: ${errorMessage}`,
+      toolId,
     }
   }
 }

@@ -188,6 +188,42 @@ async function callAI(messages: AIMessage[], tools?: Tool[]): Promise<{ text: st
       }
     }
 
+    // Fallback: Check if tool calls are embedded in the message content as JSON
+    if (aiMessage) {
+      const toolCallPattern = /\{\s*"tool"\s*:\s*"([^"]+)"\s*,\s*"arguments"\s*:\s*({[^}]*})\s*\}/g;
+      const matches = Array.from(aiMessage.matchAll(toolCallPattern));
+      
+      if (matches.length > 0) {
+        console.log('[ChatService] Detected tool call in message content:', matches.length);
+        const match = matches[0];
+        const toolName = match?.[1];
+        const argumentsStr = match?.[2];
+        
+        if (toolName && argumentsStr) {
+          let parsedArguments: Record<string, unknown> = {};
+          parsedArguments = JSON.parse(argumentsStr);
+
+          // Generate a tool ID
+          const generatedToolId = `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+
+          return {
+            text: aiMessage,
+            toolCall: [
+              {
+                name: toolName,
+                description: 'Tool call from AI',
+                parameters: {
+                  type: 'object',
+                  properties: parsedArguments,
+                },
+                id: generatedToolId,
+              },
+            ],
+          };
+        }
+      }
+    }
+
     // Return even if message is empty (AI might not have anything to say after tool execution)
     return { text: aiMessage };
   } catch (error) {
@@ -230,10 +266,14 @@ export async function sendMessageAndGetResponse(
 
   // If this is a tool result response, add it as a user message
   if (toolResult) {
+    // Handle both single result and array of results
+    const resultContent = Array.isArray(toolResult)
+      ? toolResult.map(r => `Tool result: ${JSON.stringify(r)}`).join('\n')
+      : `Tool result: ${JSON.stringify(toolResult)}`;
+    
     messages.push({
       role: 'user',
-      content: `Tool result: ${JSON.stringify(toolResult)}`,
-      
+      content: resultContent,
     });
   }
 
