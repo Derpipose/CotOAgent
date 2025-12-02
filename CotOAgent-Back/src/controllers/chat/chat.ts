@@ -118,7 +118,6 @@ router.post(
   extractUserFromEmail,
   async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
-      const userId = req.userId!;
       const { conversationId } = req.params as { conversationId: string };
 
       // Validate request body
@@ -154,7 +153,6 @@ router.post(
   extractUserFromEmail,
   async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
-      const userId = req.userId!;
       const { conversationId } = req.params as { conversationId: string };
       const { message } = req.body as { message: string };
 
