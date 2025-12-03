@@ -1,47 +1,72 @@
-import { useLocation } from 'react-router-dom'
-import { useState } from 'react'
-import type { ReactNode } from 'react'
-import ChatBar from '../ChatBar/ChatBar'
+import { useLocation } from "react-router-dom";
+import type { ReactNode } from "react";
+import { useState } from "react";
+import ChatBar from "../ChatBar/ChatBar";
+import SideNavBar from "../NavBar/SideNavBar";
 
 interface LayoutProps {
-  children: ReactNode
+  children: ReactNode;
 }
 
 const MainLayout = ({ children }: LayoutProps) => {
-  const location = useLocation()
-  const showChatBar = location.pathname === '/characters'
-  const [isChatbarCollapsed, setIsChatbarCollapsed] = useState(false)
+  const location = useLocation();
+  const showChatBar = location.pathname === "/characters";
+  const [isChatOpen, setIsChatOpen] = useState(false);
 
-  const getMargins = () => {
-    if (!showChatBar) {
-      // Desktop: account for side navbar
-      if (window.innerWidth > 768) {
-        return { marginLeft: '250px', marginRight: '0', marginBottom: '0', marginTop: '0' }
-      }
-      // Mobile: navbar is at top
-      return { marginLeft: '0', marginRight: '0', marginBottom: '0', marginTop: '60px' }
-    }
-    
-    // Responsive margins matching chatbar breakpoints
-    if (window.innerWidth <= 480) {
-      // On mobile, reduce bottom margin if chatbar is collapsed
-      const bottomMargin = isChatbarCollapsed ? '60px' : '50vh'
-      return { marginLeft: '0', marginRight: '0', marginBottom: bottomMargin, marginTop: '60px' } // Extra top margin on mobile for chatbar page
-    } else if (window.innerWidth <= 768) {
-      return { marginLeft: '0', marginRight: '50%', marginBottom: '0', marginTop: '0' } // 50% on tablets
-    } else if (window.innerWidth <= 1024) {
-      return { marginLeft: '250px', marginRight: '40%', marginBottom: '0', marginTop: '0' } // 40% on small desktops
-    }
-    // Large desktop: chat bar max-width is 600px, so account for that
-    return { marginLeft: '250px', marginRight: '600px', marginBottom: '0', marginTop: '0' }
-  }
+  return (  
+    <div className="flex flex-col h-screen w-screen lg:flex-row">
+      <SideNavBar />
+      <div className="flex-1 flex flex-col lg:flex-row overflow-hidden">
+        <div className="flex-1 overflow-auto">{children}</div>
+        
+        {/* Desktop ChatBar */}
+        {showChatBar && (
+          <div className="hidden lg:flex w-[400px] h-full border-l border-gray-700 bg-slate-800 flex-col overflow-hidden">
+            <ChatBar />
+          </div>
+        )}
+      </div>
 
-  return (
-    <div style={getMargins()}>
-      {showChatBar && <ChatBar onCollapsedChange={setIsChatbarCollapsed} />}
-      {children}
+      {/* Mobile ChatBar - Always mounted to preserve state, but hidden */}
+      {showChatBar && (
+        <>
+          {/* Chat Toggle Button */}
+          <button
+            onClick={() => setIsChatOpen(!isChatOpen)}
+            className="lg:hidden fixed bottom-6 right-6 z-40 bg-blue-500 hover:bg-blue-600 text-white rounded-full w-14 h-14 flex items-center justify-center shadow-lg transition-colors duration-200"
+            aria-label="Toggle chat"
+          >
+            💬
+          </button>
+
+          {/* Chat Modal Overlay */}
+          {isChatOpen && (
+            <div className="lg:hidden fixed inset-0 z-40 bg-black/50" />
+          )}
+
+          {/* Chat Modal - Always mounted, visibility controlled by opacity */}
+          <div
+            className={`lg:hidden fixed inset-0 z-50 flex flex-col justify-end transition-opacity duration-300 ${
+              isChatOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
+            }`}
+          >
+            <div className="bg-slate-800 rounded-t-lg shadow-xl h-[80vh] flex flex-col relative">
+              <button
+                onClick={() => setIsChatOpen(false)}
+                className="absolute top-4 right-4 z-50 text-white hover:text-gray-300 transition-colors"
+                aria-label="Close chat"
+              >
+                ✕
+              </button>
+              <div className="flex-1 overflow-hidden flex flex-col">
+                <ChatBar />
+              </div>
+            </div>
+          </div>
+        </>
+      )}
     </div>
-  )
-}
+  );
+};
 
-export default MainLayout
+export default MainLayout;

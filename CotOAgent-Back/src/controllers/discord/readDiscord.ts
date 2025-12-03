@@ -1,7 +1,7 @@
 import { Router, type Router as ExpressRouter } from 'express';
 import { type Message } from 'discord.js';
 import { client } from './discordClient.js';
-import { processCharacterRevision, getCharacterById } from '../database/revision.js';
+import { processCharacterRevision, getCharacterById, approveCharacter } from '../database/revision.js';
 
 const readDiscordRouter: ExpressRouter = Router();
 
@@ -16,6 +16,7 @@ client.on('messageCreate', async (message: Message) => {
       '`!help` - Show this help message\n' +
       '`!ping` - Check if the bot is online\n' +
       '`!revise <characterId> <feedback>` - Request a revision for a character\n' +
+      '`!approve <characterId>` - Approve a character\n' +
       '`!DERP` - Respond with an easter egg\n'
     );
   }
@@ -66,6 +67,32 @@ client.on('messageCreate', async (message: Message) => {
       }
       
       message.reply(`Error processing revision: ${errorMsg}`);
+    }
+  }
+
+  if (message.content.startsWith('!approve')) {
+    try {
+      const args = message.content.split(' ').slice(1);
+      const characterId = parseInt(args[0] || '');
+
+      if (!characterId || isNaN(characterId)) {
+        return message.reply('Invalid character ID. Usage: `!approve <characterId>`');
+      }
+
+      // Verify character exists
+      const character = await getCharacterById(characterId);
+
+      // Approve the character
+      await approveCharacter(characterId);
+
+      message.reply(
+        `Character **${character.name}** (ID: ${characterId}) has been approved.\n` +
+        `Player will be notified when they next log in.`
+      );
+    } catch (error) {
+      console.error('[Discord] Approval error:', error);
+      const errorMsg = error instanceof Error ? error.message : 'Unknown error';
+      message.reply(`Error processing approval: ${errorMsg}`);
     }
   }
 });

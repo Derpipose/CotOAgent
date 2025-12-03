@@ -76,7 +76,7 @@ export const tools = [
   },
   {
     name: 'assign_character_class',
-    description: 'Assigns a class to a character. Must be called before assigning a race.',
+    description: 'Assigns a class to a character. Must be called before assigning a race. User must approve of the character class assignment before calling this tool.',
     parameters: {
       type: 'object',
       properties: {
@@ -84,6 +84,38 @@ export const tools = [
         class_name: { type: 'string', description: 'The name of the class to assign to the character.' }
       },
       required: ['character_id', 'class_name'] 
+    }
+  },
+  {
+    name: 'get_stats_to_assign',
+    description: 'Gets 6 random numbers to assign to the character stats. This must be done before being able to ',
+    parameters: {
+      type: 'object',
+      properties: {}
+    }
+  },
+  {
+    name: 'assign_character_stats',
+    description: 'Assigns stats to a character based on the last created character or a given character id. Look at the given character class if you have it and use that as a guide as to how to assign the stats optimally.',
+    parameters: {
+      type: 'object',
+      properties: {
+        character_id: { type: 'string', description: 'The ID of the character to assign the stats to. If not provided, the last created character will be used.' },
+        stats: { 
+          type: 'object',
+          description: 'An object containing the stats to assign to the character.',
+          properties: {
+            Strength: { type: 'number' },
+            Dexterity: { type: 'number' },
+            Constitution: { type: 'number' },
+            Intelligence: { type: 'number' },
+            Wisdom: { type: 'number' },
+            Charisma: { type: 'number' }
+          },
+          required: ['Strength', 'Dexterity', 'Constitution', 'Intelligence', 'Wisdom', 'Charisma']
+        }
+      },
+      required: ['character_id', 'stats'] 
     }
   }
 ]
@@ -123,6 +155,13 @@ export const executeTool = async (
   }
   if (toolName === 'assign_character_class') {
     return executeAssignCharacterClass(args, userEmail, toolId)
+  }
+  if (toolName === 'get_stats_to_assign') {
+    // call the random number generator api to get 6 random numbers between 10 and 18
+    return executeGetStatNumbers(toolId)
+  }
+  if (toolName === 'assign_character_stats') {
+    return executeAssignCharacterStats(args, userEmail, toolId)
   }
 
   throw new Error(`Unknown tool: ${toolName}`)
@@ -519,6 +558,172 @@ const executeAssignCharacterClass = async (
     return {
       success: false,
       message: `Failed to assign class: ${errorMessage}`,
+      toolId,
+    }
+  }
+}
+
+/**
+ * Get 6 random numbers between 10 and 18 for character stats
+ */
+const executeGetStatNumbers = async (toolId?: string) => {
+  try {
+    const response = await fetch('/api/random/18/6', {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    })
+
+    if (!response.ok) {
+      const error = await response.json().catch(() => ({}))
+      throw new Error(error.error || `Failed to get random stats (${response.status})`)
+    }
+
+    const data = await response.json()
+    return {
+      success: true,
+      message: 'Random stats generated successfully.',
+      stats: data.numbers,
+      toolId,
+    }
+  } catch (error) {
+    return {
+      success: false,
+      message: `Failed to get random stats: ${error instanceof Error ? error.message : 'Unknown error'}`,
+      toolId,
+    }
+  }
+}
+
+/**
+ * Assign stats to a character
+ */
+const executeAssignCharacterStats = async (
+  args: Record<string, unknown>,
+  userEmail?: string,
+  toolId?: string
+) => {
+  const characterId = args.character_id as string | undefined
+  const stats = args.stats as Record<string, number> | undefined
+
+  // Validate required parameters
+  if (!characterId) {
+    return {
+      success: false,
+      message: 'Character ID is required to assign stats',
+      toolId,
+    }
+  }
+
+  if (!stats || typeof stats !== 'object') {
+    return {
+      success: false,
+      message: 'Stats object is required to assign stats to the character',
+      toolId,
+    }
+  }
+
+  try {
+    // First, fetch the current character data
+    const getResponse = await fetch(`/api/characters`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-user-email': userEmail || '',
+      },
+    })
+
+    if (!getResponse.ok) {
+      let errorMessage = `Failed to fetch characters (${getResponse.status})`
+      try {
+        const error = await getResponse.json()
+        errorMessage = error.error || errorMessage
+      } catch {
+        // Continue with default error message
+      }
+      throw new Error(errorMessage)
+    }
+
+    const response = await getResponse.json()
+    const characters = response.characters || []
+    const character = characters.find((c: Record<string, unknown>) => String(c.id) === characterId)
+
+    if (!character) {
+      throw new Error(`Character with ID ${characterId} not found`)
+    }
+
+    console.log('[ToolCalls] Found character:', character)
+
+    // Check if character has both class and race assigned
+    if (!character.class_name) {
+      return {
+        success: false,
+        message: `Character "${character.name}" does not have a class assigned yet. Please assign a class before assigning stats.`,
+        toolId,
+      }
+    }
+
+    if (!character.race_name) {
+      return {
+        success: false,
+        message: `Character "${character.name}" does not have a race assigned yet. Please assign a race before assigning stats.`,
+        toolId,
+      }
+    }
+
+    // Now update with the new stats
+    const updateBody = {
+      name: character.name,
+      class: character.class_name,
+      race: character.race_name,
+      stats: {
+        Strength: stats.Strength || 0,
+        Dexterity: stats.Dexterity || 0,
+        Constitution: stats.Constitution || 0,
+        Intelligence: stats.Intelligence || 0,
+        Wisdom: stats.Wisdom || 0,
+        Charisma: stats.Charisma || 0,
+      },
+    }
+
+    console.log('[ToolCalls] Update body:', updateBody)
+
+    const updateResponse = await fetch(`/api/characters/${characterId}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-user-email': userEmail || '',
+      },
+      body: JSON.stringify(updateBody),
+    })
+
+    if (!updateResponse.ok) {
+      let errorMessage = `Failed to assign stats (${updateResponse.status})`
+      try {
+        const error = await updateResponse.json()
+        console.error('[ToolCalls] Update error response:', error)
+        errorMessage = error.error || error.message || JSON.stringify(error) || errorMessage
+      } catch (parseError) {
+        console.error('[ToolCalls] Failed to parse error response:', parseError)
+        // Continue with default error message
+      }
+      throw new Error(errorMessage)
+    }
+
+    const data = await updateResponse.json()
+    return {
+      success: data.success,
+      message: data.message,
+      characterId: data.characterId,
+      stats: updateBody.stats,
+      toolId,
+    }
+  } catch (error) {
+    const errorMessage = error instanceof Error ? error.message : String(error)
+    return {
+      success: false,
+      message: `Failed to assign stats: ${errorMessage}`,
       toolId,
     }
   }

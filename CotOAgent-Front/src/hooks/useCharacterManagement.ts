@@ -53,9 +53,15 @@ export const useCharacters = (): UseCharactersReturn => {
   useEffect(() => {
     // Only sync if authenticated and have character data
     if (isAuthenticated && characterData?.characters && Array.isArray(characterData.characters)) {
-      setCharacters(characterData.characters)
+      setCharacters((prevCharacters) => {
+        // Only update if the data actually changed
+        if (JSON.stringify(prevCharacters) !== JSON.stringify(characterData.characters)) {
+          return characterData.characters
+        }
+        return prevCharacters
+      })
     }
-  }, [characterData?.characters, isAuthenticated])
+  }, [characterData, isAuthenticated])
 
   const refetch = async () => {
     try {

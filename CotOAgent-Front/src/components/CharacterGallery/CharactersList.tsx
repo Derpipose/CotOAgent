@@ -32,7 +32,7 @@ export default function CharactersList({
   getStatColor,
 }: CharactersListProps) {
   return (
-    <div className="characters-grid">
+    <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-1 2xl:grid-cols-2 gap-8 max-w-6xl mx-auto">
       {characters.map((character) => (
         <CharacterCard
           key={character.id}

@@ -12,7 +12,6 @@ import Characters from './pages/Characters'
 import CharacterSheet from './pages/CharacterSheet'
 import Admin from './pages/Admin'
 import App from './App'
-import SideNavBar from './NavBar/SideNavBar'
 import MainLayout from './components/MainLayout'
 import ProtectedRoute from './components/ProtectedRoute'
 import AuthRequiredRoute from './components/AuthRequiredRoute'
@@ -22,9 +21,6 @@ import { AuthProvider } from './context/AuthContext'
 import { ToastProvider } from './context/ToastContext'
 import KeycloakInitializer from './KeycloakInitializer'
 import { queryClient } from './config/queryClient'
-import './css/protected-route.css'
-import './css/error-boundary.css'
-import './css/toast.css'
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
@@ -34,7 +30,7 @@ createRoot(document.getElementById('root')!).render(
           <ToastProvider>
             <BrowserRouter>
               <AuthProvider>
-              <SideNavBar />
+          
               <ToastContainer />
               <MainLayout>
                 <Routes>
