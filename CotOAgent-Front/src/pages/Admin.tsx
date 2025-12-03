@@ -172,7 +172,7 @@ export default function Admin() {
       <div className="flex gap-8 justify-center flex-wrap mb-8">
         <div className="flex flex-col items-center gap-4 flex-1 min-w-64 max-w-xs">
           <button
-            className="w-full px-8 py-4 bg-gradient-to-br from-indigo-600 to-violet-700 text-white font-bold rounded-lg cursor-pointer transition-all shadow-md hover:translate-y-[-2px] hover:shadow-xl active:translate-y-0 disabled:opacity-60 disabled:cursor-not-allowed"
+            className="btn-primary-gradient w-full"
             onClick={() => handleImport('races')}
             disabled={importRacesMutation.isPending || importClassesMutation.isPending || importSpellsMutation.isPending}
           >
@@ -182,7 +182,7 @@ export default function Admin() {
 
         <div className="flex flex-col items-center gap-4 flex-1 min-w-64 max-w-xs">
           <button
-            className="w-full px-8 py-4 bg-gradient-to-br from-pink-500 to-rose-600 text-white font-bold rounded-lg cursor-pointer transition-all shadow-md hover:translate-y-[-2px] hover:shadow-xl active:translate-y-0 disabled:opacity-60 disabled:cursor-not-allowed"
+            className="btn-secondary-gradient w-full"
             onClick={() => handleImport('classes')}
             disabled={importRacesMutation.isPending || importClassesMutation.isPending || importSpellsMutation.isPending}
           >
@@ -192,7 +192,7 @@ export default function Admin() {
 
         <div className="flex flex-col items-center gap-4 flex-1 min-w-64 max-w-xs">
           <button
-            className="w-full px-8 py-4 bg-gradient-to-br from-cyan-500 to-blue-500 text-white font-bold rounded-lg cursor-pointer transition-all shadow-md hover:translate-y-[-2px] hover:shadow-xl active:translate-y-0 disabled:opacity-60 disabled:cursor-not-allowed"
+            className="btn-cyan-gradient w-full"
             onClick={() => handleImport('spells')}
             disabled={importRacesMutation.isPending || importClassesMutation.isPending || importSpellsMutation.isPending}
           >
@@ -208,7 +208,7 @@ export default function Admin() {
         <div className="flex gap-8 justify-center flex-wrap">
           <div className="flex flex-col items-center gap-4 flex-1 min-w-64 max-w-xs">
             <button
-              className="w-full px-8 py-4 bg-gradient-to-br from-indigo-600 to-violet-700 text-white font-bold rounded-lg cursor-pointer transition-all shadow-md hover:translate-y-[-2px] hover:shadow-xl active:translate-y-0 disabled:opacity-60 disabled:cursor-not-allowed"
+              className="btn-primary-gradient w-full"
               onClick={() => handleEmbed('races')}
               disabled={embeddingLoading !== null}
             >
@@ -216,17 +216,17 @@ export default function Admin() {
             </button>
             {embeddingProgress.races && (
               <div className="flex flex-col gap-2 w-full">
-                <div className="w-full h-2 bg-gray-300 rounded-full overflow-hidden shadow-inner">
-                  <div className="h-full bg-gradient-to-r from-indigo-600 to-violet-700 transition-all rounded-full" style={{ width: `${embeddingProgress.races.percentageComplete}%` }}></div>
+                <div className="progress-bar">
+                  <div className="progress-fill bg-gradient-to-r from-indigo-600 to-violet-700" style={{ width: `${embeddingProgress.races.percentageComplete}%` }}></div>
                 </div>
-                <div className="text-sm text-gray-600 text-center font-medium">{embeddingProgress.races.message}</div>
+                <div className="progress-text">{embeddingProgress.races.message}</div>
               </div>
             )}
           </div>
 
           <div className="flex flex-col items-center gap-4 flex-1 min-w-64 max-w-xs">
             <button
-              className="w-full px-8 py-4 bg-gradient-to-br from-pink-500 to-rose-600 text-white font-bold rounded-lg cursor-pointer transition-all shadow-md hover:translate-y-[-2px] hover:shadow-xl active:translate-y-0 disabled:opacity-60 disabled:cursor-not-allowed"
+              className="btn-secondary-gradient w-full"
               onClick={() => handleEmbed('classes')}
               disabled={embeddingLoading !== null}
             >
@@ -234,17 +234,17 @@ export default function Admin() {
             </button>
             {embeddingProgress.classes && (
               <div className="flex flex-col gap-2 w-full">
-                <div className="w-full h-2 bg-gray-300 rounded-full overflow-hidden shadow-inner">
-                  <div className="h-full bg-gradient-to-r from-pink-500 to-rose-600 transition-all rounded-full" style={{ width: `${embeddingProgress.classes.percentageComplete}%` }}></div>
+                <div className="progress-bar">
+                  <div className="progress-fill bg-gradient-to-r from-pink-500 to-rose-600" style={{ width: `${embeddingProgress.classes.percentageComplete}%` }}></div>
                 </div>
-                <div className="text-sm text-gray-600 text-center font-medium">{embeddingProgress.classes.message}</div>
+                <div className="progress-text">{embeddingProgress.classes.message}</div>
               </div>
             )}
           </div>
 
           <div className="flex flex-col items-center gap-4 flex-1 min-w-64 max-w-xs">
             <button
-              className="w-full px-8 py-4 bg-gradient-to-br from-cyan-500 to-blue-500 text-white font-bold rounded-lg cursor-pointer transition-all shadow-md hover:translate-y-[-2px] hover:shadow-xl active:translate-y-0 disabled:opacity-60 disabled:cursor-not-allowed"
+              className="btn-cyan-gradient w-full"
               onClick={() => handleEmbed('spells')}
               disabled={embeddingLoading !== null}
             >
@@ -252,37 +252,37 @@ export default function Admin() {
             </button>
             {embeddingProgress.spells && (
               <div className="flex flex-col gap-2 w-full">
-                <div className="w-full h-2 bg-gray-300 rounded-full overflow-hidden shadow-inner">
-                  <div className="h-full bg-gradient-to-r from-cyan-500 to-blue-500 transition-all rounded-full" style={{ width: `${embeddingProgress.spells.percentageComplete}%` }}></div>
+                <div className="progress-bar">
+                  <div className="progress-fill bg-gradient-to-r from-cyan-500 to-blue-500" style={{ width: `${embeddingProgress.spells.percentageComplete}%` }}></div>
                 </div>
-                <div className="text-sm text-gray-600 text-center font-medium">{embeddingProgress.spells.message}</div>
+                <div className="progress-text">{embeddingProgress.spells.message}</div>
               </div>
             )}
           </div>
         </div>
       </div>
 
-      <div className="my-12 p-8 bg-gradient-to-br from-gray-100 to-gray-200 rounded-2xl shadow-lg">
-        <h2 className="m-0 mb-2 text-gray-800 text-3xl text-center">🧪 Error Handling Tests</h2>
-        <p className="text-center text-gray-600 text-sm mb-6 mt-0">Test the error handling and toast notification system</p>
+      <div className="card-elevated my-12">
+        <h2 className="section-header">🧪 Error Handling Tests</h2>
+        <p className="text-center text-gray-600 text-sm mb-6">Test the error handling and toast notification system</p>
         
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 p-4">
-          <button className="px-5 py-3 text-sm font-bold rounded-lg cursor-pointer transition-all hover:translate-y-[-2px] hover:shadow-lg active:translate-y-0 bg-emerald-500 text-white border-2 border-emerald-600" onClick={testSuccessToast}>
+          <button className="btn-small bg-emerald-500 text-white border-2 border-emerald-600" onClick={testSuccessToast}>
             ✅ Test Success Toast
           </button>
-          <button className="px-5 py-3 text-sm font-bold rounded-lg cursor-pointer transition-all hover:translate-y-[-2px] hover:shadow-lg active:translate-y-0 bg-red-500 text-white border-2 border-red-600" onClick={testErrorToast}>
+          <button className="btn-small bg-red-500 text-white border-2 border-red-600" onClick={testErrorToast}>
             ❌ Test Error Toast
           </button>
-          <button className="px-5 py-3 text-sm font-bold rounded-lg cursor-pointer transition-all hover:translate-y-[-2px] hover:shadow-lg active:translate-y-0 bg-amber-500 text-white border-2 border-amber-600" onClick={testWarningToast}>
+          <button className="btn-small bg-amber-500 text-white border-2 border-amber-600" onClick={testWarningToast}>
             ⚠️ Test Warning Toast
           </button>
-          <button className="px-5 py-3 text-sm font-bold rounded-lg cursor-pointer transition-all hover:translate-y-[-2px] hover:shadow-lg active:translate-y-0 bg-blue-500 text-white border-2 border-blue-600" onClick={testInfoToast}>
+          <button className="btn-small bg-blue-500 text-white border-2 border-blue-600" onClick={testInfoToast}>
             ℹ️ Test Info Toast
           </button>
-          <button className="px-5 py-3 text-sm font-bold rounded-lg cursor-pointer transition-all hover:translate-y-[-2px] hover:shadow-lg active:translate-y-0 bg-violet-500 text-white border-2 border-violet-600" onClick={testPersistentToast}>
+          <button className="btn-small bg-violet-500 text-white border-2 border-violet-600" onClick={testPersistentToast}>
             📌 Test Persistent Toast
           </button>
-          <button className="px-5 py-3 text-sm font-bold rounded-lg cursor-pointer transition-all hover:translate-y-[-2px] hover:shadow-lg active:translate-y-0 bg-pink-500 text-white border-2 border-pink-600" onClick={testThrowError}>
+          <button className="btn-small bg-pink-500 text-white border-2 border-pink-600" onClick={testThrowError}>
             💥 Test Error Boundary
           </button>
         </div>

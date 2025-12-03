@@ -32,7 +32,7 @@ export default function CharacterCard({
   getStatColor,
 }: CharacterCardProps) {
   return (
-    <div className="bg-white rounded-xl shadow-md overflow-hidden transition-all duration-300 flex flex-col hover:translate-y-[-8px] hover:shadow-2xl">
+    <div className="card-base hover:translate-y-[-8px] hover:shadow-2xl flex flex-col">
       <div className="p-6 bg-gradient-to-br from-indigo-600 to-violet-700 text-white flex justify-between items-start gap-4">
         <h2 className="text-2xl font-bold m-0 flex-1 break-words">{character.name}</h2>
         <div className="flex gap-2 flex-wrap justify-end">
@@ -79,7 +79,7 @@ export default function CharacterCard({
           <span className="whitespace-nowrap">Created: {formatDate(character.created_at)}</span>
           <span className="whitespace-nowrap">Modified: {formatDate(character.last_modified)}</span>
         </div>
-        <button onClick={() => onViewDetails(character)} className="px-4 py-2 bg-indigo-600 text-white text-sm font-bold rounded-lg cursor-pointer transition-all hover:bg-indigo-700 active:scale-95">
+        <button onClick={() => onViewDetails(character)} className="btn-primary-gradient text-sm py-2 px-4">
           View Details
         </button>
       </div>

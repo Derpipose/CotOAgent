@@ -33,7 +33,7 @@ const MainLayout = ({ children }: LayoutProps) => {
           {/* Chat Toggle Button */}
           <button
             onClick={() => setIsChatOpen(!isChatOpen)}
-            className="lg:hidden fixed bottom-6 right-6 z-40 bg-blue-500 hover:bg-blue-600 text-white rounded-full w-14 h-14 flex items-center justify-center shadow-lg transition-colors duration-200"
+            className="lg:hidden fixed bottom-6 right-6 z-40 btn-primary-gradient w-14 h-14 flex-center rounded-full shadow-lg"
             aria-label="Toggle chat"
           >
             💬
@@ -41,7 +41,7 @@ const MainLayout = ({ children }: LayoutProps) => {
 
           {/* Chat Modal Overlay */}
           {isChatOpen && (
-            <div className="lg:hidden fixed inset-0 z-40 bg-black/50" />
+            <div className="lg:hidden modal-overlay" />
           )}
 
           {/* Chat Modal - Always mounted, visibility controlled by opacity */}
@@ -50,7 +50,7 @@ const MainLayout = ({ children }: LayoutProps) => {
               isChatOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
             }`}
           >
-            <div className="bg-slate-800 rounded-t-lg shadow-xl h-[80vh] flex flex-col relative">
+            <div className="modal-content rounded-t-lg h-[80vh] flex flex-col relative">
               <button
                 onClick={() => setIsChatOpen(false)}
                 className="absolute top-4 right-4 z-50 text-white hover:text-gray-300 transition-colors"

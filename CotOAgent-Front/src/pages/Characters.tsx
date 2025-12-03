@@ -105,7 +105,7 @@ function Characters() {
     }, [showDetailsModal, selectedCharacter, refetch])
     
   return (
-    <div className="w-full min-h-screen p-8 bg-gradient-to-br from-blue-50 to-blue-100 box-border">
+    <div className="page-container bg-gradient-to-br from-blue-50 to-blue-100">
       <CharacterPageHeader characterCount={characters.length} />
 
       {isLoading && <CharacterPageLoading />}

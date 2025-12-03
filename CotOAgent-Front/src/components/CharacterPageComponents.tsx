@@ -11,7 +11,7 @@ interface CharacterPageHeaderProps {
 }
 
 export const CharacterPageHeader: React.FC<CharacterPageHeaderProps> = ({ characterCount }) => (
-  <div className="max-w-6xl mx-auto mb-12 text-center">
+  <div className="container-max-width mb-12 text-center">
     <h1 className="text-4xl font-bold text-gray-900 mb-2 -tracking-0.5">My Characters</h1>
     <p className="text-lg text-gray-600">
       {characterCount > 0
@@ -29,11 +29,11 @@ export const CharacterPageLoading: React.FC = () => (
 )
 
 export const CharacterPageEmpty: React.FC = () => (
-  <div className="flex flex-col items-center justify-center min-h-96 gap-4 bg-white rounded-xl p-12 max-w-2xl mx-auto shadow-sm">
-    <div className="text-5xl">⚔️</div>
-    <h2 className="text-2xl font-bold text-gray-900">No Characters Yet</h2>
-    <p className="text-gray-600">Create your first character to begin your adventure!</p>
-    <a href="/character-sheet" className="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-semibold transition-colors">
+  <div className="empty-state">
+    <div className="empty-state-icon text-5xl">⚔️</div>
+    <h2 className="empty-state-title">No Characters Yet</h2>
+    <p className="empty-state-description">Create your first character to begin your adventure!</p>
+    <a href="/character-sheet" className="btn-primary-gradient inline-block">
       Create Character
     </a>
   </div>

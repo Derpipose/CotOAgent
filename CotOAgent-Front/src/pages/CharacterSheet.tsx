@@ -170,27 +170,27 @@ export default function CharacterSheet() {
   };
 
   return (
-    <div className="max-w-4xl mx-auto my-5 px-4 font-serif bg-gradient-to-br from-blue-400 to-purple-500 border-4 border-amber-900 p-8 rounded-lg">
+    <div className="container-max-width my-5 px-4 font-serif bg-gradient-primary border-4 border-amber-900 p-8 rounded-lg">
       <h1 className="text-gray-100 text-center mb-6 text-4xl font-bold">Character Sheet</h1>
       <div className="bg-amber-50 border-2 border-amber-700 p-6 rounded-lg">
         <h2 className="hidden">Character Details</h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-          <div className="bg-gradient-to-br from-blue-400 to-purple-500 p-3 border-2 border-amber-900 text-center rounded">
-            <strong className="text-amber-50 block mb-1 text-sm font-bold">Name</strong>
+          <div className="stat-box">
+            <strong className="stat-label">Name</strong>
             <input
               type="text"
               value={character.Name}
               onChange={handleNameChange}
               placeholder="Enter character name"
-              className="w-full p-2 border border-amber-900 rounded text-sm text-amber-950 bg-white"
+              className="stat-value"
             />
           </div>
-          <div className="bg-gradient-to-br from-blue-400 to-purple-500 p-3 border-2 border-amber-900 text-center rounded">
-            <strong className="text-amber-50 block mb-1 text-sm font-bold">Class</strong>
+          <div className="stat-box">
+            <strong className="stat-label">Class</strong>
             <select
               value={character.Class}
               onChange={handleClassChange}
-              className="w-full p-2 border border-amber-900 rounded text-sm text-amber-950 bg-white cursor-pointer"
+              className="stat-value"
               disabled={loading}
             >
               <option value="">Select a class</option>
@@ -201,12 +201,12 @@ export default function CharacterSheet() {
               ))}
             </select>
           </div>
-          <div className="bg-gradient-to-br from-blue-400 to-purple-500 p-3 border-2 border-amber-900 text-center rounded">
-            <strong className="text-amber-50 block mb-1 text-sm font-bold">Race</strong>
+          <div className="stat-box">
+            <strong className="stat-label">Race</strong>
             <select
               value={character.Race}
               onChange={handleRaceChange}
-              className="w-full p-2 border border-amber-900 rounded text-sm text-amber-950 bg-white cursor-pointer"
+              className="stat-value"
               disabled={loading}
             >
               <option value="">Select a race</option>
@@ -221,105 +221,105 @@ export default function CharacterSheet() {
 
         <div className="bg-amber-50 border-2 border-amber-700 p-6 rounded-lg">
           <h3 className="hidden">Abilities</h3>
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
-            <div className="bg-gradient-to-br from-blue-400 to-purple-500 text-amber-50 p-4 border-2 border-amber-900 text-center rounded">
-              <strong className="block text-xs font-bold mb-2">Strength</strong>
+          <div className="grid-stats">
+            <div className="stat-box">
+              <strong className="stat-label">Strength</strong>
               <input
                 type="number"
                 min="10"
                 max="18"
                 value={character.Stats.Strength}
                 onChange={(e) => handleStatChange('Strength', parseInt(e.target.value) || 10)}
-                className="w-full p-2 border border-amber-900 rounded font-bold text-2xl text-center text-amber-950 bg-white"
+                className="stat-value"
               />
               <button 
                 onClick={() => generateRandomStat('Strength')}
-                className="w-full mt-2 p-2 bg-amber-900 text-amber-50 border border-amber-700 rounded text-xs font-bold cursor-pointer hover:bg-amber-800 transition-all hover:shadow-md hover:translate-y-[-1px] active:translate-y-0 active:shadow-sm"
+                className="stat-button"
               >
                 Random
               </button>
             </div>
-            <div className="bg-gradient-to-br from-blue-400 to-purple-500 text-amber-50 p-4 border-2 border-amber-900 text-center rounded">
-              <strong className="block text-xs font-bold mb-2">Dexterity</strong>
+            <div className="stat-box">
+              <strong className="stat-label">Dexterity</strong>
               <input
                 type="number"
                 min="10"
                 max="18"
                 value={character.Stats.Dexterity}
                 onChange={(e) => handleStatChange('Dexterity', parseInt(e.target.value) || 10)}
-                className="w-full p-2 border border-amber-900 rounded font-bold text-2xl text-center text-amber-950 bg-white"
+                className="stat-value"
               />
               <button 
                 onClick={() => generateRandomStat('Dexterity')}
-                className="w-full mt-2 p-2 bg-amber-900 text-amber-50 border border-amber-700 rounded text-xs font-bold cursor-pointer hover:bg-amber-800 transition-all hover:shadow-md hover:translate-y-[-1px] active:translate-y-0 active:shadow-sm"
+                className="stat-button"
               >
                 Random
               </button>
             </div>
-            <div className="bg-gradient-to-br from-blue-400 to-purple-500 text-amber-50 p-4 border-2 border-amber-900 text-center rounded">
-              <strong className="block text-xs font-bold mb-2">Constitution</strong>
+            <div className="stat-box">
+              <strong className="stat-label">Constitution</strong>
               <input
                 type="number"
                 min="10"
                 max="18"
                 value={character.Stats.Constitution}
                 onChange={(e) => handleStatChange('Constitution', parseInt(e.target.value) || 10)}
-                className="w-full p-2 border border-amber-900 rounded font-bold text-2xl text-center text-amber-950 bg-white"
+                className="stat-value"
               />
               <button 
                 onClick={() => generateRandomStat('Constitution')}
-                className="w-full mt-2 p-2 bg-amber-900 text-amber-50 border border-amber-700 rounded text-xs font-bold cursor-pointer hover:bg-amber-800 transition-all hover:shadow-md hover:translate-y-[-1px] active:translate-y-0 active:shadow-sm"
+                className="stat-button"
               >
                 Random
               </button>
             </div>
-            <div className="bg-gradient-to-br from-blue-400 to-purple-500 text-amber-50 p-4 border-2 border-amber-900 text-center rounded">
-              <strong className="block text-xs font-bold mb-2">Intelligence</strong>
+            <div className="stat-box">
+              <strong className="stat-label">Intelligence</strong>
               <input
                 type="number"
                 min="10"
                 max="18"
                 value={character.Stats.Intelligence}
                 onChange={(e) => handleStatChange('Intelligence', parseInt(e.target.value) || 10)}
-                className="w-full p-2 border border-amber-900 rounded font-bold text-2xl text-center text-amber-950 bg-white"
+                className="stat-value"
               />
               <button 
                 onClick={() => generateRandomStat('Intelligence')}
-                className="w-full mt-2 p-2 bg-amber-900 text-amber-50 border border-amber-700 rounded text-xs font-bold cursor-pointer hover:bg-amber-800 transition-all hover:shadow-md hover:translate-y-[-1px] active:translate-y-0 active:shadow-sm"
+                className="stat-button"
               >
                 Random
               </button>
             </div>
-            <div className="bg-gradient-to-br from-blue-400 to-purple-500 text-amber-50 p-4 border-2 border-amber-900 text-center rounded">
-              <strong className="block text-xs font-bold mb-2">Wisdom</strong>
+            <div className="stat-box">
+              <strong className="stat-label">Wisdom</strong>
               <input
                 type="number"
                 min="10"
                 max="18"
                 value={character.Stats.Wisdom}
                 onChange={(e) => handleStatChange('Wisdom', parseInt(e.target.value) || 10)}
-                className="w-full p-2 border border-amber-900 rounded font-bold text-2xl text-center text-amber-950 bg-white"
+                className="stat-value"
               />
               <button 
                 onClick={() => generateRandomStat('Wisdom')}
-                className="w-full mt-2 p-2 bg-amber-900 text-amber-50 border border-amber-700 rounded text-xs font-bold cursor-pointer hover:bg-amber-800 transition-all hover:shadow-md hover:translate-y-[-1px] active:translate-y-0 active:shadow-sm"
+                className="stat-button"
               >
                 Random
               </button>
             </div>
-            <div className="bg-gradient-to-br from-blue-400 to-purple-500 text-amber-50 p-4 border-2 border-amber-900 text-center rounded">
-              <strong className="block text-xs font-bold mb-2">Charisma</strong>
+            <div className="stat-box">
+              <strong className="stat-label">Charisma</strong>
               <input
                 type="number"
                 min="10"
                 max="18"
                 value={character.Stats.Charisma}
                 onChange={(e) => handleStatChange('Charisma', parseInt(e.target.value) || 10)}
-                className="w-full p-2 border border-amber-900 rounded font-bold text-2xl text-center text-amber-950 bg-white"
+                className="stat-value"
               />
               <button 
                 onClick={() => generateRandomStat('Charisma')}
-                className="w-full mt-2 p-2 bg-amber-900 text-amber-50 border border-amber-700 rounded text-xs font-bold cursor-pointer hover:bg-amber-800 transition-all hover:shadow-md hover:translate-y-[-1px] active:translate-y-0 active:shadow-sm"
+                className="stat-button"
               >
                 Random
               </button>
@@ -330,13 +330,13 @@ export default function CharacterSheet() {
         <div className="flex flex-col items-center gap-2.5 mt-5">
           <button 
             onClick={saveCharacterToLocalStorage}
-            className="bg-gradient-to-br from-blue-400 to-purple-500 text-amber-50 border-2 border-amber-900 px-8 py-3 font-bold rounded cursor-pointer font-serif transition-all hover:from-blue-500 hover:to-purple-600 hover:shadow-lg hover:translate-y-[-2px] active:translate-y-0 active:shadow-sm"
+            className="btn-primary-gradient"
           >
             Save Character Locally
           </button>
           <button 
             onClick={submitCharacterForApproval}
-            className="bg-gradient-to-br from-indigo-600 to-violet-700 text-amber-50 border-2 border-amber-900 px-8 py-3 font-bold rounded cursor-pointer font-serif transition-all hover:from-indigo-700 hover:to-violet-800 hover:shadow-lg hover:translate-y-[-2px] active:translate-y-0 active:shadow-sm disabled:opacity-60 disabled:cursor-not-allowed"
+            className="btn-secondary-gradient disabled:opacity-60 disabled:cursor-not-allowed"
             disabled={submitting}
           >
             {submitting ? 'Submitting...' : 'Submit for Approval'}

@@ -48,3 +48,278 @@
     }
   }
 }
+
+@layer components {
+  /* Layout Components */
+  .container-max-width {
+    @apply max-w-6xl mx-auto;
+  }
+
+  .page-container {
+    @apply w-full min-h-screen p-8 bg-gradient-to-br;
+  }
+
+  .card-base {
+    @apply bg-white rounded-lg shadow-lg p-6 border border-gray-200;
+  }
+
+  .card-elevated {
+    @apply bg-white rounded-xl shadow-2xl p-6 border-2 border-gray-300;
+  }
+
+  /* Button Components */
+  .btn-primary-gradient {
+    @apply bg-gradient-to-br from-blue-500 to-purple-600 text-white font-bold py-3 px-8 rounded-lg cursor-pointer transition-all hover:shadow-lg hover:translate-y-[-2px] active:translate-y-0;
+  }
+
+  .btn-secondary-gradient {
+    @apply bg-gradient-to-br from-pink-500 to-rose-600 text-white font-bold py-3 px-8 rounded-lg cursor-pointer transition-all hover:shadow-lg hover:translate-y-[-2px] active:translate-y-0;
+  }
+
+  .btn-cyan-gradient {
+    @apply bg-gradient-to-br from-cyan-500 to-blue-500 text-white font-bold py-3 px-8 rounded-lg cursor-pointer transition-all hover:shadow-lg hover:translate-y-[-2px] active:translate-y-0;
+  }
+
+  .btn-small {
+    @apply px-3 py-2 text-sm font-bold rounded-lg cursor-pointer transition-all hover:translate-y-[-1px] hover:shadow-md active:translate-y-0;
+  }
+
+  .btn-disabled {
+    @apply opacity-60 cursor-not-allowed;
+  }
+
+  /* Feature Card Components */
+  .feature-card {
+    @apply bg-gradient-to-br from-blue-50 to-blue-100 rounded-xl p-6 text-center transition-all duration-300 border-2 border-transparent hover:translate-y-[-8px] hover:shadow-lg hover:border-blue-600;
+  }
+
+  .feature-icon {
+    @apply text-4xl mb-3;
+  }
+
+  .feature-title {
+    @apply font-bold text-gray-900 mb-3;
+  }
+
+  .feature-description {
+    @apply text-gray-700 mb-4;
+  }
+
+  .feature-link {
+    @apply text-blue-600 hover:text-blue-700 font-semibold;
+  }
+
+  /* Grid Components */
+  .grid-responsive {
+    @apply grid grid-cols-1 gap-6;
+  }
+
+  .grid-responsive-2 {
+    @apply grid grid-cols-1 md:grid-cols-2 gap-6;
+  }
+
+  .grid-responsive-3 {
+    @apply grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6;
+  }
+
+  .grid-stats {
+    @apply grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3;
+  }
+
+  /* Form Components */
+  .input-base {
+    @apply w-full px-4 py-2 border border-gray-300 rounded-lg text-gray-900 bg-white focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-colors;
+  }
+
+  .input-large {
+    @apply w-full px-4 py-3 border-2 border-gray-300 rounded-lg text-lg font-bold text-center text-gray-900 bg-white focus:outline-none focus:border-blue-500;
+  }
+
+  .select-base {
+    @apply w-full px-4 py-2 border border-gray-300 rounded-lg text-gray-900 bg-white cursor-pointer focus:outline-none focus:border-blue-500;
+  }
+
+  /* Stat/Ability Components */
+  .stat-box {
+    @apply bg-gradient-to-br from-blue-400 to-purple-500 text-amber-50 p-4 border-2 border-amber-900 text-center rounded;
+  }
+
+  .stat-label {
+    @apply block text-xs font-bold mb-2;
+  }
+
+  .stat-value {
+    @apply p-2 border border-amber-900 rounded font-bold text-2xl text-center text-amber-950 bg-white;
+  }
+
+  .stat-button {
+    @apply w-full mt-2 p-2 bg-amber-900 text-amber-50 border border-amber-700 rounded text-xs font-bold cursor-pointer hover:bg-amber-800 transition-all hover:shadow-md hover:translate-y-[-1px] active:translate-y-0 active:shadow-sm;
+  }
+
+  /* Section Components */
+  .section-header {
+    @apply text-2xl font-bold text-gray-900 mb-4 pb-3 border-b-4 border-blue-600;
+  }
+
+  .section-title {
+    @apply text-3xl font-bold text-center mb-6;
+  }
+
+  .section-subtitle {
+    @apply text-center text-gray-600 text-lg mb-8;
+  }
+
+  /* Step Components */
+  .step-container {
+    @apply space-y-4;
+  }
+
+  .step-item {
+    @apply flex gap-4;
+  }
+
+  .step-number {
+    @apply flex-shrink-0 w-12 h-12 bg-blue-600 text-white rounded-full flex items-center justify-center font-bold text-lg;
+  }
+
+  .step-content {
+    @apply flex-grow;
+  }
+
+  .step-title {
+    @apply font-bold text-gray-900;
+  }
+
+  .step-description {
+    @apply text-gray-600;
+  }
+
+  /* Progress Bar Components */
+  .progress-bar {
+    @apply w-full h-2 bg-gray-300 rounded-full overflow-hidden shadow-inner;
+  }
+
+  .progress-fill {
+    @apply h-full transition-all rounded-full;
+  }
+
+  .progress-text {
+    @apply text-sm text-gray-600 text-center font-medium;
+  }
+
+  /* Toast/Notification Components */
+  .toast-container {
+    @apply fixed bottom-6 right-6 flex flex-col gap-3 pointer-events-none z-50;
+  }
+
+  .toast-item {
+    @apply max-w-sm px-6 py-4 rounded-lg shadow-lg pointer-events-auto;
+    animation: slideIn 0.3s ease;
+  }
+
+  .toast-success {
+    @apply bg-green-100 border-l-4 border-green-500 text-green-700;
+  }
+
+  .toast-error {
+    @apply bg-red-100 border-l-4 border-red-500 text-red-700;
+  }
+
+  .toast-warning {
+    @apply bg-yellow-100 border-l-4 border-yellow-500 text-yellow-700;
+  }
+
+  .toast-info {
+    @apply bg-blue-100 border-l-4 border-blue-500 text-blue-700;
+  }
+
+  /* Modal/Overlay Components */
+  .modal-overlay {
+    @apply fixed inset-0 bg-black/50 flex items-center justify-center z-40;
+  }
+
+  .modal-content {
+    @apply bg-white rounded-xl shadow-2xl p-6 max-w-md mx-auto;
+  }
+
+  /* Gradient Backgrounds */
+  .bg-gradient-primary {
+    @apply bg-gradient-to-br from-blue-500 to-purple-600;
+  }
+
+  .bg-gradient-secondary {
+    @apply bg-gradient-to-br from-pink-500 to-rose-600;
+  }
+
+  .bg-gradient-success {
+    @apply bg-gradient-to-br from-green-500 to-emerald-600;
+  }
+
+  /* Text Components */
+  .text-gradient-primary {
+    @apply text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600;
+  }
+
+  .text-muted {
+    @apply text-gray-600 text-sm;
+  }
+
+  .text-error {
+    @apply text-red-600 font-semibold;
+  }
+
+  .text-success {
+    @apply text-green-600 font-semibold;
+  }
+
+  /* Loading/Empty States */
+  .empty-state {
+    @apply flex flex-col items-center justify-center min-h-96 gap-4 text-center;
+  }
+
+  .empty-state-icon {
+    @apply text-6xl;
+  }
+
+  .empty-state-title {
+    @apply text-2xl font-bold text-gray-800;
+  }
+
+  .empty-state-description {
+    @apply text-gray-600 text-lg;
+  }
+
+  /* Hover and Interactive Effects */
+  .hover-lift {
+    @apply transition-all hover:translate-y-[-4px] hover:shadow-lg;
+  }
+
+  .hover-grow {
+    @apply transition-transform hover:scale-105;
+  }
+
+  .transition-smooth {
+    @apply transition-all duration-300 ease-in-out;
+  }
+
+  /* Utility Classes */
+  .flex-center {
+    @apply flex items-center justify-center;
+  }
+
+  .flex-between {
+    @apply flex items-center justify-between;
+  }
+
+  .absolute-center {
+    @apply absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2;
+  }
+
+  .full-size {
+    @apply w-full h-full;
+  }
+
+  .full-screen {
+    @apply w-screen h-screen;
+  }
+}

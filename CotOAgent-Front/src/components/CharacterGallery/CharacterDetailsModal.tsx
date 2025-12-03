@@ -58,23 +58,23 @@ export default function CharacterDetailsModal({
 
   return (
     <div className="modal-overlay" onClick={onClose}>
-      <div className="modal-content" onClick={(e) => e.stopPropagation()}>
-        <div className="modal-header">
-          <h2>{character.name}</h2>
-          <button className="modal-close" onClick={onClose}>
+      <div className="modal-content max-w-2xl" onClick={(e) => e.stopPropagation()}>
+        <div className="flex justify-between items-center mb-6 pb-4 border-b-2 border-gray-200">
+          <h2 className="text-2xl font-bold text-gray-900 m-0">{character.name}</h2>
+          <button className="text-4xl font-light text-gray-600 hover:text-gray-900 bg-none border-none cursor-pointer p-2" onClick={onClose}>
             ×
           </button>
         </div>
 
-        <div className="modal-body">
-          <div className="character-details">
-            <div className="details-info">
-              <div className="detail-row">
-                <label className="detail-label">Class:</label>
+        <div className="max-h-96 overflow-y-auto mb-6">
+          <div className="space-y-6">
+            <div>
+              <div className="mb-4">
+                <label className="block text-sm font-bold text-gray-700 mb-2">Class:</label>
                 <select
                   value={editedData.class_name || ''}
                   onChange={(e) => onEditChange('class_name', e.target.value)}
-                  className="detail-select"
+                  className="select-base w-full"
                 >
                   <option value="">Select a class</option>
                   {classes.map((cls) => (
@@ -84,12 +84,12 @@ export default function CharacterDetailsModal({
                   ))}
                 </select>
               </div>
-              <div className="detail-row">
-                <label className="detail-label">Race:</label>
+              <div className="mb-4">
+                <label className="block text-sm font-bold text-gray-700 mb-2">Race:</label>
                 <select
                   value={editedData.race_name || ''}
                   onChange={(e) => onEditChange('race_name', e.target.value)}
-                  className="detail-select"
+                  className="select-base w-full"
                 >
                   <option value="">Select a race</option>
                   {races.map((race) => (
@@ -101,8 +101,8 @@ export default function CharacterDetailsModal({
               </div>
             </div>
 
-            <div className="character-stats">
-              <h3>Character Stats</h3>
+            <div>
+              <h3 className="text-lg font-bold text-gray-900 mb-4">Character Stats</h3>
               <CharacterStatsEdit
                 strength={editedData.strength}
                 dexterity={editedData.dexterity}
@@ -115,25 +115,25 @@ export default function CharacterDetailsModal({
             </div>
 
             {character.feedback && (
-              <div className="feedback-section">
-                <p className="feedback-label">Feedback:</p>
-                <p className="feedback-text">{character.feedback}</p>
+              <div className="bg-gray-100 p-4 rounded-lg border-l-4 border-indigo-600">
+                <p className="text-xs font-bold text-gray-600 uppercase m-0 mb-2 tracking-wide">Feedback:</p>
+                <p className="text-gray-800 text-sm leading-relaxed m-0 break-words">{character.feedback}</p>
               </div>
             )}
           </div>
         </div>
 
-        <div className="modal-footer">
-          <button className="btn btn-secondary" onClick={onClose} disabled={isSubmitting}>
+        <div className="flex gap-3 justify-end pt-6 border-t-2 border-gray-200">
+          <button className="btn-secondary" onClick={onClose} disabled={isSubmitting}>
             Cancel
           </button>
-          <button className="btn btn-danger" onClick={onDeleteCharacter} disabled={isSubmitting}>
+          <button className="px-4 py-2 bg-red-600 hover:bg-red-700 text-white text-sm font-bold rounded-lg cursor-pointer transition-all disabled:opacity-60 disabled:cursor-not-allowed" onClick={onDeleteCharacter} disabled={isSubmitting}>
             {isSubmitting ? 'Deleting...' : 'Delete Character'}
           </button>
-          <button className="btn btn-primary" onClick={onSaveRevision} disabled={isSubmitting}>
+          <button className="btn-primary-gradient py-2 px-4" onClick={onSaveRevision} disabled={isSubmitting}>
             {isSubmitting ? 'Saving...' : 'Save Revision'}
           </button>
-          <button className="btn btn-success" onClick={onSubmitRevision} disabled={isSubmitting}>
+          <button className="px-4 py-2 bg-green-600 hover:bg-green-700 text-white text-sm font-bold rounded-lg cursor-pointer transition-all disabled:opacity-60 disabled:cursor-not-allowed" onClick={onSubmitRevision} disabled={isSubmitting}>
             {isSubmitting ? 'Submitting...' : 'Submit Revision'}
           </button>
         </div>

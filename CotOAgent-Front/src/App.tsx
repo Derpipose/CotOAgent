@@ -20,8 +20,8 @@ function App() {
   }
 
   return (
-    <div className="w-full h-screen flex items-center justify-center bg-gradient-to-br from-indigo-600 to-violet-700 p-8 m-0 box-border overflow-hidden">
-      <div className="bg-white rounded-xl shadow-2xl p-16 max-w-2xl text-center animate-slideUp">
+    <div className="flex-center bg-gradient-primary w-full min-h-screen p-8 m-0 box-border overflow-auto">
+      <div className="card-elevated max-w-2xl text-center animate-slideUp">
         <h1 className="text-6xl font-bold text-indigo-600 m-0 mb-2 tracking-tighter">Chronicles of the Omuns</h1>
         <p className="text-2xl text-violet-700 font-medium m-0 mb-8">Character Creation Assistant</p>
         <p className="text-base text-gray-600 leading-relaxed m-0 mb-10">
@@ -37,7 +37,7 @@ function App() {
                 Welcome, <span className="font-bold text-indigo-600">{keycloak.tokenParsed?.preferred_username || 'Adventurer'}</span>!
               </p>
               <a href="/about" className="no-underline">
-                <button className="px-6 py-3 bg-gradient-to-br from-indigo-600 to-violet-700 text-white font-bold rounded-lg cursor-pointer transition-all inline-block hover:translate-y-[-2px] hover:shadow-lg active:translate-y-0">How to get started</button>
+                <button className="btn-primary-gradient">How to get started</button>
               </a>
               <button className="px-6 py-3 bg-gray-200 text-gray-800 font-bold rounded-lg cursor-pointer transition-all hover:bg-gray-300 hover:translate-y-[-2px] active:translate-y-0" onClick={handleLogout}>
                 Logout
@@ -46,7 +46,7 @@ function App() {
           ) : (
             <div className="flex flex-col gap-6 items-center">
               <p className="text-base text-gray-600 m-0">Sign in to begin your journey</p>
-              <button className="px-8 py-4 bg-gradient-to-br from-indigo-600 to-violet-700 text-white font-bold rounded-lg cursor-pointer transition-all text-lg hover:translate-y-[-2px] hover:shadow-lg active:translate-y-0" onClick={handleLogin}>
+              <button className="btn-primary-gradient text-lg px-8 py-4" onClick={handleLogin}>
                 Login
               </button>
             </div>
