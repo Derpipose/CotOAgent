@@ -11,9 +11,9 @@ interface CharacterPageHeaderProps {
 }
 
 export const CharacterPageHeader: React.FC<CharacterPageHeaderProps> = ({ characterCount }) => (
-  <div className="characters-header">
-    <h1>My Characters</h1>
-    <p className="characters-subtitle">
+  <div className="max-w-6xl mx-auto mb-12 text-center">
+    <h1 className="text-4xl font-bold text-gray-900 mb-2 -tracking-0.5">My Characters</h1>
+    <p className="text-lg text-gray-600">
       {characterCount > 0
         ? `You have ${characterCount} character${characterCount !== 1 ? 's' : ''}`
         : 'No characters yet'}
@@ -22,18 +22,18 @@ export const CharacterPageHeader: React.FC<CharacterPageHeaderProps> = ({ charac
 )
 
 export const CharacterPageLoading: React.FC = () => (
-  <div className="characters-loading">
-    <div className="loading-spinner"></div>
-    <p>Loading your characters...</p>
+  <div className="flex flex-col items-center justify-center min-h-96 gap-6">
+    <div className="w-12 h-12 border-4 border-gray-300 border-t-blue-500 rounded-full animate-spin"></div>
+    <p className="text-lg text-gray-600">Loading your characters...</p>
   </div>
 )
 
 export const CharacterPageEmpty: React.FC = () => (
-  <div className="characters-empty">
-    <div className="empty-icon">⚔️</div>
-    <h2>No Characters Yet</h2>
-    <p>Create your first character to begin your adventure!</p>
-    <a href="/character-sheet" className="btn btn-primary">
+  <div className="flex flex-col items-center justify-center min-h-96 gap-4 bg-white rounded-xl p-12 max-w-2xl mx-auto shadow-sm">
+    <div className="text-5xl">⚔️</div>
+    <h2 className="text-2xl font-bold text-gray-900">No Characters Yet</h2>
+    <p className="text-gray-600">Create your first character to begin your adventure!</p>
+    <a href="/character-sheet" className="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-semibold transition-colors">
       Create Character
     </a>
   </div>

@@ -21,7 +21,6 @@ import { AuthProvider } from './context/AuthContext'
 import { ToastProvider } from './context/ToastContext'
 import KeycloakInitializer from './KeycloakInitializer'
 import { queryClient } from './config/queryClient'
-import './css/error-boundary.css'
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>

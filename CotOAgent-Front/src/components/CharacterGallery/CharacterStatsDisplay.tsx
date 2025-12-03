@@ -22,31 +22,46 @@ interface CharacterStatsDisplayProps {
 }
 
 export default function CharacterStatsDisplay({ character, getStatColor }: CharacterStatsDisplayProps) {
+  const getStatTailwindClasses = (colorClass: string) => {
+    switch (colorClass) {
+      case 'stat-excellent':
+        return 'bg-green-100 border-green-500 text-green-900'
+      case 'stat-good':
+        return 'bg-blue-100 border-blue-500 text-blue-900'
+      case 'stat-average':
+        return 'bg-amber-100 border-amber-500 text-amber-900'
+      case 'stat-poor':
+        return 'bg-red-100 border-red-500 text-red-900'
+      default:
+        return 'bg-gray-100 border-gray-300 text-gray-900'
+    }
+  }
+
   return (
-    <div className="stats-grid">
-      <div className={`stat ${getStatColor(character.strength)}`}>
-        <div className="stat-label">STR</div>
-        <div className="stat-value">{character.strength}</div>
+    <div className="grid grid-cols-3 gap-2">
+      <div className={`p-3 rounded-lg border-2 text-center transition-all ${getStatTailwindClasses(getStatColor(character.strength))}`}>
+        <div className="text-xs font-bold uppercase tracking-widest mb-1">STR</div>
+        <div className="text-xl font-bold">{character.strength}</div>
       </div>
-      <div className={`stat ${getStatColor(character.dexterity)}`}>
-        <div className="stat-label">DEX</div>
-        <div className="stat-value">{character.dexterity}</div>
+      <div className={`p-3 rounded-lg border-2 text-center transition-all ${getStatTailwindClasses(getStatColor(character.dexterity))}`}>
+        <div className="text-xs font-bold uppercase tracking-widest mb-1">DEX</div>
+        <div className="text-xl font-bold">{character.dexterity}</div>
       </div>
-      <div className={`stat ${getStatColor(character.constitution)}`}>
-        <div className="stat-label">CON</div>
-        <div className="stat-value">{character.constitution}</div>
+      <div className={`p-3 rounded-lg border-2 text-center transition-all ${getStatTailwindClasses(getStatColor(character.constitution))}`}>
+        <div className="text-xs font-bold uppercase tracking-widest mb-1">CON</div>
+        <div className="text-xl font-bold">{character.constitution}</div>
       </div>
-      <div className={`stat ${getStatColor(character.intelligence)}`}>
-        <div className="stat-label">INT</div>
-        <div className="stat-value">{character.intelligence}</div>
+      <div className={`p-3 rounded-lg border-2 text-center transition-all ${getStatTailwindClasses(getStatColor(character.intelligence))}`}>
+        <div className="text-xs font-bold uppercase tracking-widest mb-1">INT</div>
+        <div className="text-xl font-bold">{character.intelligence}</div>
       </div>
-      <div className={`stat ${getStatColor(character.wisdom)}`}>
-        <div className="stat-label">WIS</div>
-        <div className="stat-value">{character.wisdom}</div>
+      <div className={`p-3 rounded-lg border-2 text-center transition-all ${getStatTailwindClasses(getStatColor(character.wisdom))}`}>
+        <div className="text-xs font-bold uppercase tracking-widest mb-1">WIS</div>
+        <div className="text-xl font-bold">{character.wisdom}</div>
       </div>
-      <div className={`stat ${getStatColor(character.charisma)}`}>
-        <div className="stat-label">CHA</div>
-        <div className="stat-value">{character.charisma}</div>
+      <div className={`p-3 rounded-lg border-2 text-center transition-all ${getStatTailwindClasses(getStatColor(character.charisma))}`}>
+        <div className="text-xs font-bold uppercase tracking-widest mb-1">CHA</div>
+        <div className="text-xl font-bold">{character.charisma}</div>
       </div>
     </div>
   )
