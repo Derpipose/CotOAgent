@@ -23,7 +23,6 @@ import KeycloakInitializer from './KeycloakInitializer'
 import { queryClient } from './config/queryClient'
 import './css/protected-route.css'
 import './css/error-boundary.css'
-import './css/toast.css'
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>

@@ -20,7 +20,7 @@ interface RacesListProps {
 
 export default function RacesList({ races, expandedRaceKey, onToggleExpand }: RacesListProps) {
   return (
-    <div className="races-list">
+    <div className="flex flex-col gap-0 mt-5 w-11/12 mx-auto px-4 box-border">
       {races.map((race) => {
         const raceKey = `${race.Name}-${race.Campaign}`;
         return (

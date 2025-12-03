@@ -1,7 +1,6 @@
 import { useLocation, Link } from 'react-router-dom'
 import { useState } from 'react'
 import { useAuth } from '../context/useAuth'
-import '../css/navbar.css'
 
 interface NavLink {
   label: string
@@ -45,30 +44,34 @@ const SideNavBar = () => {
   }
 
   return (
-    <nav className="navbar">
-      <div className="navbar-container">
-        <div className="navbar-brand">
-          <Link to="/" className="brand-link">
+    <nav className="w-64 h-screen bg-slate-700 text-gray-100 shadow-lg z-50 flex flex-col overflow-hidden">
+      <div className="w-full h-full flex flex-col items-stretch p-0 relative box-border overflow-hidden">
+        <div className="flex items-center w-full px-5 mb-7">
+          <Link to="/" className="text-2xl font-bold text-blue-400 no-underline transition-colors duration-300 hover:text-blue-300 whitespace-nowrap">
             Chronicles
           </Link>
         </div>
 
         <button
-          className={`hamburger ${isMenuOpen ? 'active' : ''}`}
+          className={`hidden md:hidden flex-col bg-none border-none cursor-pointer p-2 ml-auto mr-5 mt-0 gap-1 ${isMenuOpen ? 'active' : ''}`}
           onClick={() => setIsMenuOpen(!isMenuOpen)}
           aria-label="Toggle navigation menu"
         >
-          <span></span>
-          <span></span>
-          <span></span>
+          <span className="w-6 h-0.5 bg-gray-100 transition-all duration-300"></span>
+          <span className="w-6 h-0.5 bg-gray-100 transition-all duration-300"></span>
+          <span className="w-6 h-0.5 bg-gray-100 transition-all duration-300"></span>
         </button>
 
-        <ul className={`nav-list ${isMenuOpen ? 'active' : ''}`}>
+        <ul className={`list-none p-0 m-0 flex flex-col gap-0 flex-1 justify-start box-border transition-all duration-300 ${isMenuOpen ? 'block' : 'md:block hidden'}`}>
           {visibleLinks.map((link) => (
-            <li key={link.path} className="nav-item">
+            <li key={link.path} className="m-0 box-border">
               <Link
                 to={link.path}
-                className={`nav-link ${isActive(link.path) ? 'active' : ''}`}
+                className={`block px-5 py-3 text-gray-300 no-underline rounded-none transition-all duration-300 text-sm font-medium w-full border-l-4 border-l-transparent box-border ${
+                  isActive(link.path)
+                    ? 'bg-blue-500 text-white font-semibold border-l-blue-900'
+                    : 'hover:bg-slate-800 hover:text-gray-100 hover:border-l-blue-400'
+                }`}
                 onClick={handleLinkClick}
               >
                 {link.label}

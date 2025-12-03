@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import '../css/displaycard.css';
 import { useQueryApi, useMutationApi } from '../hooks/useQueryApi';
 import { RaceSearchSection, RacesList } from '../components/Races';
 

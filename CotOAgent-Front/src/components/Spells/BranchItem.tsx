@@ -39,18 +39,18 @@ export default function BranchItem({
   onToggleSpell,
 }: BranchItemProps) {
   return (
-    <div className="branch-section">
+    <div className="mb-4 border-2 border-gray-300">
       <button
-        className="branch-header"
+        className="flex items-center justify-between w-full px-5 py-4 bg-gray-100 border-none cursor-pointer transition-colors duration-200 text-lg text-left hover:bg-gray-200 active:bg-gray-300"
         onClick={() => onToggleExpand(branch.SpellBranch)}
       >
-        <span className="branch-name">{branch.SpellBranch}</span>
-        <span className={`expand-arrow ${isExpanded ? 'expanded' : ''}`}>
+        <span className="font-bold text-gray-900 flex-1">{branch.SpellBranch}</span>
+        <span className={`flex-0 w-7 h-7 flex items-center justify-center text-gray-600 transition-transform duration-200 ${isExpanded ? 'rotate-180' : ''}`}>
           ▼
         </span>
       </button>
       {isExpanded && (
-        <div className="branch-content">
+        <div className="py-3 bg-white">
           {branch.spellbooks.map((book, index) => {
             const bookId = `${branch.SpellBranch}-book-${index}`;
             return (
