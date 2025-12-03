@@ -6,10 +6,6 @@ import { useLoadingDots } from './useLoadingDots'
 import { MessageList } from './MessageList'
 import { ChatInput } from './ChatInput'
 
-interface ChatBarProps {
-  // onCollapsedChange removed - no longer needed
-}
-
 const ERROR_MESSAGE: ChatMessage = {
   id: 0,
   sender: 'assistant',
@@ -49,7 +45,7 @@ const updateMessagesWithResponse = (
   return baseMessages
 }
 
-const ChatBar = ({}: ChatBarProps) => {
+const ChatBar = () => {
   const { userEmail } = useAuth()
   const [conversationId, setConversationId] = useState<string | null>(null)
   const [messages, setMessages] = useState<ChatMessage[]>([])
