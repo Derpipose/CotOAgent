@@ -1,5 +1,4 @@
 import { useEffect } from 'react'
-import '../css/characters.css'
 import { useToast } from '../context/ToastContext'
 import { formatDate, getStatColor } from '../utils/characterUtils'
 import { useCharacters, useCharacterDetails } from '../hooks/useCharacterManagement'
@@ -106,7 +105,7 @@ function Characters() {
     }, [showDetailsModal, selectedCharacter, refetch])
     
   return (
-    <div className="characters-container">
+    <div className="w-full min-h-screen p-8 bg-gradient-to-br from-blue-50 to-blue-100 box-border">
       <CharacterPageHeader characterCount={characters.length} />
 
       {isLoading && <CharacterPageLoading />}

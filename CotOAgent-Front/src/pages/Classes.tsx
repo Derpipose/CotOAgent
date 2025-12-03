@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import '../css/displaycard.css';
 import { useQueryApi, useMutationApi } from '../hooks/useQueryApi';
 import { SearchSection, ClassesList } from '../components/Classes';
 

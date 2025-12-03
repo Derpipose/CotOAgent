@@ -1,7 +1,6 @@
 import { useState } from 'react'
 import { useToast } from '../context/ToastContext'
 import { useMutationApi } from '../hooks/useQueryApi'
-import '../css/admin.css'
 
 interface EmbeddingProgress {
   completed: number
@@ -166,14 +165,14 @@ export default function Admin() {
   }
 
   return (
-    <div className="admin-container">
-      <h1>Admin Panel</h1>
-      <p className="admin-subtitle">Import game data to the database</p>
+    <div className="p-8 max-w-5xl mx-auto">
+      <h1 className="text-5xl font-bold text-center mb-2 text-gray-800">Admin Panel</h1>
+      <p className="text-center text-gray-500 text-lg mb-8">Import game data to the database</p>
       
-      <div className="import-buttons-container">
-        <div className="import-button-wrapper">
+      <div className="flex gap-8 justify-center flex-wrap mb-8">
+        <div className="flex flex-col items-center gap-4 flex-1 min-w-64 max-w-xs">
           <button
-            className="import-button import-races"
+            className="w-full px-8 py-4 bg-gradient-to-br from-indigo-600 to-violet-700 text-white font-bold rounded-lg cursor-pointer transition-all shadow-md hover:translate-y-[-2px] hover:shadow-xl active:translate-y-0 disabled:opacity-60 disabled:cursor-not-allowed"
             onClick={() => handleImport('races')}
             disabled={importRacesMutation.isPending || importClassesMutation.isPending || importSpellsMutation.isPending}
           >
@@ -181,9 +180,9 @@ export default function Admin() {
           </button>
         </div>
 
-        <div className="import-button-wrapper">
+        <div className="flex flex-col items-center gap-4 flex-1 min-w-64 max-w-xs">
           <button
-            className="import-button import-classes"
+            className="w-full px-8 py-4 bg-gradient-to-br from-pink-500 to-rose-600 text-white font-bold rounded-lg cursor-pointer transition-all shadow-md hover:translate-y-[-2px] hover:shadow-xl active:translate-y-0 disabled:opacity-60 disabled:cursor-not-allowed"
             onClick={() => handleImport('classes')}
             disabled={importRacesMutation.isPending || importClassesMutation.isPending || importSpellsMutation.isPending}
           >
@@ -191,9 +190,9 @@ export default function Admin() {
           </button>
         </div>
 
-        <div className="import-button-wrapper">
+        <div className="flex flex-col items-center gap-4 flex-1 min-w-64 max-w-xs">
           <button
-            className="import-button import-spells"
+            className="w-full px-8 py-4 bg-gradient-to-br from-cyan-500 to-blue-500 text-white font-bold rounded-lg cursor-pointer transition-all shadow-md hover:translate-y-[-2px] hover:shadow-xl active:translate-y-0 disabled:opacity-60 disabled:cursor-not-allowed"
             onClick={() => handleImport('spells')}
             disabled={importRacesMutation.isPending || importClassesMutation.isPending || importSpellsMutation.isPending}
           >
@@ -202,96 +201,99 @@ export default function Admin() {
         </div>
       </div>
 
-      <div className="embeddings-section">
-        <h2>Generate Embeddings</h2>
-        <p className="embeddings-subtitle">Generate AI embeddings for semantic search</p>
+      <div className="bg-blue-50 border-2 border-blue-400 rounded-lg p-8 mb-8">
+        <h2 className="text-3xl font-bold text-blue-700 m-0 mb-2">Generate Embeddings</h2>
+        <p className="text-center text-blue-600 text-base mb-6 mt-0">Generate AI embeddings for semantic search</p>
         
-        <div className="embeddings-buttons-container">
-          <div className="embed-button-wrapper">
+        <div className="flex gap-8 justify-center flex-wrap">
+          <div className="flex flex-col items-center gap-4 flex-1 min-w-64 max-w-xs">
             <button
-              className="embed-button embed-races"
+              className="w-full px-8 py-4 bg-gradient-to-br from-indigo-600 to-violet-700 text-white font-bold rounded-lg cursor-pointer transition-all shadow-md hover:translate-y-[-2px] hover:shadow-xl active:translate-y-0 disabled:opacity-60 disabled:cursor-not-allowed"
               onClick={() => handleEmbed('races')}
+              disabled={embeddingLoading !== null}
             >
               {embeddingLoading === 'races' ? '🧠 Generating...' : '🧠 Embed Races'}
             </button>
             {embeddingProgress.races && (
-              <div className="progress-container">
-                <div className="progress-bar">
-                  <div className="progress-fill" style={{ width: `${embeddingProgress.races.percentageComplete}%` }}></div>
+              <div className="flex flex-col gap-2 w-full">
+                <div className="w-full h-2 bg-gray-300 rounded-full overflow-hidden shadow-inner">
+                  <div className="h-full bg-gradient-to-r from-indigo-600 to-violet-700 transition-all rounded-full" style={{ width: `${embeddingProgress.races.percentageComplete}%` }}></div>
                 </div>
-                <div className="progress-text">{embeddingProgress.races.message}</div>
+                <div className="text-sm text-gray-600 text-center font-medium">{embeddingProgress.races.message}</div>
               </div>
             )}
           </div>
 
-          <div className="embed-button-wrapper">
+          <div className="flex flex-col items-center gap-4 flex-1 min-w-64 max-w-xs">
             <button
-              className="embed-button embed-classes"
+              className="w-full px-8 py-4 bg-gradient-to-br from-pink-500 to-rose-600 text-white font-bold rounded-lg cursor-pointer transition-all shadow-md hover:translate-y-[-2px] hover:shadow-xl active:translate-y-0 disabled:opacity-60 disabled:cursor-not-allowed"
               onClick={() => handleEmbed('classes')}
+              disabled={embeddingLoading !== null}
             >
               {embeddingLoading === 'classes' ? '🧠 Generating...' : '🧠 Embed Classes'}
             </button>
             {embeddingProgress.classes && (
-              <div className="progress-container">
-                <div className="progress-bar">
-                  <div className="progress-fill" style={{ width: `${embeddingProgress.classes.percentageComplete}%` }}></div>
+              <div className="flex flex-col gap-2 w-full">
+                <div className="w-full h-2 bg-gray-300 rounded-full overflow-hidden shadow-inner">
+                  <div className="h-full bg-gradient-to-r from-pink-500 to-rose-600 transition-all rounded-full" style={{ width: `${embeddingProgress.classes.percentageComplete}%` }}></div>
                 </div>
-                <div className="progress-text">{embeddingProgress.classes.message}</div>
+                <div className="text-sm text-gray-600 text-center font-medium">{embeddingProgress.classes.message}</div>
               </div>
             )}
           </div>
 
-          <div className="embed-button-wrapper">
+          <div className="flex flex-col items-center gap-4 flex-1 min-w-64 max-w-xs">
             <button
-              className="embed-button embed-spells"
+              className="w-full px-8 py-4 bg-gradient-to-br from-cyan-500 to-blue-500 text-white font-bold rounded-lg cursor-pointer transition-all shadow-md hover:translate-y-[-2px] hover:shadow-xl active:translate-y-0 disabled:opacity-60 disabled:cursor-not-allowed"
               onClick={() => handleEmbed('spells')}
+              disabled={embeddingLoading !== null}
             >
               {embeddingLoading === 'spells' ? '🧠 Generating...' : '🧠 Embed Spells'}
             </button>
             {embeddingProgress.spells && (
-              <div className="progress-container">
-                <div className="progress-bar">
-                  <div className="progress-fill" style={{ width: `${embeddingProgress.spells.percentageComplete}%` }}></div>
+              <div className="flex flex-col gap-2 w-full">
+                <div className="w-full h-2 bg-gray-300 rounded-full overflow-hidden shadow-inner">
+                  <div className="h-full bg-gradient-to-r from-cyan-500 to-blue-500 transition-all rounded-full" style={{ width: `${embeddingProgress.spells.percentageComplete}%` }}></div>
                 </div>
-                <div className="progress-text">{embeddingProgress.spells.message}</div>
+                <div className="text-sm text-gray-600 text-center font-medium">{embeddingProgress.spells.message}</div>
               </div>
             )}
           </div>
         </div>
       </div>
 
-      <div className="test-section">
-        <h2>🧪 Error Handling Tests</h2>
-        <p className="test-subtitle">Test the error handling and toast notification system</p>
+      <div className="my-12 p-8 bg-gradient-to-br from-gray-100 to-gray-200 rounded-2xl shadow-lg">
+        <h2 className="m-0 mb-2 text-gray-800 text-3xl text-center">🧪 Error Handling Tests</h2>
+        <p className="text-center text-gray-600 text-sm mb-6 mt-0">Test the error handling and toast notification system</p>
         
-        <div className="test-buttons-container">
-          <button className="test-button success-test" onClick={testSuccessToast}>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 p-4">
+          <button className="px-5 py-3 text-sm font-bold rounded-lg cursor-pointer transition-all hover:translate-y-[-2px] hover:shadow-lg active:translate-y-0 bg-emerald-500 text-white border-2 border-emerald-600" onClick={testSuccessToast}>
             ✅ Test Success Toast
           </button>
-          <button className="test-button error-test" onClick={testErrorToast}>
+          <button className="px-5 py-3 text-sm font-bold rounded-lg cursor-pointer transition-all hover:translate-y-[-2px] hover:shadow-lg active:translate-y-0 bg-red-500 text-white border-2 border-red-600" onClick={testErrorToast}>
             ❌ Test Error Toast
           </button>
-          <button className="test-button warning-test" onClick={testWarningToast}>
+          <button className="px-5 py-3 text-sm font-bold rounded-lg cursor-pointer transition-all hover:translate-y-[-2px] hover:shadow-lg active:translate-y-0 bg-amber-500 text-white border-2 border-amber-600" onClick={testWarningToast}>
             ⚠️ Test Warning Toast
           </button>
-          <button className="test-button info-test" onClick={testInfoToast}>
+          <button className="px-5 py-3 text-sm font-bold rounded-lg cursor-pointer transition-all hover:translate-y-[-2px] hover:shadow-lg active:translate-y-0 bg-blue-500 text-white border-2 border-blue-600" onClick={testInfoToast}>
             ℹ️ Test Info Toast
           </button>
-          <button className="test-button persistent-test" onClick={testPersistentToast}>
+          <button className="px-5 py-3 text-sm font-bold rounded-lg cursor-pointer transition-all hover:translate-y-[-2px] hover:shadow-lg active:translate-y-0 bg-violet-500 text-white border-2 border-violet-600" onClick={testPersistentToast}>
             📌 Test Persistent Toast
           </button>
-          <button className="test-button error-boundary-test" onClick={testThrowError}>
+          <button className="px-5 py-3 text-sm font-bold rounded-lg cursor-pointer transition-all hover:translate-y-[-2px] hover:shadow-lg active:translate-y-0 bg-pink-500 text-white border-2 border-pink-600" onClick={testThrowError}>
             💥 Test Error Boundary
           </button>
         </div>
       </div>
 
-      <div className="info-section">
-        <h3>Import Information</h3>
-        <ul>
-          <li><strong>Races:</strong> Import fantasy races with descriptions and stats</li>
-          <li><strong>Classes:</strong> Import character classes and their properties</li>
-          <li><strong>Spells:</strong> Import spells with mana costs and descriptions</li>
+      <div className="bg-gray-50 border border-gray-300 rounded-lg p-6 mt-8">
+        <h3 className="mt-0 text-gray-800 text-xl">Import Information</h3>
+        <ul className="list-none p-0">
+          <li className="py-2 text-gray-600 leading-relaxed"><strong className="text-gray-800">Races:</strong> Import fantasy races with descriptions and stats</li>
+          <li className="py-2 text-gray-600 leading-relaxed"><strong className="text-gray-800">Classes:</strong> Import character classes and their properties</li>
+          <li className="py-2 text-gray-600 leading-relaxed"><strong className="text-gray-800">Spells:</strong> Import spells with mana costs and descriptions</li>
         </ul>
       </div>
     </div>

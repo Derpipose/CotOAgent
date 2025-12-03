@@ -32,30 +32,34 @@ export default function CharacterCard({
   getStatColor,
 }: CharacterCardProps) {
   return (
-    <div className="character-card">
-      <div className="card-header">
-        <h2 className="character-name">{character.name}</h2>
-        <div className="card-meta">
+    <div className="bg-white rounded-xl shadow-md overflow-hidden transition-all duration-300 flex flex-col hover:translate-y-[-8px] hover:shadow-2xl">
+      <div className="p-6 bg-gradient-to-br from-indigo-600 to-violet-700 text-white flex justify-between items-start gap-4">
+        <h2 className="text-2xl font-bold m-0 flex-1 break-words">{character.name}</h2>
+        <div className="flex gap-2 flex-wrap justify-end">
           {character.approval_status && (
-            <span className={`approval-badge approval-${character.approval_status.toLowerCase()}`}>
+            <span className={`px-3 py-1 rounded-full text-xs font-bold uppercase whitespace-nowrap ${
+              character.approval_status.toLowerCase() === 'approved' ? 'bg-green-200 text-green-800' :
+              character.approval_status.toLowerCase() === 'pending' ? 'bg-amber-200 text-amber-800' :
+              'bg-red-200 text-red-800'
+            }`}>
               {character.approval_status}
             </span>
           )}
         </div>
       </div>
 
-      <div className="card-body">
-        <div className="character-info">
+      <div className="p-6 flex-1 flex flex-col gap-6">
+        <div className="flex flex-col gap-2">
           {character.class_name && (
-            <div className="info-row">
-              <span className="label">Class:</span>
-              <span className="value">{character.class_name}</span>
+            <div className="flex gap-2 text-sm">
+              <span className="font-bold text-indigo-600 min-w-fit">Class:</span>
+              <span className="text-gray-800">{character.class_name}</span>
             </div>
           )}
           {character.race_name && (
-            <div className="info-row">
-              <span className="label">Race:</span>
-              <span className="value">{character.race_name}</span>
+            <div className="flex gap-2 text-sm">
+              <span className="font-bold text-indigo-600 min-w-fit">Race:</span>
+              <span className="text-gray-800">{character.race_name}</span>
             </div>
           )}
         </div>
@@ -63,19 +67,19 @@ export default function CharacterCard({
         <CharacterStatsDisplay character={character} getStatColor={getStatColor} />
 
         {character.feedback && (
-          <div className="feedback-section">
-            <p className="feedback-label">Feedback:</p>
-            <p className="feedback-text">{character.feedback}</p>
+          <div className="bg-gray-100 p-4 rounded-lg border-l-4 border-indigo-600">
+            <p className="text-xs font-bold text-gray-600 uppercase m-0 mb-2 tracking-wide">Feedback:</p>
+            <p className="text-gray-800 text-sm leading-relaxed m-0 break-words">{character.feedback}</p>
           </div>
         )}
       </div>
 
-      <div className="card-footer">
-        <div className="dates">
-          <span className="date-created">Created: {formatDate(character.created_at)}</span>
-          <span className="date-modified">Modified: {formatDate(character.last_modified)}</span>
+      <div className="p-6 bg-gray-50 border-t border-gray-200 flex justify-between items-center gap-4 flex-wrap">
+        <div className="flex flex-col gap-1 text-xs text-gray-500">
+          <span className="whitespace-nowrap">Created: {formatDate(character.created_at)}</span>
+          <span className="whitespace-nowrap">Modified: {formatDate(character.last_modified)}</span>
         </div>
-        <button onClick={() => onViewDetails(character)} className="btn btn-small">
+        <button onClick={() => onViewDetails(character)} className="px-4 py-2 bg-indigo-600 text-white text-sm font-bold rounded-lg cursor-pointer transition-all hover:bg-indigo-700 active:scale-95">
           View Details
         </button>
       </div>

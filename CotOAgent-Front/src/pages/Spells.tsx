@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import '../css/displaycard.css';
 import { useQueryApi } from '../hooks/useQueryApi';
 import { SpellsContainer } from '../components/Spells';
 
