@@ -31,7 +31,8 @@
   }
 
   button {
-    @apply rounded-lg border border-transparent px-6 py-3 text-base font-medium font-inherit bg-gray-900 cursor-pointer transition-colors duration-250 hover:border-blue-400 focus:outline-4 focus:outline-offset-2;
+    @apply rounded-lg border border-transparent px-6 py-3 text-base font-medium bg-gray-900 cursor-pointer transition-colors duration-250 hover:border-blue-400 focus:outline-4 focus:outline-offset-2;
+    font-family: inherit;
   }
 
   @media (prefers-color-scheme: light) {
