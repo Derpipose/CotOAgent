@@ -30,13 +30,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   const updateAuthState = useCallback(async () => {
     try {
-      // console.log('[AuthContext] updateAuthState called')
-      // console.log('[AuthContext] keycloak.authenticated:', keycloak.authenticated)
-      // console.log('[AuthContext] keycloak.token:', keycloak.token)
-      // console.log('[AuthContext] keycloak.tokenParsed:', keycloak.tokenParsed)
-      // console.log('[AuthContext] keycloak.refreshToken:', keycloak.refreshToken)
-      
-      // Check if Keycloak is initialized
       if (!keycloak.authenticated) {
         console.log('[AuthContext] Not authenticated - keycloak.authenticated is false or undefined')
         setIsAuthenticated(false)

@@ -1,14 +1,5 @@
-/**
- * Tool execution module for chat AI tools
- * Handles execution of all available tools and their results
- */
 
-/**
- * Define available tools that the AI can call
- * I am just going to leave these comments in, they are useful for now.
- */
 export const tools = [
-    // testing log tool call Should be removed later.
   {
     name: 'log_message',
     description: 'Logs a message to the console',
@@ -20,7 +11,6 @@ export const tools = [
       required: ['message']
     }
   },
-  //create new character tool
   {
     name: 'create_new_character',
     description: 'Creates a new character if the user has a name for the character.',
@@ -120,14 +110,6 @@ export const tools = [
   }
 ]
 
-/**
- * Execute a tool call
- * @param toolName - The name of the tool to execute
- * @param args - The arguments for the tool
- * @param userEmail - The email of the user (required for character creation)
- * @param toolId - The ID of this tool call from the AI
- * @returns The result of the tool execution
- */
 export const executeTool = async (
   toolName: string,
   args: Record<string, unknown>,
@@ -157,7 +139,6 @@ export const executeTool = async (
     return executeAssignCharacterClass(args, userEmail, toolId)
   }
   if (toolName === 'get_stats_to_assign') {
-    // call the random number generator api to get 6 random numbers between 10 and 18
     return executeGetStatNumbers(toolId)
   }
   if (toolName === 'assign_character_stats') {
@@ -167,17 +148,11 @@ export const executeTool = async (
   throw new Error(`Unknown tool: ${toolName}`)
 }
 
-/**
- * Log a message to the console
- */
 const executeLogMessage = (args: Record<string, unknown>, toolId?: string) => {
   console.log(args.message)
   return { success: true, message: `Logged: ${args.message}`, toolId }
 }
 
-/**
- * Create a new character in the system
- */
 const executeCreateNewCharacter = async (
   args: Record<string, unknown>,
   userEmail?: string,
@@ -214,9 +189,7 @@ const executeCreateNewCharacter = async (
   }
 }
 
-/** 
- * Get the 10 closest classes to a given description
- */
+
 const executeGetClosestClassesToDescription = async (
   args: Record<string, unknown>,
   toolId?: string
@@ -252,9 +225,7 @@ const executeGetClosestClassesToDescription = async (
   }
 }
 
-/**
- * Get how to play classes documentation
- */
+
 const executeHowToPlayClasses = async (toolId?: string) => {
   try {
     const response = await fetch('/api/classes/how-to-play', {
@@ -283,9 +254,7 @@ const executeHowToPlayClasses = async (toolId?: string) => {
   }
 }
 
-/**
- * get the 10 closest races to a given description
- */
+
 const executeGetClosestRacesToDescription = async (
   args: Record<string, unknown>,
   toolId?: string
@@ -322,9 +291,7 @@ const executeGetClosestRacesToDescription = async (
   }
 }
 
-/**
- * Assign a race to a character
- */
+
 const executeAssignCharacterRace = async (
   args: Record<string, unknown>,
   userEmail?: string,
@@ -447,9 +414,7 @@ const executeAssignCharacterRace = async (
   }
 }
 
-/**
- * Assign a class to a character
- */
+
 const executeAssignCharacterClass = async (
   args: Record<string, unknown>,
   userEmail?: string,
@@ -563,9 +528,7 @@ const executeAssignCharacterClass = async (
   }
 }
 
-/**
- * Get 6 random numbers between 10 and 18 for character stats
- */
+
 const executeGetStatNumbers = async (toolId?: string) => {
   try {
     const response = await fetch('/api/random/18/6', {
@@ -596,9 +559,7 @@ const executeGetStatNumbers = async (toolId?: string) => {
   }
 }
 
-/**
- * Assign stats to a character
- */
+
 const executeAssignCharacterStats = async (
   args: Record<string, unknown>,
   userEmail?: string,
