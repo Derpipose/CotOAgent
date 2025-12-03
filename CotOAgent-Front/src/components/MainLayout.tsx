@@ -22,38 +22,48 @@ const MainLayout = ({ children }: LayoutProps) => {
         {/* Desktop ChatBar */}
         {showChatBar && (
           <div className="hidden lg:flex w-[400px] h-full border-l border-gray-700 bg-slate-800 flex-col overflow-hidden">
-            <ChatBar onCollapsedChange={() => {}} />
+            <ChatBar />
           </div>
         )}
       </div>
 
-      {/* Mobile ChatBar Toggle Button */}
+      {/* Mobile ChatBar - Always mounted to preserve state, but hidden */}
       {showChatBar && (
-        <button
-          onClick={() => setIsChatOpen(!isChatOpen)}
-          className="lg:hidden fixed bottom-6 right-6 z-40 bg-blue-500 hover:bg-blue-600 text-white rounded-full w-14 h-14 flex items-center justify-center shadow-lg transition-colors duration-200"
-          aria-label="Toggle chat"
-        >
-          💬
-        </button>
-      )}
+        <>
+          {/* Chat Toggle Button */}
+          <button
+            onClick={() => setIsChatOpen(!isChatOpen)}
+            className="lg:hidden fixed bottom-6 right-6 z-40 bg-blue-500 hover:bg-blue-600 text-white rounded-full w-14 h-14 flex items-center justify-center shadow-lg transition-colors duration-200"
+            aria-label="Toggle chat"
+          >
+            💬
+          </button>
 
-      {/* Mobile ChatBar Modal */}
-      {showChatBar && isChatOpen && (
-        <div className="lg:hidden fixed inset-0 z-50 bg-black/50 flex flex-col">
-          <div className="bg-slate-800 rounded-t-lg shadow-xl flex-1 flex flex-col relative">
-            <button
-              onClick={() => setIsChatOpen(false)}
-              className="absolute top-4 right-4 z-50 text-white hover:text-gray-300 transition-colors"
-              aria-label="Close chat"
-            >
-              ✕
-            </button>
-            <div className="flex-1 overflow-hidden flex flex-col">
-              <ChatBar onCollapsedChange={() => {}} />
+          {/* Chat Modal Overlay */}
+          {isChatOpen && (
+            <div className="lg:hidden fixed inset-0 z-40 bg-black/50" />
+          )}
+
+          {/* Chat Modal - Always mounted, visibility controlled by opacity */}
+          <div
+            className={`lg:hidden fixed inset-0 z-50 flex flex-col justify-end transition-opacity duration-300 ${
+              isChatOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
+            }`}
+          >
+            <div className="bg-slate-800 rounded-t-lg shadow-xl h-[80vh] flex flex-col relative">
+              <button
+                onClick={() => setIsChatOpen(false)}
+                className="absolute top-4 right-4 z-50 text-white hover:text-gray-300 transition-colors"
+                aria-label="Close chat"
+              >
+                ✕
+              </button>
+              <div className="flex-1 overflow-hidden flex flex-col">
+                <ChatBar />
+              </div>
             </div>
           </div>
-        </div>
+        </>
       )}
     </div>
   );

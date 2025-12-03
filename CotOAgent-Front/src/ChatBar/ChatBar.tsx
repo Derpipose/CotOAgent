@@ -7,7 +7,7 @@ import { MessageList } from './MessageList'
 import { ChatInput } from './ChatInput'
 
 interface ChatBarProps {
-  onCollapsedChange?: (isCollapsed: boolean) => void
+  // onCollapsedChange removed - no longer needed
 }
 
 const ERROR_MESSAGE: ChatMessage = {
@@ -49,21 +49,15 @@ const updateMessagesWithResponse = (
   return baseMessages
 }
 
-const ChatBar = ({ onCollapsedChange }: ChatBarProps) => {
+const ChatBar = ({}: ChatBarProps) => {
   const { userEmail } = useAuth()
   const [conversationId, setConversationId] = useState<string | null>(null)
   const [messages, setMessages] = useState<ChatMessage[]>([])
   const [inputValue, setInputValue] = useState('')
   const [isLoading, setIsLoading] = useState(false)
   const [isInitializing, setIsInitializing] = useState(false)
-  const [isCollapsed, setIsCollapsed] = useState(false)
   const loadingDots = useLoadingDots(isLoading)
   const messagesEndRef = useRef<HTMLDivElement>(null)
-
-  // Notify parent when collapsed state changes
-  useEffect(() => {
-    onCollapsedChange?.(isCollapsed)
-  }, [isCollapsed, onCollapsedChange])
 
   // Auto-scroll to bottom when messages change
   useEffect(() => {
@@ -149,15 +143,7 @@ const ChatBar = ({ onCollapsedChange }: ChatBarProps) => {
   }
 
   return (
-    <aside className={`h-full w-full bg-slate-800 text-gray-200 flex flex-col overflow-hidden border-l border-slate-700 ${isCollapsed ? 'collapsed' : ''}`}>
-      <button
-        className={`px-4 py-2 bg-slate-700 hover:bg-slate-600 border-none cursor-pointer text-white transition-colors ${isCollapsed ? 'active' : ''}`}
-        onClick={() => setIsCollapsed(!isCollapsed)}
-        aria-label="Toggle chat"
-      >
-        {isCollapsed ? '↑' : '↓'}
-      </button>
-      {isCollapsed && <div className="px-4 py-2 text-sm font-semibold text-white">AI Agent</div>}
+    <aside className="h-full w-full bg-slate-800 text-gray-200 flex flex-col overflow-hidden border-l border-slate-700">
       <div className="flex flex-col h-full p-5 gap-4 min-h-0">
         <h2 className="m-0 text-2xl font-semibold text-gray-100 border-b-2 border-blue-500 pb-2.5 text-center flex-shrink-0">Chronicler</h2>
 
