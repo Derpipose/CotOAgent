@@ -16,13 +16,13 @@ export const MessageList: React.FC<MessageListProps> = ({
   messagesEndRef,
 }) => {
   return (
-    <div className="chat-messages">
+    <div className="flex-1 overflow-y-auto flex flex-col gap-3 pr-2 mb-2.5 min-h-0">
       {messages.map((msg) => (
         <div
           key={`${msg.sender}-${msg.id}-${msg.createdAt}`}
-          className={`message ${msg.sender}`}
+          className={`flex flex-col gap-1 ${msg.sender === 'user' ? 'items-end' : 'items-start'}`}
         >
-          <div className="message-sender">
+          <div className="text-xs font-semibold text-gray-400 uppercase tracking-widest">
             {msg.sender === 'user'
               ? 'You'
               : msg.sender === 'system'
@@ -30,10 +30,10 @@ export const MessageList: React.FC<MessageListProps> = ({
                 : 'Chronicler'}
           </div>
           {msg.sender === 'user' ? (
-            <div className="message-content">{msg.message}</div>
+            <div className="max-w-[90%] p-2.5 rounded-lg bg-blue-600 text-white text-sm break-words">{msg.message}</div>
           ) : (
             <div
-              className="message-content"
+              className="max-w-[90%] p-2.5 rounded-lg bg-slate-700 text-gray-100 text-sm prose prose-sm prose-invert"
               dangerouslySetInnerHTML={{
                 __html: renderMarkdown(msg.message),
               }}
@@ -42,9 +42,9 @@ export const MessageList: React.FC<MessageListProps> = ({
         </div>
       ))}
       {isLoading && (
-        <div className="message ai">
-          <div className="message-sender">Chronicler</div>
-          <div className="message-content loading-indicator">{loadingDots}</div>
+        <div className="flex flex-col gap-1 items-start">
+          <div className="text-xs font-semibold text-gray-400 uppercase tracking-widest">Chronicler</div>
+          <div className="max-w-[90%] p-2.5 rounded-lg bg-slate-700 text-gray-100 text-sm">{loadingDots}</div>
         </div>
       )}
       <div ref={messagesEndRef} />

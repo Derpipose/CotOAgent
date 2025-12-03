@@ -5,7 +5,6 @@ import { initializeConversation, handleAiResponseLoop, saveUserMessage, isValidM
 import { useLoadingDots } from './useLoadingDots'
 import { MessageList } from './MessageList'
 import { ChatInput } from './ChatInput'
-import '../css/chatbar.css'
 
 interface ChatBarProps {
   onCollapsedChange?: (isCollapsed: boolean) => void
@@ -141,29 +140,29 @@ const ChatBar = ({ onCollapsedChange }: ChatBarProps) => {
 
   if (!userEmail) {
     return (
-      <aside className="chatbar">
-        <div className="chatbar-content">
-          <p className="chat-login-message">Please log in to use chat</p>
+      <aside className="h-full w-full bg-slate-800 text-gray-200 flex flex-col overflow-hidden border-l border-slate-700">
+        <div className="flex flex-col h-full p-5 gap-4 min-h-0">
+          <p className="text-gray-400">Please log in to use chat</p>
         </div>
       </aside>
     )
   }
 
   return (
-    <aside className={`chatbar ${isCollapsed ? 'collapsed' : ''}`}>
+    <aside className={`h-full w-full bg-slate-800 text-gray-200 flex flex-col overflow-hidden border-l border-slate-700 ${isCollapsed ? 'collapsed' : ''}`}>
       <button
-        className={`chatbar-toggle ${isCollapsed ? 'active' : ''}`}
+        className={`px-4 py-2 bg-slate-700 hover:bg-slate-600 border-none cursor-pointer text-white transition-colors ${isCollapsed ? 'active' : ''}`}
         onClick={() => setIsCollapsed(!isCollapsed)}
         aria-label="Toggle chat"
       >
         {isCollapsed ? '↑' : '↓'}
       </button>
-      {isCollapsed && <div className="chatbar-collapsed-label">AI Agent</div>}
-      <div className="chatbar-content">
-        <h2 className="chatbar-title">Chronicler</h2>
+      {isCollapsed && <div className="px-4 py-2 text-sm font-semibold text-white">AI Agent</div>}
+      <div className="flex flex-col h-full p-5 gap-4 min-h-0">
+        <h2 className="m-0 text-2xl font-semibold text-gray-100 border-b-2 border-blue-500 pb-2.5 text-center flex-shrink-0">Chronicler</h2>
 
         {isInitializing ? (
-          <div className="chat-loading">Initializing chat...</div>
+          <div className="text-gray-400">Initializing chat...</div>
         ) : (
           <>
             <MessageList
