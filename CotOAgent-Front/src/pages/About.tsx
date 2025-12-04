@@ -12,13 +12,13 @@ function About() {
 
   return (
     <div>
-      <h1 className="text-4xl font-bold text-gray-900 mb-2">About Chronicles of the Omuns</h1>
-      <p className="text-lg text-gray-600 mb-8">Learn more about our AI-powered character creation assistant</p>
+      <h1 className="text-4xl font-bold text-slate-600 mb-2">About Chronicles of the Omuns</h1>
+      <p className="text-lg text-slate-600 mb-8">Learn more about our AI-powered character creation assistant</p>
       
       <ContentCard variant="elevated">
         <section className="mb-8">
           <h2 className="section-header">What is CotO Agent?</h2>
-          <p className="text-base text-gray-600 leading-relaxed">
+          <p className="text-base text-slate-600 leading-relaxed">
             Welcome to the Chronicles of the Omuns Character Creation Assistant! This AI-powered tool 
             is designed to help you build unique and compelling characters for your adventures in the 
             Chronicles of the Omuns universe. Whether you're a seasoned adventurer or new to character 
