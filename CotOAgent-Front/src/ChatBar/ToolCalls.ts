@@ -1,3 +1,6 @@
+import { createLogger } from './utils/logger'
+
+const logger = createLogger('ToolCalls')
 
 export const tools = [
   {
@@ -110,42 +113,73 @@ export const tools = [
   }
 ]
 
+type ToolExecutor = (
+  args: Record<string, unknown>,
+  userEmail?: string,
+  toolId?: string
+) => Promise<unknown> | unknown
+
+/**
+ * Build the tool executor map lazily (after all functions are declared)
+ * Provides a scalable registry of available tools
+ */
+const buildToolExecutorsMap = (): Record<string, ToolExecutor> => ({
+  'log_message': executeLogMessage,
+  'create_new_character': executeCreateNewCharacter,
+  'get_closest_classes_to_description': executeGetClosestClassesToDescription,
+  'get_how_to_play_classes': (_, __, toolId) => executeHowToPlayClasses(toolId),
+  'get_closest_races_to_description': executeGetClosestRacesToDescription,
+  'assign_character_race': executeAssignCharacterRace,
+  'assign_character_class': executeAssignCharacterClass,
+  'get_stats_to_assign': (_, __, toolId) => executeGetStatNumbers(toolId),
+  'assign_character_stats': executeAssignCharacterStats,
+})
+
+let toolExecutorsMap: Record<string, ToolExecutor> | null = null
+
+/**
+ * Get the tool executor map (lazily initialized)
+ */
+const getToolExecutors = (): Record<string, ToolExecutor> => {
+  if (!toolExecutorsMap) {
+    toolExecutorsMap = buildToolExecutorsMap()
+  }
+  return toolExecutorsMap
+}
+
+/**
+ * Execute a tool by name with the provided arguments
+ * @param toolName - The name of the tool to execute
+ * @param args - The arguments to pass to the tool
+ * @param userEmail - Optional user email for authentication
+ * @param toolId - Optional tool ID for tracking
+ * @returns Promise with the tool execution result
+ * @throws Error if the tool is unknown
+ */
 export const executeTool = async (
   toolName: string,
   args: Record<string, unknown>,
   userEmail?: string,
   toolId?: string
 ) => {
-  if (toolName === 'log_message') {
-    return executeLogMessage(args, toolId)
-  }
-  if (toolName === 'create_new_character') {
-    console.log('Creating a new character');
-    return executeCreateNewCharacter(args, userEmail, toolId)
-  }
-  if(toolName === 'get_closest_classes_to_description') {
-    return executeGetClosestClassesToDescription(args, toolId)
-  }
-  if (toolName === 'get_how_to_play_classes') {
-    return executeHowToPlayClasses(toolId);
-  }
-  if (toolName === 'get_closest_races_to_description') {
-    return executeGetClosestRacesToDescription(args, toolId)
-  }
-  if (toolName === 'assign_character_race') {
-    return executeAssignCharacterRace(args, userEmail, toolId)
-  }
-  if (toolName === 'assign_character_class') {
-    return executeAssignCharacterClass(args, userEmail, toolId)
-  }
-  if (toolName === 'get_stats_to_assign') {
-    return executeGetStatNumbers(toolId)
-  }
-  if (toolName === 'assign_character_stats') {
-    return executeAssignCharacterStats(args, userEmail, toolId)
+  const executors = getToolExecutors()
+  const executor = executors[toolName]
+
+  if (!executor) {
+    logger.error(`Unknown tool requested: ${toolName}`)
+    throw new Error(`Unknown tool: ${toolName}`)
   }
 
-  throw new Error(`Unknown tool: ${toolName}`)
+  logger.log(`Executing tool: ${toolName}`, { toolId, hasArgs: Object.keys(args).length > 0 })
+
+  try {
+    const result = await executor(args, userEmail, toolId)
+    logger.debug(`Tool execution completed: ${toolName}`, result)
+    return result
+  } catch (error) {
+    logger.error(`Tool execution failed: ${toolName}`, error)
+    throw error
+  }
 }
 
 const executeLogMessage = (args: Record<string, unknown>, toolId?: string) => {

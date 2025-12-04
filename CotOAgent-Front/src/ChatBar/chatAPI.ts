@@ -1,7 +1,9 @@
 import type { ConversationResponse, MessageResponse } from './types'
 import { executeTool, tools } from './ToolCalls'
+import { handleApiError } from './utils/apiErrorHandler'
+import { API_CONFIG } from './config/constants'
 
-const API_BASE_URL = '/api/chat'
+const API_BASE_URL = API_CONFIG.BASE_URL
 
 /**
  * Check if a message has valid content
@@ -28,11 +30,7 @@ export const initializeConversation = async (
   })
 
   if (!response.ok) {
-    const errorData = await response.json().catch(() => ({}))
-    console.error('[ChatAPI] Error response:', errorData)
-    throw new Error(
-      `Failed to create chat conversation: ${response.status} ${response.statusText}`
-    )
+    await handleApiError(response, 'Failed to create chat conversation')
   }
 
   return response.json()
@@ -63,11 +61,7 @@ export const saveUserMessage = async (
   )
 
   if (!response.ok) {
-    const errorData = await response.json().catch(() => ({}))
-    console.error('[ChatAPI] Error saving user message:', errorData)
-    throw new Error(
-      `Failed to save user message: ${response.status} ${response.statusText}`
-    )
+    await handleApiError(response, 'Failed to save user message')
   }
 }
 
@@ -98,11 +92,7 @@ export const saveToolCall = async (
   )
 
   if (!response.ok) {
-    const errorData = await response.json().catch(() => ({}))
-    console.error('[ChatAPI] Error saving tool call:', errorData)
-    throw new Error(
-      `Failed to save tool call: ${response.status} ${response.statusText}`
-    )
+    await handleApiError(response, 'Failed to save tool call')
   }
 }
 
@@ -133,11 +123,7 @@ export const saveToolResult = async (
   )
 
   if (!response.ok) {
-    const errorData = await response.json().catch(() => ({}))
-    console.error('[ChatAPI] Error saving tool result:', errorData)
-    throw new Error(
-      `Failed to save tool result: ${response.status} ${response.statusText}`
-    )
+    await handleApiError(response, 'Failed to save tool result')
   }
 }
 

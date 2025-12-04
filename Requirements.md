@@ -238,8 +238,6 @@ Rubric items:
 Features:
 - [ ] AI agent has all tool calls
 - [ ] Final Discord integration
-- [ ] Performance optimization
-- [ ] Character comparison view
 - [x] Mobile-optimized character creation flow
 
 #### Delivered
@@ -264,6 +262,7 @@ Features:
 - [ ] Project demonstration preparation
 - [ ] AI agent behavior refinement
 - [ ] User onboarding improvements
+- [ ] Performance optimization
 
 #### Delivered
 

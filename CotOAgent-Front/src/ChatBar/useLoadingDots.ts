@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react'
-
-const DOTS = ['.', '..', '...', '....']
+import { LOADING_CONFIG } from './config/constants'
 
 /**
  * Hook to manage loading animation dots
@@ -14,11 +13,11 @@ export const useLoadingDots = (isLoading: boolean): string => {
     if (!isLoading) return
 
     const interval = setInterval(() => {
-      setDotIndex((prev) => (prev + 1) % DOTS.length)
-    }, 500)
+      setDotIndex((prev) => (prev + 1) % LOADING_CONFIG.DOTS.length)
+    }, LOADING_CONFIG.INTERVAL_MS)
 
     return () => clearInterval(interval)
   }, [isLoading])
 
-  return DOTS[dotIndex]
+  return LOADING_CONFIG.DOTS[dotIndex]
 }

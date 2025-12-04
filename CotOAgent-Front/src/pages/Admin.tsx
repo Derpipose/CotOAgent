@@ -11,7 +11,15 @@ interface EmbeddingProgress {
 
 export default function Admin() {
   const { addToast } = useToast()
-  const [embeddingLoading, setEmbeddingLoading] = useState<'races' | 'classes' | 'spells' | null>(null)
+  const [embeddingLoading, setEmbeddingLoading] = useState<{
+    races: boolean
+    classes: boolean
+    spells: boolean
+  }>({
+    races: false,
+    classes: false,
+    spells: false,
+  })
   const [embeddingProgress, setEmbeddingProgress] = useState<{
     races?: EmbeddingProgress & { message: string }
     classes?: EmbeddingProgress & { message: string }
@@ -71,7 +79,7 @@ export default function Admin() {
   }
 
   const handleEmbed = async (type: 'races' | 'classes' | 'spells') => {
-    setEmbeddingLoading(type)
+    setEmbeddingLoading((prev) => ({ ...prev, [type]: true }))
     
     const response = await fetch(`/api/embeddings/${type}/generate`, {
       method: 'POST'
@@ -80,14 +88,14 @@ export default function Admin() {
     if (response.status === 409) {
       const data = await response.json()
       addToast(data.error || 'Embeddings already exist', 'warning')
-      setEmbeddingLoading(null)
+      setEmbeddingLoading((prev) => ({ ...prev, [type]: false }))
       return
     }
 
     if (!response.ok || !response.body) {
       const data = await response.json()
       addToast(data.error || 'Failed to start embedding generation', 'error')
-      setEmbeddingLoading(null)
+      setEmbeddingLoading((prev) => ({ ...prev, [type]: false }))
       return
     }
 
@@ -126,7 +134,7 @@ export default function Admin() {
       }
 
       // Stream ended, mark as complete and clear loading state
-      setEmbeddingLoading(null)
+      setEmbeddingLoading((prev) => ({ ...prev, [type]: false }))
       setEmbeddingProgress(prev => ({
         ...prev,
         [type]: undefined
@@ -135,7 +143,7 @@ export default function Admin() {
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Unknown error during streaming'
       addToast(`Error generating embeddings: ${errorMessage}`, 'error')
-      setEmbeddingLoading(null)
+      setEmbeddingLoading((prev) => ({ ...prev, [type]: false }))
     }
   }
 
@@ -210,9 +218,9 @@ export default function Admin() {
             <button
               className="btn-primary-gradient w-full"
               onClick={() => handleEmbed('races')}
-              disabled={embeddingLoading !== null}
+              disabled={embeddingLoading.races}
             >
-              {embeddingLoading === 'races' ? '🧠 Generating...' : '🧠 Embed Races'}
+              {embeddingLoading.races ? '🧠 Generating...' : '🧠 Embed Races'}
             </button>
             {embeddingProgress.races && (
               <div className="flex flex-col gap-2 w-full">
@@ -228,9 +236,9 @@ export default function Admin() {
             <button
               className="btn-secondary-gradient w-full"
               onClick={() => handleEmbed('classes')}
-              disabled={embeddingLoading !== null}
+              disabled={embeddingLoading.classes}
             >
-              {embeddingLoading === 'classes' ? '🧠 Generating...' : '🧠 Embed Classes'}
+              {embeddingLoading.classes ? '🧠 Generating...' : '🧠 Embed Classes'}
             </button>
             {embeddingProgress.classes && (
               <div className="flex flex-col gap-2 w-full">
@@ -246,9 +254,9 @@ export default function Admin() {
             <button
               className="btn-cyan-gradient w-full"
               onClick={() => handleEmbed('spells')}
-              disabled={embeddingLoading !== null}
+              disabled={embeddingLoading.spells}
             >
-              {embeddingLoading === 'spells' ? '🧠 Generating...' : '🧠 Embed Spells'}
+              {embeddingLoading.spells ? '🧠 Generating...' : '🧠 Embed Spells'}
             </button>
             {embeddingProgress.spells && (
               <div className="flex flex-col gap-2 w-full">

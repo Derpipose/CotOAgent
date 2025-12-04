@@ -1,15 +1,20 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef } from 'react'
 import { useAuth } from '../context/useAuth'
 import type { ChatMessage } from './types'
 import { initializeConversation, handleAiResponseLoop, saveUserMessage, isValidMessage } from './chatAPI'
 import { useLoadingDots } from './useLoadingDots'
+import { useChatState } from './hooks/useChatState'
 import { MessageList } from './MessageList'
 import { ChatInput } from './ChatInput'
+import { MESSAGES_CONFIG, UI_CONFIG } from './config/constants'
+import { createLogger } from './utils/logger'
+
+const logger = createLogger('ChatBar')
 
 const ERROR_MESSAGE: ChatMessage = {
   id: 0,
   sender: 'assistant',
-  message: 'Failed to initialize chat. Please refresh the page and try again.',
+  message: MESSAGES_CONFIG.ERROR_INITIALIZATION,
   createdAt: new Date().toISOString(),
 }
 
@@ -47,44 +52,41 @@ const updateMessagesWithResponse = (
 
 const ChatBar = () => {
   const { userEmail } = useAuth()
-  const [conversationId, setConversationId] = useState<string | null>(null)
-  const [messages, setMessages] = useState<ChatMessage[]>([])
-  const [inputValue, setInputValue] = useState('')
-  const [isLoading, setIsLoading] = useState(false)
-  const [isInitializing, setIsInitializing] = useState(false)
-  const loadingDots = useLoadingDots(isLoading)
+  const chatState = useChatState()
+  const loadingDots = useLoadingDots(chatState.isLoading)
   const messagesEndRef = useRef<HTMLDivElement>(null)
 
   // Auto-scroll to bottom when messages change
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
-  }, [messages])
+  }, [chatState.messages])
 
   // Initialize chat on component mount
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
     if (!userEmail) {
-      console.log('[ChatBar] Waiting for userEmail...')
+      logger.log('Waiting for userEmail...')
       return
     }
 
     let isMounted = true
 
     const initializeChat = async () => {
-      setIsInitializing(true)
+      chatState.setIsInitializing(true)
       try {
         const data = await initializeConversation(userEmail)
         if (isMounted) {
-          setConversationId(data.conversationId)
-          setMessages([data.initialAIResponse])
+          chatState.setConversationId(data.conversationId)
+          chatState.setMessages([data.initialAIResponse])
         }
       } catch (error) {
-        console.error('[ChatBar] Error initializing chat:', error)
+        logger.error('Error initializing chat', error)
         if (isMounted) {
-          setMessages([ERROR_MESSAGE])
+          chatState.setMessages([ERROR_MESSAGE])
         }
       } finally {
         if (isMounted) {
-          setIsInitializing(false)
+          chatState.setIsInitializing(false)
         }
       }
     }
@@ -97,27 +99,27 @@ const ChatBar = () => {
   }, [userEmail])
 
   const handleSendMessage = async () => {
-    if (!inputValue.trim() || !conversationId || isLoading) return
+    if (!chatState.inputValue.trim() || !chatState.conversationId || chatState.isLoading) return
 
-    const userMessage = inputValue.trim()
-    setInputValue('')
+    const userMessage = chatState.inputValue.trim()
+    chatState.setInputValue('')
 
     // Add temporary user message to the UI
-    setMessages((prev) => [...prev, createTemporaryUserMessage(userMessage)])
+    chatState.addMessage(createTemporaryUserMessage(userMessage))
 
-    setIsLoading(true)
+    chatState.setIsLoading(true)
 
     try {
       // Save user message first
-      await saveUserMessage(conversationId, userEmail || '', userMessage)
-      
+      await saveUserMessage(chatState.conversationId, userEmail || '', userMessage)
+
       // Get AI response (handles agentic loop with tool calls)
-      const data = await handleAiResponseLoop(conversationId, userEmail || '', userMessage)
+      const data = await handleAiResponseLoop(chatState.conversationId, userEmail || '', userMessage)
 
       // Update messages with AI response
-      setMessages((prev) => updateMessagesWithResponse(prev, data))
+      chatState.setMessages((prev) => updateMessagesWithResponse(prev, data))
     } finally {
-      setIsLoading(false)
+      chatState.setIsLoading(false)
     }
   }
 
@@ -130,33 +132,35 @@ const ChatBar = () => {
 
   if (!userEmail) {
     return (
-      <aside className="h-full w-full bg-slate-800 text-gray-200 flex flex-col overflow-hidden border-l border-slate-700">
-        <div className="flex flex-col h-full p-5 gap-4 min-h-0">
-          <p className="text-gray-400">Please log in to use chat</p>
+      <aside className={`h-full w-full ${UI_CONFIG.BG_COLOR} ${UI_CONFIG.TEXT_COLOR} flex flex-col overflow-hidden border-l ${UI_CONFIG.BORDER_COLOR}`}>
+        <div className={`flex flex-col h-full ${UI_CONFIG.PADDING} gap-4 min-h-0`}>
+          <p className="text-gray-400">{MESSAGES_CONFIG.PLEASE_LOGIN}</p>
         </div>
       </aside>
     )
   }
 
   return (
-    <aside className="h-full w-full bg-slate-800 text-gray-200 flex flex-col overflow-hidden border-l border-slate-700">
-      <div className="flex flex-col h-full p-5 gap-4 min-h-0">
-        <h2 className="m-0 text-2xl font-semibold text-gray-100 border-b-2 border-blue-500 pb-2.5 text-center flex-shrink-0">Chronicler</h2>
+    <aside className={`h-full w-full ${UI_CONFIG.BG_COLOR} ${UI_CONFIG.TEXT_COLOR} flex flex-col overflow-hidden border-l ${UI_CONFIG.BORDER_COLOR}`}>
+      <div className={`flex flex-col h-full ${UI_CONFIG.PADDING} gap-4 min-h-0`}>
+        <h2 className="m-0 text-2xl font-semibold text-gray-100 border-b-2 border-blue-500 pb-2.5 text-center flex-shrink-0">
+          {MESSAGES_CONFIG.HEADER_TITLE}
+        </h2>
 
-        {isInitializing ? (
-          <div className="text-gray-400">Initializing chat...</div>
+        {chatState.isInitializing ? (
+          <div className="text-gray-400">{MESSAGES_CONFIG.LOADING_INITIALIZATION}</div>
         ) : (
           <>
             <MessageList
-              messages={messages}
-              isLoading={isLoading}
+              messages={chatState.messages}
+              isLoading={chatState.isLoading}
               loadingDots={loadingDots}
               messagesEndRef={messagesEndRef}
             />
             <ChatInput
-              inputValue={inputValue}
-              isLoading={isLoading}
-              onInputChange={setInputValue}
+              inputValue={chatState.inputValue}
+              isLoading={chatState.isLoading}
+              onInputChange={chatState.setInputValue}
               onSend={handleSendMessage}
               onKeyDown={handleKeyDown}
             />
