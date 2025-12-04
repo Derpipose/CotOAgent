@@ -343,13 +343,13 @@ export default function CharacterSheet() {
         <div className="flex flex-col md:flex-row gap-3 justify-center">
           <button 
             onClick={saveCharacterToLocalStorage}
-            className="btn-cyan-gradient flex-1"
+            className="flex-1 font-bold py-3 px-8 rounded-lg cursor-pointer transition-all hover:shadow-lg hover:translate-y-[-2px] active:translate-y-0 bg-blue-200 hover:bg-blue-300 text-slate-600"
           >
             Save Character Locally
           </button>
           <button 
             onClick={submitCharacterForApproval}
-            className="btn-primary-gradient flex-1 disabled:opacity-60 disabled:cursor-not-allowed"
+            className="flex-1 font-bold py-3 px-8 rounded-lg cursor-pointer transition-all hover:shadow-lg hover:translate-y-[-2px] active:translate-y-0 bg-blue-200 hover:bg-blue-300 text-slate-600 disabled:opacity-60 disabled:cursor-not-allowed"
             disabled={submitting}
           >
             {submitting ? 'Submitting...' : 'Submit for Approval'}

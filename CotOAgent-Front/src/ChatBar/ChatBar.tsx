@@ -145,7 +145,7 @@ const ChatBar = () => {
   return (
     <aside className={`h-full w-full ${UI_CONFIG.BG_COLOR} ${UI_CONFIG.TEXT_COLOR} flex flex-col overflow-hidden border-l ${UI_CONFIG.BORDER_COLOR}`}>
       <div className={`flex flex-col h-full ${UI_CONFIG.PADDING} gap-4 min-h-0`}>
-        <h2 className="m-0 text-2xl font-semibold text-gray-100 border-b-2 border-blue-500 pb-2.5 text-center flex-shrink-0">
+        <h2 className="m-0 text-2xl font-semibold text-gray-100 border-b-2 border-blue-200 pb-2.5 text-center flex-shrink-0">
           {MESSAGES_CONFIG.HEADER_TITLE}
         </h2>
 
