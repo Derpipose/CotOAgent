@@ -1,7 +1,7 @@
 import { useEffect, useRef } from 'react'
 import { useAuth } from '../context/useAuth'
 import type { ChatMessage } from './types'
-import { initializeConversation, handleAiResponseLoop, saveUserMessage, isValidMessage } from './chatAPI'
+import { initializeConversation, sendAiMessageWithLoop, saveUserMessage, isValidMessage } from './chatAPI'
 import { useLoadingDots } from './useLoadingDots'
 import { useChatState } from './hooks/useChatState'
 import { MessageList } from './MessageList'
@@ -29,7 +29,7 @@ const createTemporaryUserMessage = (message: string): ChatMessage => ({
 // Helper function to update messages after API response
 const updateMessagesWithResponse = (
   previousMessages: ChatMessage[],
-  responseData: Awaited<ReturnType<typeof handleAiResponseLoop>>
+  responseData: Awaited<ReturnType<typeof sendAiMessageWithLoop>>
 ): ChatMessage[] => {
   // Start with all messages except the temporary user message
   const baseMessages = previousMessages.slice(0, -1)
@@ -116,7 +116,7 @@ const ChatBar = () => {
       await saveUserMessage(chatState.conversationId, userEmail || '', userMessage)
 
       // Get AI response (handles agentic loop with tool calls)
-      const data = await handleAiResponseLoop(chatState.conversationId, userEmail || '', userMessage)
+      const data = await sendAiMessageWithLoop(chatState.conversationId, userEmail || '', userMessage)
 
       // Update messages with AI response
       chatState.setMessages((prev) => updateMessagesWithResponse(prev, data))

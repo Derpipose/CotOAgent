@@ -128,25 +128,10 @@ export const saveToolResult = async (
 }
 
 /**
- * Send a message to the conversation (handles agentic loop)
- * @param conversationId - The conversation ID
- * @param userEmail - The email of the user
- * @param message - The message to send
- * @returns Promise with user and final AI responses (after all tool calls are handled)
- */
-export const handleAiResponseLoop = async (
-  conversationId: string,
-  userEmail: string,
-  message: string
-): Promise<MessageResponse> => {
-  return await sendAiMessageWithLoop(conversationId, userEmail, message)
-}
-
-/**
  * Internal function that handles the agentic loop
  * Continues automatically until there are no more tool calls
  */
-async function sendAiMessageWithLoop(
+export async function sendAiMessageWithLoop(
   conversationId: string,
   userEmail: string,
   message: string,
@@ -154,7 +139,7 @@ async function sendAiMessageWithLoop(
 ): Promise<MessageResponse> {
   const requestBody: Record<string, unknown> = {
     message,
-    tools, // Always include tools so the backend has context for all requests
+    tools,
   }
 
   // If we're sending tool results, include them and set message to empty
