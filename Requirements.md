@@ -233,17 +233,14 @@ that will be coming soon. I hope.
 
 Rubric items:
 - [ ] Professional, organized and smooth experience
-- [ ] Final testing and bug fixes
 - [ ] Documentation completion
 
 Features:
 - [ ] AI agent has all tool calls
-- [ ] AI agent behavior refinement
-- [ ] Final Discord integration testing
+- [ ] Final Discord integration
 - [ ] Performance optimization
-- [ ] User onboarding improvements
 - [ ] Character comparison view
-- [ ] Mobile-optimized character creation flow
+- [x] Mobile-optimized character creation flow
 
 #### Delivered
 
@@ -260,10 +257,13 @@ Features:
 Rubric items:
 - [ ] Final project submission and presentation
 - [ ] UI/UX polish and refinement
+- [ ] Final testing and bug fixes
 
 Features:
 - [ ] Final testing and deployment
 - [ ] Project demonstration preparation
+- [ ] AI agent behavior refinement
+- [ ] User onboarding improvements
 
 #### Delivered
 

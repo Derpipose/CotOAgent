@@ -2,6 +2,32 @@
 
 @layer base {
   :root {
+    /* Color System - Using Tailwind Theme Variables */
+    --color-primary: theme('colors.blue.500');
+    --color-primary-light: theme('colors.blue.400');
+    --color-primary-dark: theme('colors.blue.600');
+    
+    --color-secondary: theme('colors.pink.500');
+    --color-secondary-light: theme('colors.pink.400');
+    --color-secondary-dark: theme('colors.pink.600');
+    
+    /* Accent Colors */
+    --color-accent: theme('colors.violet.500');
+    --color-accent-light: theme('colors.violet.400');
+    --color-accent-dark: theme('colors.violet.600');
+    
+    /* Success, Warning, Error */
+    --color-success: theme('colors.green.500');
+    --color-warning: theme('colors.amber.500');
+    --color-error: theme('colors.red.500');
+    
+    /* Neutral */
+    --color-text-primary: theme('colors.slate.900');
+    --color-text-secondary: theme('colors.slate.600');
+    
+    --color-bg-primary: theme('colors.white');
+    
+    /* Typography */
     font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
     line-height: 1.5;
     font-weight: 400;
@@ -69,15 +95,18 @@
 
   /* Button Components */
   .btn-primary-gradient {
-    @apply bg-gradient-to-br from-blue-500 to-purple-600 text-white font-bold py-3 px-8 rounded-lg cursor-pointer transition-all hover:shadow-lg hover:translate-y-[-2px] active:translate-y-0;
+    @apply text-white font-bold py-3 px-8 rounded-lg cursor-pointer transition-all hover:shadow-lg hover:translate-y-[-2px] active:translate-y-0;
+    background: linear-gradient(135deg, var(--color-primary), var(--color-accent));
   }
 
   .btn-secondary-gradient {
-    @apply bg-gradient-to-br from-pink-500 to-rose-600 text-white font-bold py-3 px-8 rounded-lg cursor-pointer transition-all hover:shadow-lg hover:translate-y-[-2px] active:translate-y-0;
+    @apply text-white font-bold py-3 px-8 rounded-lg cursor-pointer transition-all hover:shadow-lg hover:translate-y-[-2px] active:translate-y-0;
+    background: linear-gradient(135deg, var(--color-secondary), var(--color-secondary-dark));
   }
 
   .btn-cyan-gradient {
-    @apply bg-gradient-to-br from-cyan-500 to-blue-500 text-white font-bold py-3 px-8 rounded-lg cursor-pointer transition-all hover:shadow-lg hover:translate-y-[-2px] active:translate-y-0;
+    @apply text-white font-bold py-3 px-8 rounded-lg cursor-pointer transition-all hover:shadow-lg hover:translate-y-[-2px] active:translate-y-0;
+    background: linear-gradient(135deg, var(--color-primary-light), var(--color-primary));
   }
 
   .btn-small {
@@ -90,7 +119,9 @@
 
   /* Feature Card Components */
   .feature-card {
-    @apply bg-gradient-to-br from-blue-50 to-blue-100 rounded-xl p-6 text-center transition-all duration-300 border-2 border-transparent hover:translate-y-[-8px] hover:shadow-lg hover:border-blue-600;
+    @apply rounded-xl p-6 text-center transition-all duration-300 border-2 border-transparent hover:translate-y-[-8px] hover:shadow-lg;
+    background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(139, 92, 246, 0.1));
+    border-color: var(--color-primary);
   }
 
   .feature-icon {
@@ -98,20 +129,27 @@
   }
 
   .feature-title {
-    @apply font-bold text-gray-900 mb-3;
+    @apply font-bold mb-3;
+    color: var(--color-text-primary);
   }
 
   .feature-description {
-    @apply text-gray-700 mb-4;
+    @apply mb-4;
+    color: var(--color-text-secondary);
   }
 
   .feature-link {
-    @apply text-blue-600 hover:text-blue-700 font-semibold;
+    @apply font-semibold;
+    color: var(--color-primary);
+  }
+
+  .feature-link:hover {
+    color: var(--color-primary-dark);
   }
 
   /* Grid Components */
   .grid-responsive {
-    @apply grid grid-cols-1 gap-6;
+    @apply grid grid-cols-1 2xl:grid-cols-2 gap-6;
   }
 
   .grid-responsive-2 {
@@ -166,7 +204,7 @@
   }
 
   .section-subtitle {
-    @apply text-center text-gray-600 text-lg mb-8;
+    @apply text-lg text-center text-gray-600 mb-8;
   }
 
   /* Step Components */
@@ -213,24 +251,24 @@
   }
 
   .toast-item {
-    @apply max-w-sm px-6 py-4 rounded-lg shadow-lg pointer-events-auto;
+    @apply max-w-sm px-6 py-4 rounded-lg shadow-lg pointer-events-auto border-l-4;
     animation: slideIn 0.3s ease;
   }
 
   .toast-success {
-    @apply bg-green-100 border-l-4 border-green-500 text-green-700;
+    @apply bg-green-100 border-green-500 text-green-700;
   }
 
   .toast-error {
-    @apply bg-red-100 border-l-4 border-red-500 text-red-700;
+    @apply bg-red-100 border-red-500 text-red-700;
   }
 
   .toast-warning {
-    @apply bg-yellow-100 border-l-4 border-yellow-500 text-yellow-700;
+    @apply bg-yellow-100 border-yellow-500 text-yellow-700;
   }
 
   .toast-info {
-    @apply bg-blue-100 border-l-4 border-blue-500 text-blue-700;
+    @apply bg-blue-100 border-blue-500 text-blue-700;
   }
 
   /* Modal/Overlay Components */
@@ -289,19 +327,6 @@
     @apply text-gray-600 text-lg;
   }
 
-  /* Hover and Interactive Effects */
-  .hover-lift {
-    @apply transition-all hover:translate-y-[-4px] hover:shadow-lg;
-  }
-
-  .hover-grow {
-    @apply transition-transform hover:scale-105;
-  }
-
-  .transition-smooth {
-    @apply transition-all duration-300 ease-in-out;
-  }
-
   /* Utility Classes */
   .flex-center {
     @apply flex items-center justify-center;
@@ -354,7 +379,7 @@
   }
 
   .app-welcome-text {
-    @apply text-lg text-gray-800 m-0;
+    @apply text-base text-gray-800 m-0;
   }
 
   .app-welcome-username {
@@ -362,7 +387,11 @@
   }
 
   .app-logout-button {
-    @apply px-6 py-3 bg-gray-200 text-gray-800 font-bold rounded-lg cursor-pointer transition-all hover:bg-gray-300 hover:translate-y-[-2px] active:translate-y-0;
+    @apply px-6 py-3 bg-gray-200 text-gray-800 font-bold rounded-lg cursor-pointer transition-all hover:translate-y-[-2px] active:translate-y-0;
+  }
+
+  .app-logout-button:hover {
+    @apply bg-gray-300;
   }
 
   .app-unauthenticated-section {
@@ -374,6 +403,7 @@
   }
 
   .app-login-button {
-    @apply bg-gradient-to-br from-blue-500 to-purple-600 text-white font-bold text-lg px-8 py-4 rounded-lg cursor-pointer transition-all hover:shadow-lg hover:translate-y-[-2px] active:translate-y-0;
+    @apply text-white font-bold text-lg px-8 py-4 rounded-lg cursor-pointer transition-all hover:shadow-lg hover:translate-y-[-2px] active:translate-y-0;
+    background: linear-gradient(135deg, #3b82f6, #7c3aed);
   }
 }
