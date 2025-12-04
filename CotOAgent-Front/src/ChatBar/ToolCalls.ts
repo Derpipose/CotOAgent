@@ -110,6 +110,55 @@ export const tools = [
       },
       required: ['character_id', 'stats'] 
     }
+  },
+  {
+    name: 'submit_character_for_approval',
+    description: 'Submits a character for approval via Discord. Must be called after all character details are complete.',
+    parameters: {
+      type: 'object',
+      properties: {
+        character_id: { type: 'string', description: 'The ID of the character to submit for approval.' }
+      },
+      required: ['character_id']
+    }
+  },
+  {
+    name: 'revise_character_based_on_dm_feedback',
+    description: 'Revises a character based on DM feedback and updates the character.',
+    parameters: {
+      type: 'object',
+      properties: {
+        character_id: { type: 'string', description: 'The ID of the character to revise.' },
+        name: { type: 'string', description: 'The updated character name.' },
+        class: { type: 'string', description: 'The updated character class.' },
+        race: { type: 'string', description: 'The updated character race.' },
+        stats: { 
+          type: 'object',
+          description: 'An object containing the updated stats for the character.',
+          properties: {
+            Strength: { type: 'number' },
+            Dexterity: { type: 'number' },
+            Constitution: { type: 'number' },
+            Intelligence: { type: 'number' },
+            Wisdom: { type: 'number' },
+            Charisma: { type: 'number' }
+          },
+          required: ['Strength', 'Dexterity', 'Constitution', 'Intelligence', 'Wisdom', 'Charisma']
+        }
+      },
+      required: ['character_id', 'name', 'class', 'race', 'stats']
+    }
+  },
+  {
+    name: 'get_character',
+    description: 'Retrieves a character by ID or gets all characters for the current user.',
+    parameters: {
+      type: 'object',
+      properties: {
+        character_id: { type: 'string', description: 'The ID of a specific character to retrieve. If not provided, all characters for the current user will be returned.' }
+      },
+      required: []
+    }
   }
 ]
 
@@ -133,6 +182,9 @@ const buildToolExecutorsMap = (): Record<string, ToolExecutor> => ({
   'assign_character_class': executeAssignCharacterClass,
   'get_stats_to_assign': (_, __, toolId) => executeGetStatNumbers(toolId),
   'assign_character_stats': executeAssignCharacterStats,
+  'submit_character_for_approval': executeSubmitCharacterForApproval,
+  'revise_character_based_on_dm_feedback': executeReviseCharacterBasedOnDMFeedback,
+  'get_character': executeGetCharacter,
 })
 
 let toolExecutorsMap: Record<string, ToolExecutor> | null = null
@@ -719,6 +771,235 @@ const executeAssignCharacterStats = async (
     return {
       success: false,
       message: `Failed to assign stats: ${errorMessage}`,
+      toolId,
+    }
+  }
+}
+
+
+const executeSubmitCharacterForApproval = async (
+  args: Record<string, unknown>,
+  userEmail?: string,
+  toolId?: string
+) => {
+  const characterId = args.character_id as string | undefined
+
+  // Validate required parameters
+  if (!characterId) {
+    return {
+      success: false,
+      message: 'Character ID is required to submit for approval',
+      toolId,
+    }
+  }
+
+  if (!userEmail) {
+    return {
+      success: false,
+      message: 'User email is required to submit for approval',
+      toolId,
+    }
+  }
+
+  try {
+    const response = await fetch('/api/discord/submit-character', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        characterId: parseInt(characterId, 10),
+        userEmail,
+      }),
+    })
+
+    if (!response.ok) {
+      let errorMessage = `Failed to submit character for approval (${response.status})`
+      try {
+        const error = await response.json()
+        errorMessage = error.error || error.message || JSON.stringify(error) || errorMessage
+      } catch {
+        // Continue with default error message
+      }
+      throw new Error(errorMessage)
+    }
+
+    const data = await response.json()
+    return {
+      success: data.success,
+      message: data.message || 'Character submitted for approval successfully',
+      characterId: data.characterId,
+      toolId,
+    }
+  } catch (error) {
+    const errorMessage = error instanceof Error ? error.message : String(error)
+    return {
+      success: false,
+      message: `Failed to submit character for approval: ${errorMessage}`,
+      toolId,
+    }
+  }
+}
+
+
+const executeReviseCharacterBasedOnDMFeedback = async (
+  args: Record<string, unknown>,
+  userEmail?: string,
+  toolId?: string
+) => {
+  const characterId = args.character_id as string | undefined
+  const name = args.name as string | undefined
+  const className = args.class as string | undefined
+  const race = args.race as string | undefined
+  const stats = args.stats as Record<string, number> | undefined
+
+  // Validate required parameters
+  if (!characterId) {
+    return {
+      success: false,
+      message: 'Character ID is required to revise a character',
+      toolId,
+    }
+  }
+
+  if (!name || !className || !race || !stats) {
+    return {
+      success: false,
+      message: 'Name, class, race, and stats are required to revise a character',
+      toolId,
+    }
+  }
+
+  if (!userEmail) {
+    return {
+      success: false,
+      message: 'User email is required to revise a character',
+      toolId,
+    }
+  }
+
+  try {
+    const updateBody = {
+      name,
+      class: className,
+      race,
+      stats: {
+        Strength: stats.Strength || 0,
+        Dexterity: stats.Dexterity || 0,
+        Constitution: stats.Constitution || 0,
+        Intelligence: stats.Intelligence || 0,
+        Wisdom: stats.Wisdom || 0,
+        Charisma: stats.Charisma || 0,
+      },
+    }
+
+    const response = await fetch(`/api/characters/${characterId}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-user-email': userEmail,
+      },
+      body: JSON.stringify(updateBody),
+    })
+
+    if (!response.ok) {
+      let errorMessage = `Failed to revise character (${response.status})`
+      try {
+        const error = await response.json()
+        errorMessage = error.error || error.message || JSON.stringify(error) || errorMessage
+      } catch {
+        // Continue with default error message
+      }
+      throw new Error(errorMessage)
+    }
+
+    const data = await response.json()
+    return {
+      success: data.success,
+      message: data.message || 'Character revised successfully',
+      characterId: data.characterId,
+      toolId,
+    }
+  } catch (error) {
+    const errorMessage = error instanceof Error ? error.message : String(error)
+    return {
+      success: false,
+      message: `Failed to revise character: ${errorMessage}`,
+      toolId,
+    }
+  }
+}
+
+
+const executeGetCharacter = async (
+  args: Record<string, unknown>,
+  userEmail?: string,
+  toolId?: string
+) => {
+  const characterId = args.character_id as string | undefined
+
+  if (!userEmail) {
+    return {
+      success: false,
+      message: 'User email is required to retrieve characters',
+      toolId,
+    }
+  }
+
+  try {
+    const response = await fetch('/api/characters', {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-user-email': userEmail,
+      },
+    })
+
+    if (!response.ok) {
+      let errorMessage = `Failed to get characters (${response.status})`
+      try {
+        const error = await response.json()
+        errorMessage = error.error || error.message || JSON.stringify(error) || errorMessage
+      } catch {
+        // Continue with default error message
+      }
+      throw new Error(errorMessage)
+    }
+
+    const data = await response.json()
+    const characters = data.characters || []
+
+    // If a specific character ID was provided, filter for that character
+    if (characterId) {
+      const character = characters.find((c: Record<string, unknown>) => String(c.id) === characterId)
+      if (!character) {
+        return {
+          success: false,
+          message: `Character with ID ${characterId} not found`,
+          toolId,
+        }
+      }
+      return {
+        success: true,
+        message: `Retrieved character: ${character.name}`,
+        character,
+        toolId,
+      }
+    }
+
+    // Return all characters
+    return {
+      success: true,
+      message: `Retrieved ${characters.length} character(s)`,
+      characters,
+      count: characters.length,
+      toolId,
+    }
+  } catch (error) {
+    const errorMessage = error instanceof Error ? error.message : String(error)
+    return {
+      success: false,
+      message: `Failed to get character: ${errorMessage}`,
       toolId,
     }
   }
