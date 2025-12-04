@@ -9,7 +9,6 @@ import {
 import * as chatDatabase from '../database/chatDatabase.js';
 import * as chatService from '../../services/chatService.js';
 
-// Tool interface definition
 interface Tool {
   name: string;
   description: string;
@@ -20,7 +19,6 @@ interface Tool {
   };
 }
 
-// Augment Express Request type
 declare module 'express' {
   interface Request {
     userId?: number;
@@ -30,14 +28,10 @@ declare module 'express' {
 const router: ExpressRouter = Router();
 const { Pool } = pg;
 
-// Initialize PostgreSQL connection pool
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL || process.env.DEFAULT_CONNECTION,
 });
 
-/**
- * Middleware to extract user ID from email header
- */
 async function extractUserFromEmail(req: Request, res: Response, next: NextFunction): Promise<void> {
   try {
     const userEmail = req.headers['x-user-email'] as string;
@@ -63,9 +57,6 @@ async function extractUserFromEmail(req: Request, res: Response, next: NextFunct
   }
 }
 
-/**
- * Validate conversation ID from params
- */
 function validateConversationId(req: Request, res: Response, next: NextFunction): void {
   const { conversationId } = req.params;
   if (!conversationId) {
@@ -75,10 +66,6 @@ function validateConversationId(req: Request, res: Response, next: NextFunction)
   next();
 }
 
-/**
- * POST /api/chat/conversations
- * Create a new conversation and send initial system prompt to AI
- */
 router.post(
   '/conversations',
   extractUserFromEmail,
@@ -86,16 +73,12 @@ router.post(
     try {
       const userId = req.userId!;
 
-      // Validate request body
       const dto = CreateConversationDtoSchema.parse(req.body) as CreateConversationDto;
 
-      // Generate conversation name - use provided name or create default
       const conversationName = dto.conversationName || `Chat ${new Date().toLocaleString()}`;
 
-      // Create conversation
       const conversation = await chatDatabase.createConversation(userId, conversationName);
 
-      // Initialize chat with system prompt
       const initialResponse = await chatService.initializeChat(
         conversation.id,
         conversation.conversationName
@@ -108,10 +91,6 @@ router.post(
   }
 );
 
-/**
- * POST /api/chat/conversations/:conversationId/messages
- * Send a message and get AI response
- */
 router.post(
   '/conversations/:conversationId/messages',
   validateConversationId,
@@ -120,14 +99,10 @@ router.post(
     try {
       const { conversationId } = req.params as { conversationId: string };
 
-      // Validate request body
       const dto = SendMessageDtoSchema.parse(req.body) as SendMessageDto;
 
-      // Extract tools from request if provided
       const tools = (req.body as Record<string, unknown>).tools as Tool[] | undefined;
 
-      // Send message and get AI response (with optional tool result for agentic loop)
-      // User message is saved separately via /save-user-message endpoint
       const response = await chatService.sendMessageAndGetResponse(
         conversationId,
         dto.message,
@@ -142,11 +117,7 @@ router.post(
   }
 );
 
-/**
- * SaveUserMessage
- * POST /api/chat/conversations/:conversationId/messages/save-user-message
- * Save a user message to the database
- */
+
 router.post(
   '/conversations/:conversationId/messages/save-user-message',
   validateConversationId,
@@ -172,10 +143,7 @@ router.post(
   }
 );
 
-/**
- * POST /api/chat/conversations/:conversationId/messages/save-tool-call
- * Save a tool call to the database
- */
+
 router.post(
   '/conversations/:conversationId/messages/save-tool-call',
   validateConversationId,
@@ -218,10 +186,6 @@ router.post(
   }
 );
 
-/**
- * POST /api/chat/conversations/:conversationId/messages/save-tool-result
- * Save a tool result to the database
- */
 router.post(
   '/conversations/:conversationId/messages/save-tool-result',
   validateConversationId,

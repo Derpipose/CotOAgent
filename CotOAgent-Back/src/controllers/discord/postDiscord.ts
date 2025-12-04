@@ -22,11 +22,6 @@ interface CharacterRecord {
   charisma: number;
 }
 
-/**
- * Send a character to Discord for approval
- * POST /api/discord/submit-character
- * Body: { characterId: number, userEmail: string }
- */
 postDiscordRouter.post('/submit-character', async (req: Request, res: Response) => {
   try {
     const { characterId, userEmail } = req.body as { characterId: number; userEmail: string };
@@ -38,7 +33,6 @@ postDiscordRouter.post('/submit-character', async (req: Request, res: Response) 
     const dbClient = await pool.connect();
 
     try {
-      // Get character details with class and race
       const characterResult = await dbClient.query(
         `SELECT c.id, c.user_id, c.name, c.class_name, c.class_classification, 
                 c.race_name, c.race_campaign, c.strength, c.dexterity, c.constitution, 
@@ -54,7 +48,6 @@ postDiscordRouter.post('/submit-character', async (req: Request, res: Response) 
 
       const character = characterResult.rows[0];
 
-      // Verify user owns this character
       const userResult = await dbClient.query(
         'SELECT id FROM users WHERE LOWER(user_email) = LOWER($1)',
         [userEmail]
@@ -64,7 +57,6 @@ postDiscordRouter.post('/submit-character', async (req: Request, res: Response) 
         return res.status(403).json({ error: 'Unauthorized' });
       }
 
-      // Send to Discord webhook
       const webhookUrl = process.env.DISCORD_WEBHOOK_URL;
       if (!webhookUrl) {
         return res.status(500).json({ error: 'Discord webhook not configured' });
@@ -82,7 +74,6 @@ postDiscordRouter.post('/submit-character', async (req: Request, res: Response) 
         throw new Error(`Discord API error: ${discordResponse.statusText}`);
       }
 
-      // Update character status to submitted
       await dbClient.query(
         'UPDATE characters SET approval_status = $1, last_modified = CURRENT_TIMESTAMP WHERE id = $2',
         ['Submitted for Approval', characterId]
@@ -105,11 +96,6 @@ postDiscordRouter.post('/submit-character', async (req: Request, res: Response) 
   }
 });
 
-/**
- * Send a revised character to Discord for re-review
- * POST /api/discord/submit-revision
- * Body: { characterId: number, userEmail: string }
- */
 postDiscordRouter.post('/submit-revision', async (req: Request, res: Response) => {
   try {
     const { characterId, userEmail } = req.body as { characterId: number; userEmail: string };
@@ -121,7 +107,6 @@ postDiscordRouter.post('/submit-revision', async (req: Request, res: Response) =
     const dbClient = await pool.connect();
 
     try {
-      // Get character details with class and race
       const characterResult = await dbClient.query(
         `SELECT c.id, c.user_id, c.name, c.class_name, c.class_classification, 
                 c.race_name, c.race_campaign, c.strength, c.dexterity, c.constitution, 
@@ -137,7 +122,6 @@ postDiscordRouter.post('/submit-revision', async (req: Request, res: Response) =
 
       const character = characterResult.rows[0];
 
-      // Verify user owns this character
       const userResult = await dbClient.query(
         'SELECT id FROM users WHERE LOWER(user_email) = LOWER($1)',
         [userEmail]
@@ -147,7 +131,6 @@ postDiscordRouter.post('/submit-revision', async (req: Request, res: Response) =
         return res.status(403).json({ error: 'Unauthorized' });
       }
 
-      // Send to Discord webhook
       const webhookUrl = process.env.DISCORD_WEBHOOK_URL;
       if (!webhookUrl) {
         return res.status(500).json({ error: 'Discord webhook not configured' });
@@ -165,7 +148,6 @@ postDiscordRouter.post('/submit-revision', async (req: Request, res: Response) =
         throw new Error(`Discord API error: ${discordResponse.statusText}`);
       }
 
-      // Update character status to awaiting review
       await dbClient.query(
         'UPDATE characters SET approval_status = $1, revised = false, last_modified = CURRENT_TIMESTAMP WHERE id = $2',
         ['Awaiting Review', characterId]

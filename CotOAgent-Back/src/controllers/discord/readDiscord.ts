@@ -5,9 +5,7 @@ import { processCharacterRevision, getCharacterById, approveCharacter } from '..
 
 const readDiscordRouter: ExpressRouter = Router();
 
-// Handle message creation from bot
 client.on('messageCreate', async (message: Message) => {
-  // Ignore messages from the bot itself
   if (message.author.id === client.user?.id) return;
 
   if (message.content === '!help') {
@@ -43,10 +41,8 @@ client.on('messageCreate', async (message: Message) => {
         return message.reply('Feedback required. Usage: `!revise <characterId> <feedback>`');
       }
 
-      // Verify character exists
       const character = await getCharacterById(characterId);
 
-      // Process the revision
       await processCharacterRevision({
         characterId,
         feedback,
@@ -61,7 +57,6 @@ client.on('messageCreate', async (message: Message) => {
       console.error('[Discord] Revision error:', error);
       const errorMsg = error instanceof Error ? error.message : 'Unknown error';
       
-      // Check for pending revision error
       if (errorMsg === 'Character has already gotten review feedback and has not been revised yet.') {
         return message.reply('Character has already gotten review feedback and has not been revised yet.');
       }
@@ -79,10 +74,8 @@ client.on('messageCreate', async (message: Message) => {
         return message.reply('Invalid character ID. Usage: `!approve <characterId>`');
       }
 
-      // Verify character exists
       const character = await getCharacterById(characterId);
 
-      // Approve the character
       await approveCharacter(characterId);
 
       message.reply(

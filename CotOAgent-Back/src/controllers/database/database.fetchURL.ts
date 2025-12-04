@@ -2,16 +2,10 @@ import pg from 'pg';
 
 const { Pool } = pg;
 
-// Initialize PostgreSQL connection pool
 export const pool = new Pool({
   connectionString: process.env.DATABASE_URL || process.env.DEFAULT_CONNECTION,
 });
 
-/**
- * Fetch JSON data from an external URL
- * @param url - The URL to fetch JSON from
- * @returns Parsed JSON data
- */
 export async function fetchJsonFromUrl(url: string): Promise<unknown> {
   try {
     const response = await fetch(url);

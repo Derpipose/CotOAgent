@@ -5,12 +5,6 @@ interface RevisionData {
   feedback: string;
 }
 
-/**
- * Update a character with revision feedback
- * @param characterId - The ID of the character to revise
- * @param feedback - The revision feedback to save
- * @returns The updated character record
- */
 export async function updateCharacterRevision(characterId: number, feedback: string) {
   const client = await pool.connect();
 
@@ -33,11 +27,6 @@ export async function updateCharacterRevision(characterId: number, feedback: str
   }
 }
 
-/**
- * Get a character by ID to verify it exists
- * @param characterId - The ID of the character
- * @returns The character record
- */
 export async function getCharacterById(characterId: number) {
   const client = await pool.connect();
 
@@ -60,11 +49,6 @@ export async function getCharacterById(characterId: number) {
   }
 }
 
-/**
- * Check if a character already has pending revision feedback
- * @param characterId - The ID of the character
- * @returns true if character has pending revision feedback, false otherwise
- */
 export async function hasPendingRevision(characterId: number): Promise<boolean> {
   const client = await pool.connect();
 
@@ -87,21 +71,13 @@ export async function hasPendingRevision(characterId: number): Promise<boolean> 
   }
 }
 
-/**
- * Process a character revision request
- * Updates the character with feedback
- * @param revisionData - Object containing characterId and feedback
- * @returns Object with revision results
- */
 export async function processCharacterRevision(revisionData: RevisionData) {
 
-  // Check if character already has pending revision feedback
   const hasPending = await hasPendingRevision(revisionData.characterId);
   if (hasPending) {
     throw new Error('Character has already gotten review feedback and has not been revised yet.');
   }
 
-  // Update character with revision feedback
   const updatedCharacter = await updateCharacterRevision(
     revisionData.characterId,
     revisionData.feedback

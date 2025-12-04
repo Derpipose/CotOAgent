@@ -3,14 +3,10 @@ import type { ChatMessageDto, ConversationDto } from '../../DTOS/ChatDto.js';
 
 const { Pool } = pg;
 
-// Initialize PostgreSQL connection pool
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL || process.env.DEFAULT_CONNECTION,
 });
 
-/**
- * Create a new conversation for a user
- */
 export async function createConversation(
   userId: number,
   conversationName: string
@@ -34,9 +30,6 @@ export async function createConversation(
   };
 }
 
-/**
- * Add a message to a conversation
- */
 export async function addMessageToConversation(
   conversationId: string,
   sender: 'user' | 'assistant' | 'system',
@@ -68,10 +61,7 @@ export async function addMessageToConversation(
   };
 }
 
-/**
- * Save a user message to a conversation
- * Wrapper around addMessageToConversation for explicit user message storage
- */
+
 export async function saveUserMessage(
   conversationId: string,
   message: string
@@ -79,9 +69,6 @@ export async function saveUserMessage(
   return addMessageToConversation(conversationId, 'user', message);
 }
 
-/**
- * Get all messages in a conversation
- */
 export async function getConversationHistory(
   conversationId: string
 ): Promise<ChatMessageDto[]> {
@@ -96,9 +83,7 @@ export async function getConversationHistory(
   return result.rows;
 }
 
-/**
- * Get conversation details
- */
+
 export async function getConversation(conversationId: string): Promise<ConversationDto | null> {
   const query = `
     SELECT id, conversation_name as "conversationName", created_at as "createdAt"
@@ -119,9 +104,6 @@ export async function getConversation(conversationId: string): Promise<Conversat
   };
 }
 
-/**
- * Verify that a user owns a conversation
- */
 export async function userOwnsConversation(userId: number, conversationId: string): Promise<boolean> {
   const query = `
     SELECT 1
@@ -133,9 +115,6 @@ export async function userOwnsConversation(userId: number, conversationId: strin
   return result.rows.length > 0;
 }
 
-/**
- * Update conversation name
- */
 export async function updateConversationName(
   conversationId: string,
   newName: string

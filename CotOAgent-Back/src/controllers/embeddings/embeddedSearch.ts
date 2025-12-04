@@ -1,8 +1,5 @@
 import { pool } from '../utils/database.js';
 
-/**
- * Interface for embedding response from Ollama
- */
 interface EmbeddingResponse {
   embeddings: number[][];
   model: string;
@@ -11,9 +8,6 @@ interface EmbeddingResponse {
   prompt_eval_count: number;
 }
 
-/**
- * Interface for race search result
- */
 interface RaceSearchResult {
   id: number;
   campaign: string;
@@ -22,11 +16,7 @@ interface RaceSearchResult {
   distance: number;
 }
 
-/**
- * Generates embeddings for input text using Ollama
- * @param text - The text to embed
- * @returns The embedding vector as a number array
- */
+
 async function generateEmbedding(text: string): Promise<number[]> {
   const embeddingUrl = process.env.EMBEDDING_URL;
   const embeddingModel = process.env.EMBEDDING_MODEL;
@@ -71,12 +61,6 @@ async function generateEmbedding(text: string): Promise<number[]> {
   return embedding;
 }
 
-/**
- * Searches for races similar to the search query using vector embeddings
- * Returns the top 10 closest matches
- * @param searchQuery - The search query string
- * @returns Array of top 10 matching races with their similarity distances
- */
 export async function searchRacesByEmbedding(
   searchQuery: string,
   limit: number = 10
@@ -116,13 +100,6 @@ export async function searchRacesByEmbedding(
   }
 }
 
-/**
- * Searches for classes similar to the search query using vector embeddings
- * Returns the top N closest matches
- * @param searchQuery - The search query string
- * @param limit - Maximum number of results to return (default 10)
- * @returns Array of matching classes with their similarity distances
- */
 export async function searchClassesByEmbedding(
   searchQuery: string,
   limit: number = 10
@@ -168,13 +145,6 @@ export async function searchClassesByEmbedding(
   }
 }
 
-/**
- * Searches for spells similar to the search query using vector embeddings
- * Returns the top N closest matches
- * @param searchQuery - The search query string
- * @param limit - Maximum number of results to return (default 10)
- * @returns Array of matching spells with their similarity distances
- */
 export async function searchSpellsByEmbedding(
   searchQuery: string,
   limit: number = 10
