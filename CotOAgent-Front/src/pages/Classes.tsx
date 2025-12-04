@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import { useQueryApi, useMutationApi } from '../hooks/useQueryApi';
-import { SearchSection, ClassesList } from '../components/Classes';
+import { ClassesList } from '../components/Classes';
+import { PageHeader } from '../components/PageHeader';
+import { SearchBar } from '../components/SearchBar';
 
 interface ClassData {
   Classification: string;
@@ -76,8 +78,11 @@ export default function Classes() {
 
   return (
     <div>
-      <h1>Classes</h1>
-      <SearchSection
+      <PageHeader 
+        title="Classes"
+        subtitle="Explore the different classes available in Chronicles of the Omuns"
+      />
+      <SearchBar
         searchQuery={searchQuery}
         onSearchQueryChange={setSearchQuery}
         onSearch={handleSearch}
@@ -86,6 +91,7 @@ export default function Classes() {
         hasSearched={hasSearched}
         searchError={searchError}
         resultsCount={displayedClasses.length}
+        placeholder="Search classes..."
       />
       <ClassesList
         classes={displayedClasses}

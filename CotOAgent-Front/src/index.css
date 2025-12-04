@@ -194,6 +194,27 @@
     @apply w-full mt-2 p-2 bg-amber-900 text-amber-50 border border-amber-700 rounded text-xs font-bold cursor-pointer hover:bg-amber-800 transition-all hover:shadow-md hover:translate-y-[-1px] active:translate-y-0 active:shadow-sm;
   }
 
+  /* Modern Stat Box for CharacterSheet */
+  .stat-box-modern {
+    @apply bg-gradient-to-br from-blue-500 to-indigo-600 text-white p-4 rounded-lg text-center shadow-md;
+  }
+
+  .stat-label-modern {
+    @apply block text-xs font-bold mb-2 uppercase tracking-wide;
+  }
+
+  .stat-input {
+    @apply w-full px-3 py-2 border-2 border-blue-300 rounded font-bold text-lg text-center text-gray-900 bg-white focus:outline-none focus:border-blue-600 focus:ring-2 focus:ring-blue-300 transition-all;
+  }
+
+  .stat-button-modern {
+    @apply w-full mt-2 p-2 bg-blue-700 hover:bg-blue-800 text-white border border-blue-600 rounded text-xs font-bold cursor-pointer transition-all hover:shadow-md hover:translate-y-[-1px] active:translate-y-0 active:shadow-sm;
+  }
+
+  .input-group {
+    @apply flex flex-col gap-2;
+  }
+
   /* Section Components */
   .section-header {
     @apply text-2xl font-bold text-gray-900 mb-4 pb-3 border-b-4 border-blue-600;

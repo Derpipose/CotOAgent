@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useQueryApi } from '../hooks/useQueryApi';
 import { SpellsContainer } from '../components/Spells';
+import { PageHeader } from '../components/PageHeader';
 
 interface SpellData {
   SpellName: string;
@@ -52,7 +53,10 @@ export default function Spells() {
 
   return (
     <div>
-      <h1>Spells</h1>
+      <PageHeader 
+        title="Spells"
+        subtitle="Explore the vast spellbooks of Chronicles of the Omuns"
+      />
       <SpellsContainer
         branches={branches}
         expandedBranch={expandedBranch}

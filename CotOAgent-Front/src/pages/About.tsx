@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom'
 import { useAuth } from '../context/useAuth'
 import keycloak from '../keycloak'
+import { ContentCard } from '../components/ContentCard'
 
 function About() {
   const { isAuthenticated } = useAuth()
@@ -10,13 +11,14 @@ function About() {
   }
 
   return (
-    <div className="page-container from-blue-500 to-purple-600 p-6">
-      <div className="card-elevated max-w-4xl mx-auto md:p-8 animate-slideUp">
-        <h1 className="text-4xl font-bold text-blue-600 mb-5 text-center">About Chronicles of the Omuns</h1>
-        
-        <section className="mb-7">
+    <div>
+      <h1 className="text-4xl font-bold text-gray-900 mb-2">About Chronicles of the Omuns</h1>
+      <p className="text-lg text-gray-600 mb-8">Learn more about our AI-powered character creation assistant</p>
+      
+      <ContentCard variant="elevated">
+        <section className="mb-8">
           <h2 className="section-header">What is CotO Agent?</h2>
-          <p className="text-base text-gray-600 leading-relaxed mb-4">
+          <p className="text-base text-gray-600 leading-relaxed">
             Welcome to the Chronicles of the Omuns Character Creation Assistant! This AI-powered tool 
             is designed to help you build unique and compelling characters for your adventures in the 
             Chronicles of the Omuns universe. Whether you're a seasoned adventurer or new to character 
@@ -24,7 +26,7 @@ function About() {
           </p>
         </section>
 
-        <section className="mb-7">
+        <section className="mb-8">
           <h2 className="section-header">Features</h2>
           <div className="grid-responsive">
             <div className="feature-card">
@@ -62,7 +64,7 @@ function About() {
           </div>
         </section>
 
-        <section className="mb-7">
+        <section className="mb-8">
           <h2 className="section-header">How It Works</h2>
           <div className="step-container">
             <div className="step-item">
@@ -112,7 +114,7 @@ function About() {
             <button onClick={handleLoginClick} className="inline-block px-8 py-3 bg-white text-blue-600 font-bold rounded-lg hover:bg-gray-100 transition-colors">Login to Get Started</button>
           )}
         </section>
-      </div>
+      </ContentCard>
     </div>
   )
 }

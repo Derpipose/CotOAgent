@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import { useQueryApi, useMutationApi } from '../hooks/useQueryApi';
-import { RaceSearchSection, RacesList } from '../components/Races';
+import { RacesList } from '../components/Races';
+import { PageHeader } from '../components/PageHeader';
+import { SearchBar } from '../components/SearchBar';
 
 interface RaceData {
   id?: number;
@@ -81,8 +83,11 @@ export default function Races() {
 
   return (
     <div>
-      <h1>Races</h1>
-      <RaceSearchSection
+      <PageHeader 
+        title="Races"
+        subtitle="Explore the different races available in Chronicles of the Omuns"
+      />
+      <SearchBar
         searchQuery={searchQuery}
         onSearchQueryChange={setSearchQuery}
         onSearch={handleSearch}
@@ -91,6 +96,7 @@ export default function Races() {
         hasSearched={hasSearched}
         searchError={searchError}
         resultsCount={displayedRaces.length}
+        placeholder="Search races..."
       />
       <RacesList
         races={displayedRaces}

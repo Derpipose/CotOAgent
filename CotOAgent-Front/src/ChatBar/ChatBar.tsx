@@ -62,7 +62,8 @@ const ChatBar = () => {
   }, [chatState.messages])
 
   // Initialize chat on component mount
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+  // We intentionally only depend on userEmail and not chatState
+  // because chatState is recreated on every render and would cause infinite loops
   useEffect(() => {
     if (!userEmail) {
       logger.log('Waiting for userEmail...')
@@ -96,6 +97,7 @@ const ChatBar = () => {
     return () => {
       isMounted = false
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userEmail])
 
   const handleSendMessage = async () => {

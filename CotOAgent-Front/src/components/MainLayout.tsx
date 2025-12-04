@@ -17,7 +17,13 @@ const MainLayout = ({ children }: LayoutProps) => {
     <div className="flex flex-col h-screen w-screen lg:flex-row">
       <SideNavBar />
       <div className="flex-1 flex flex-col lg:flex-row overflow-hidden">
-        <div className="flex-1 overflow-auto">{children}</div>
+        <div className="flex-1 overflow-auto">
+          <div className="page-container bg-gradient-to-br from-blue-50 to-blue-100 min-h-full">
+            <div className="container-max-width">
+              {children}
+            </div>
+          </div>
+        </div>
         
         {/* Desktop ChatBar */}
         {showChatBar && (

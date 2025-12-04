@@ -1,6 +1,8 @@
 import { useState } from 'react'
 import { useToast } from '../context/ToastContext'
 import { useMutationApi } from '../hooks/useQueryApi'
+import { PageHeader } from '../components/PageHeader'
+import { ContentCard } from '../components/ContentCard'
 
 interface EmbeddingProgress {
   completed: number
@@ -173,48 +175,57 @@ export default function Admin() {
   }
 
   return (
-    <div className="p-8 max-w-5xl mx-auto">
-      <h1 className="text-5xl font-bold text-center mb-2 text-gray-800">Admin Panel</h1>
-      <p className="text-center text-gray-500 text-lg mb-8">Import game data to the database</p>
+    <div>
+      <PageHeader 
+        title="Admin Panel"
+        subtitle="Manage game data and generate AI embeddings"
+      />
       
-      <div className="flex gap-8 justify-center flex-wrap mb-8">
-        <div className="flex flex-col items-center gap-4 flex-1 min-w-64 max-w-xs">
-          <button
-            className="btn-primary-gradient w-full"
-            onClick={() => handleImport('races')}
-            disabled={importRacesMutation.isPending || importClassesMutation.isPending || importSpellsMutation.isPending}
-          >
-            {importRacesMutation.isPending ? '⏳ Importing...' : '🐉 Import Races'}
-          </button>
-        </div>
-
-        <div className="flex flex-col items-center gap-4 flex-1 min-w-64 max-w-xs">
-          <button
-            className="btn-secondary-gradient w-full"
-            onClick={() => handleImport('classes')}
-            disabled={importRacesMutation.isPending || importClassesMutation.isPending || importSpellsMutation.isPending}
-          >
-            {importClassesMutation.isPending ? '⏳ Importing...' : '⚔️ Import Classes'}
-          </button>
-        </div>
-
-        <div className="flex flex-col items-center gap-4 flex-1 min-w-64 max-w-xs">
-          <button
-            className="btn-cyan-gradient w-full"
-            onClick={() => handleImport('spells')}
-            disabled={importRacesMutation.isPending || importClassesMutation.isPending || importSpellsMutation.isPending}
-          >
-            {importSpellsMutation.isPending ? '⏳ Importing...' : '✨ Import Spells'}
-          </button>
-        </div>
-      </div>
-
-      <div className="bg-blue-50 border-2 border-blue-400 rounded-lg p-8 mb-8">
-        <h2 className="text-3xl font-bold text-blue-700 m-0 mb-2">Generate Embeddings</h2>
-        <p className="text-center text-blue-600 text-base mb-6 mt-0">Generate AI embeddings for semantic search</p>
+      {/* Import Section */}
+      <ContentCard className="mb-8">
+        <h2 className="section-header">📥 Import Game Data</h2>
+        <p className="text-center text-gray-600 text-sm mb-6">Import races, classes, and spells to the database</p>
         
-        <div className="flex gap-8 justify-center flex-wrap">
-          <div className="flex flex-col items-center gap-4 flex-1 min-w-64 max-w-xs">
+        <div className="flex gap-4 justify-center flex-wrap">
+          <div className="flex flex-col gap-2 flex-1 min-w-48">
+            <button
+              className="btn-primary-gradient w-full"
+              onClick={() => handleImport('races')}
+              disabled={importRacesMutation.isPending || importClassesMutation.isPending || importSpellsMutation.isPending}
+            >
+              {importRacesMutation.isPending ? '⏳ Importing...' : '🐉 Import Races'}
+            </button>
+          </div>
+
+          <div className="flex flex-col gap-2 flex-1 min-w-48">
+            <button
+              className="btn-secondary-gradient w-full"
+              onClick={() => handleImport('classes')}
+              disabled={importRacesMutation.isPending || importClassesMutation.isPending || importSpellsMutation.isPending}
+            >
+              {importClassesMutation.isPending ? '⏳ Importing...' : '⚔️ Import Classes'}
+            </button>
+          </div>
+
+          <div className="flex flex-col gap-2 flex-1 min-w-48">
+            <button
+              className="btn-cyan-gradient w-full"
+              onClick={() => handleImport('spells')}
+              disabled={importRacesMutation.isPending || importClassesMutation.isPending || importSpellsMutation.isPending}
+            >
+              {importSpellsMutation.isPending ? '⏳ Importing...' : '✨ Import Spells'}
+            </button>
+          </div>
+        </div>
+      </ContentCard>
+
+      {/* Embeddings Section */}
+      <ContentCard className="mb-8">
+        <h2 className="section-header">🧠 Generate Embeddings</h2>
+        <p className="text-center text-gray-600 text-sm mb-6">Generate AI embeddings for semantic search</p>
+        
+        <div className="flex gap-4 justify-center flex-wrap">
+          <div className="flex flex-col gap-2 flex-1 min-w-48">
             <button
               className="btn-primary-gradient w-full"
               onClick={() => handleEmbed('races')}
@@ -232,7 +243,7 @@ export default function Admin() {
             )}
           </div>
 
-          <div className="flex flex-col items-center gap-4 flex-1 min-w-64 max-w-xs">
+          <div className="flex flex-col gap-2 flex-1 min-w-48">
             <button
               className="btn-secondary-gradient w-full"
               onClick={() => handleEmbed('classes')}
@@ -250,7 +261,7 @@ export default function Admin() {
             )}
           </div>
 
-          <div className="flex flex-col items-center gap-4 flex-1 min-w-64 max-w-xs">
+          <div className="flex flex-col gap-2 flex-1 min-w-48">
             <button
               className="btn-cyan-gradient w-full"
               onClick={() => handleEmbed('spells')}
@@ -268,13 +279,14 @@ export default function Admin() {
             )}
           </div>
         </div>
-      </div>
+      </ContentCard>
 
-      <div className="card-elevated my-12">
+      {/* Testing Section */}
+      <ContentCard className="mb-8">
         <h2 className="section-header">🧪 Error Handling Tests</h2>
         <p className="text-center text-gray-600 text-sm mb-6">Test the error handling and toast notification system</p>
         
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 p-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
           <button className="btn-small bg-emerald-500 text-white border-2 border-emerald-600" onClick={testSuccessToast}>
             ✅ Test Success Toast
           </button>
@@ -294,16 +306,17 @@ export default function Admin() {
             💥 Test Error Boundary
           </button>
         </div>
-      </div>
+      </ContentCard>
 
-      <div className="bg-gray-50 border border-gray-300 rounded-lg p-6 mt-8">
-        <h3 className="mt-0 text-gray-800 text-xl">Import Information</h3>
-        <ul className="list-none p-0">
-          <li className="py-2 text-gray-600 leading-relaxed"><strong className="text-gray-800">Races:</strong> Import fantasy races with descriptions and stats</li>
-          <li className="py-2 text-gray-600 leading-relaxed"><strong className="text-gray-800">Classes:</strong> Import character classes and their properties</li>
-          <li className="py-2 text-gray-600 leading-relaxed"><strong className="text-gray-800">Spells:</strong> Import spells with mana costs and descriptions</li>
+      {/* Information Section */}
+      <ContentCard>
+        <h3 className="section-header">ℹ️ Import Information</h3>
+        <ul className="list-none p-0 space-y-3">
+          <li className="text-gray-600 leading-relaxed"><strong className="text-gray-800">Races:</strong> Import fantasy races with descriptions and stats</li>
+          <li className="text-gray-600 leading-relaxed"><strong className="text-gray-800">Classes:</strong> Import character classes and their properties</li>
+          <li className="text-gray-600 leading-relaxed"><strong className="text-gray-800">Spells:</strong> Import spells with mana costs and descriptions</li>
         </ul>
-      </div>
+      </ContentCard>
     </div>
   )
 }
