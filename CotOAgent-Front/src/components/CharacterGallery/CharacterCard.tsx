@@ -33,7 +33,7 @@ export default function CharacterCard({
 }: CharacterCardProps) {
   return (
     <div className="card-base hover:translate-y-[-8px] hover:shadow-2xl flex flex-col">
-      <div className="p-6 bg-gradient-to-br from-indigo-600 to-violet-700 text-white flex justify-between items-start gap-4">
+      <div className="p-6 bg-blue-200 text-slate-600 flex justify-between items-start gap-4">
         <h2 className="text-2xl font-bold m-0 flex-1 break-words">{character.name}</h2>
         <div className="flex gap-2 flex-wrap justify-end">
           {character.approval_status && (
@@ -79,7 +79,7 @@ export default function CharacterCard({
           <span className="whitespace-nowrap">Created: {formatDate(character.created_at)}</span>
           <span className="whitespace-nowrap">Modified: {formatDate(character.last_modified)}</span>
         </div>
-        <button onClick={() => onViewDetails(character)} className="btn-primary-gradient text-sm py-2 px-4">
+        <button onClick={() => onViewDetails(character)} className="text-sm py-2 px-4 bg-blue-200 hover:bg-blue-300 text-slate-600 font-bold rounded-lg cursor-pointer transition-all">
           View Details
         </button>
       </div>

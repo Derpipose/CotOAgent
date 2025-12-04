@@ -4,12 +4,12 @@ import { formatDate, getStatColor } from '../utils/characterUtils'
 import { useCharacters, useCharacterDetails } from '../hooks/useCharacterManagement'
 import { createCharacterApiHandlers } from '../utils/characterApiHandlers'
 import {
-  CharacterPageHeader,
   CharacterPageLoading,
   CharacterPageEmpty,
   CharacterPageList,
   CharacterPageModal,
 } from '../components/CharacterPageComponents'
+import { PageHeader } from '../components/PageHeader'
 import type { Character } from '../types/Character'
 
 function Characters() {
@@ -103,10 +103,17 @@ function Characters() {
         })
       }
     }, [showDetailsModal, selectedCharacter, refetch])
+
+    const characterCount = characters.length
     
   return (
-    <div className="page-container bg-gradient-to-br from-blue-50 to-blue-100">
-      <CharacterPageHeader characterCount={characters.length} />
+    <div>
+      <PageHeader 
+        title="My Characters"
+        subtitle={characterCount > 0
+          ? `You have ${characterCount} character${characterCount !== 1 ? 's' : ''}`
+          : 'No characters yet'}
+      />
 
       {isLoading && <CharacterPageLoading />}
 

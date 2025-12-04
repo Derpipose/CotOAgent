@@ -127,13 +127,13 @@ export default function CharacterDetailsModal({
           <button className="btn-secondary" onClick={onClose} disabled={isSubmitting}>
             Cancel
           </button>
-          <button className="px-4 py-2 bg-red-600 hover:bg-red-700 text-white text-sm font-bold rounded-lg cursor-pointer transition-all disabled:opacity-60 disabled:cursor-not-allowed" onClick={onDeleteCharacter} disabled={isSubmitting}>
+          <button className="px-4 py-2 bg-red-300 hover:bg-red-400 text-slate-600 text-sm font-bold rounded-lg cursor-pointer transition-all disabled:opacity-60 disabled:cursor-not-allowed" onClick={onDeleteCharacter} disabled={isSubmitting}>
             {isSubmitting ? 'Deleting...' : 'Delete Character'}
           </button>
-          <button className="btn-primary-gradient py-2 px-4" onClick={onSaveRevision} disabled={isSubmitting}>
+          <button className="px-4 py-2 bg-blue-200 hover:bg-blue-300 text-slate-600 text-sm font-bold rounded-lg cursor-pointer transition-all disabled:opacity-60 disabled:cursor-not-allowed" onClick={onSaveRevision} disabled={isSubmitting}>
             {isSubmitting ? 'Saving...' : 'Save Revision'}
           </button>
-          <button className="px-4 py-2 bg-green-600 hover:bg-green-700 text-white text-sm font-bold rounded-lg cursor-pointer transition-all disabled:opacity-60 disabled:cursor-not-allowed" onClick={onSubmitRevision} disabled={isSubmitting}>
+          <button className="px-4 py-2 bg-green-300 hover:bg-green-400 text-slate-600 text-sm font-bold rounded-lg cursor-pointer transition-all disabled:opacity-60 disabled:cursor-not-allowed" onClick={onSubmitRevision} disabled={isSubmitting}>
             {isSubmitting ? 'Submitting...' : 'Submit Revision'}
           </button>
         </div>
