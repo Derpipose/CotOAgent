@@ -59,7 +59,7 @@ export default function CharacterDetailsModal({
   return (
     <div className="modal-overlay" onClick={onClose}>
       <div className="modal-content max-w-2xl" onClick={(e) => e.stopPropagation()}>
-        <div className="flex justify-between items-center mb-6 pb-4 border-b-2 border-gray-200">
+        <div className="flex justify-between items-center mb-6 pb-4 border-divider-bottom">
           <h2 className="text-2xl font-bold text-gray-900 m-0">{character.name}</h2>
           <button className="text-4xl font-light text-gray-600 hover:text-gray-900 bg-none border-none cursor-pointer p-2" onClick={onClose}>
             ×
@@ -123,7 +123,7 @@ export default function CharacterDetailsModal({
           </div>
         </div>
 
-        <div className="flex gap-3 justify-end pt-6 border-t-2 border-gray-200">
+        <div className="flex gap-3 justify-end pt-6 border-t-2 border-divider">
           <button className="btn-secondary" onClick={onClose} disabled={isSubmitting}>
             Cancel
           </button>

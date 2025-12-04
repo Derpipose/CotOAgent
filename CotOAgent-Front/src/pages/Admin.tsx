@@ -184,12 +184,12 @@ export default function Admin() {
       {/* Import Section */}
       <ContentCard className="mb-8">
         <h2 className="section-header">📥 Import Game Data</h2>
-        <p className="text-center text-gray-600 text-sm mb-6">Import races, classes, and spells to the database</p>
+        <p className="text-section-description">Import races, classes, and spells to the database</p>
         
         <div className="flex gap-4 justify-center flex-wrap">
-          <div className="flex flex-col gap-2 flex-1 min-w-48">
+          <div className="btn-container-col-flex">
             <button
-              className="w-full text-slate-600 font-bold py-3 px-8 rounded-lg cursor-pointer transition-all hover:shadow-lg hover:translate-y-[-2px] active:translate-y-0 bg-blue-200 hover:bg-blue-300"
+              className="btn-primary w-full"
               onClick={() => handleImport('races')}
               disabled={importRacesMutation.isPending || importClassesMutation.isPending || importSpellsMutation.isPending}
             >
@@ -197,9 +197,9 @@ export default function Admin() {
             </button>
           </div>
 
-          <div className="flex flex-col gap-2 flex-1 min-w-48">
+          <div className="btn-container-col-flex">
             <button
-              className="w-full text-slate-600 font-bold py-3 px-8 rounded-lg cursor-pointer transition-all hover:shadow-lg hover:translate-y-[-2px] active:translate-y-0 bg-blue-200 hover:bg-blue-300"
+              className="btn-primary w-full"
               onClick={() => handleImport('classes')}
               disabled={importRacesMutation.isPending || importClassesMutation.isPending || importSpellsMutation.isPending}
             >
@@ -207,9 +207,9 @@ export default function Admin() {
             </button>
           </div>
 
-          <div className="flex flex-col gap-2 flex-1 min-w-48">
+          <div className="btn-container-col-flex">
             <button
-              className="w-full text-slate-600 font-bold py-3 px-8 rounded-lg cursor-pointer transition-all hover:shadow-lg hover:translate-y-[-2px] active:translate-y-0 bg-blue-200 hover:bg-blue-300"
+              className="btn-primary w-full"
               onClick={() => handleImport('spells')}
               disabled={importRacesMutation.isPending || importClassesMutation.isPending || importSpellsMutation.isPending}
             >
@@ -222,19 +222,19 @@ export default function Admin() {
       {/* Embeddings Section */}
       <ContentCard className="mb-8">
         <h2 className="section-header">🧠 Generate Embeddings</h2>
-        <p className="text-center text-gray-600 text-sm mb-6">Generate AI embeddings for semantic search</p>
+        <p className="text-section-description">Generate AI embeddings for semantic search</p>
         
         <div className="flex gap-4 justify-center flex-wrap">
-          <div className="flex flex-col gap-2 flex-1 min-w-48">
+          <div className="btn-container-col-flex">
             <button
-              className="w-full text-slate-600 font-bold py-3 px-8 rounded-lg cursor-pointer transition-all hover:shadow-lg hover:translate-y-[-2px] active:translate-y-0 bg-blue-200 hover:bg-blue-300"
+              className="btn-primary w-full"
               onClick={() => handleEmbed('races')}
               disabled={embeddingLoading.races}
             >
               {embeddingLoading.races ? '🧠 Generating...' : '🧠 Embed Races'}
             </button>
             {embeddingProgress.races && (
-              <div className="flex flex-col gap-2 w-full">
+              <div className="btn-container-col-full">
                 <div className="progress-bar">
                   <div className="progress-fill bg-blue-500" style={{ width: `${embeddingProgress.races.percentageComplete}%` }}></div>
                 </div>
@@ -243,16 +243,16 @@ export default function Admin() {
             )}
           </div>
 
-          <div className="flex flex-col gap-2 flex-1 min-w-48">
+          <div className="btn-container-col-flex">
             <button
-              className="w-full text-slate-600 font-bold py-3 px-8 rounded-lg cursor-pointer transition-all hover:shadow-lg hover:translate-y-[-2px] active:translate-y-0 bg-blue-200 hover:bg-blue-300"
+              className="btn-primary w-full"
               onClick={() => handleEmbed('classes')}
               disabled={embeddingLoading.classes}
             >
               {embeddingLoading.classes ? '🧠 Generating...' : '🧠 Embed Classes'}
             </button>
             {embeddingProgress.classes && (
-              <div className="flex flex-col gap-2 w-full">
+              <div className="btn-container-col-full">
                 <div className="progress-bar">
                   <div className="progress-fill bg-blue-500" style={{ width: `${embeddingProgress.classes.percentageComplete}%` }}></div>
                 </div>
@@ -261,16 +261,16 @@ export default function Admin() {
             )}
           </div>
 
-          <div className="flex flex-col gap-2 flex-1 min-w-48">
+          <div className="btn-container-col-flex">
             <button
-              className="w-full text-slate-600 font-bold py-3 px-8 rounded-lg cursor-pointer transition-all hover:shadow-lg hover:translate-y-[-2px] active:translate-y-0 bg-blue-200 hover:bg-blue-300"
+              className="btn-primary w-full"
               onClick={() => handleEmbed('spells')}
               disabled={embeddingLoading.spells}
             >
               {embeddingLoading.spells ? '🧠 Generating...' : '🧠 Embed Spells'}
             </button>
             {embeddingProgress.spells && (
-              <div className="flex flex-col gap-2 w-full">
+              <div className="btn-container-col-full">
                 <div className="progress-bar">
                   <div className="progress-fill bg-blue-500" style={{ width: `${embeddingProgress.spells.percentageComplete}%` }}></div>
                 </div>
@@ -284,25 +284,25 @@ export default function Admin() {
       {/* Testing Section */}
       <ContentCard className="mb-8">
         <h2 className="section-header">🧪 Error Handling Tests</h2>
-        <p className="text-center text-gray-600 text-sm mb-6">Test the error handling and toast notification system</p>
+        <p className="text-section-description">Test the error handling and toast notification system</p>
         
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-          <button className="btn-small bg-emerald-200 text-slate-600 border-2 border-emerald-300" onClick={testSuccessToast}>
+          <button className="btn-small-light-green" onClick={testSuccessToast}>
             ✅ Test Success Toast
           </button>
-          <button className="btn-small bg-red-200 text-slate-600 border-2 border-red-300" onClick={testErrorToast}>
+          <button className="btn-small-light-red" onClick={testErrorToast}>
             ❌ Test Error Toast
           </button>
-          <button className="btn-small bg-amber-200 text-slate-600 border-2 border-amber-300" onClick={testWarningToast}>
+          <button className="btn-small-light-amber" onClick={testWarningToast}>
             ⚠️ Test Warning Toast
           </button>
-          <button className="btn-small bg-blue-200 text-slate-600 border-2 border-blue-300" onClick={testInfoToast}>
+          <button className="btn-small-light-blue" onClick={testInfoToast}>
             ℹ️ Test Info Toast
           </button>
-          <button className="btn-small bg-indigo-200 text-slate-600 border-2 border-indigo-300" onClick={testPersistentToast}>
+          <button className="btn-small-light-indigo" onClick={testPersistentToast}>
             📌 Test Persistent Toast
           </button>
-          <button className="btn-small bg-pink-200 text-slate-600 border-2 border-pink-300" onClick={testThrowError}>
+          <button className="btn-small-light-pink" onClick={testThrowError}>
             💥 Test Error Boundary
           </button>
         </div>

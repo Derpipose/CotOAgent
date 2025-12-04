@@ -109,9 +109,9 @@ function About() {
           <h2 className="text-3xl font-bold mb-4">Ready to Begin?</h2>
           <p className="text-lg mb-6">Start creating your unique character today and embark on an epic journey!</p>
           {isAuthenticated ? (
-            <Link to="/character-sheet" className="inline-block px-8 py-3 bg-white text-blue-600 font-bold rounded-lg hover:bg-gray-100 transition-colors">Create Your Character</Link>
+            <Link to="/character-sheet" className="link-as-btn-white">Create Your Character</Link>
           ) : (
-            <button onClick={handleLoginClick} className="inline-block px-8 py-3 bg-white text-blue-600 font-bold rounded-lg hover:bg-gray-100 transition-colors">Login to Get Started</button>
+            <button onClick={handleLoginClick} className="link-as-btn-white">Login to Get Started</button>
           )}
         </section>
       </ContentCard>

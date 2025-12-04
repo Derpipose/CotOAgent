@@ -68,7 +68,7 @@ export function SearchBar({
         )}
 
         {hasSearched && (
-          <div className="text-sm text-gray-600">
+          <div className="text-muted-sm">
             Found {resultsCount} result{resultsCount !== 1 ? 's' : ''}
           </div>
         )}

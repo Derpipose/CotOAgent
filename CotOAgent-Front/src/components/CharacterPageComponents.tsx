@@ -33,7 +33,7 @@ export const CharacterPageEmpty: React.FC = () => (
     <div className="empty-state-icon text-5xl">⚔️</div>
     <h2 className="empty-state-title">No Characters Yet</h2>
     <p className="empty-state-description">Create your first character to begin your adventure!</p>
-    <a href="/character-sheet" className="inline-block font-bold py-3 px-8 rounded-lg cursor-pointer transition-all hover:shadow-lg hover:translate-y-[-2px] active:translate-y-0 bg-blue-200 hover:bg-blue-300 text-slate-600">
+    <a href="/character-sheet" className="link-as-btn-primary">
       Create Character
     </a>
   </div>

@@ -340,16 +340,16 @@ export default function CharacterSheet() {
         </div>
 
         {/* Action Buttons */}
-        <div className="flex flex-col md:flex-row gap-3 justify-center">
+        <div className="btn-container-row">
           <button 
             onClick={saveCharacterToLocalStorage}
-            className="flex-1 font-bold py-3 px-8 rounded-lg cursor-pointer transition-all hover:shadow-lg hover:translate-y-[-2px] active:translate-y-0 bg-blue-200 hover:bg-blue-300 text-slate-600"
+            className="flex-1 btn-primary"
           >
             Save Character Locally
           </button>
           <button 
             onClick={submitCharacterForApproval}
-            className="flex-1 font-bold py-3 px-8 rounded-lg cursor-pointer transition-all hover:shadow-lg hover:translate-y-[-2px] active:translate-y-0 bg-blue-200 hover:bg-blue-300 text-slate-600 disabled:opacity-60 disabled:cursor-not-allowed"
+            className="flex-1 btn-primary disabled:opacity-60 disabled:cursor-not-allowed"
             disabled={submitting}
           >
             {submitting ? 'Submitting...' : 'Submit for Approval'}

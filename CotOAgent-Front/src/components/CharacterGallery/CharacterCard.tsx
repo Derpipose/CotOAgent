@@ -74,7 +74,7 @@ export default function CharacterCard({
         )}
       </div>
 
-      <div className="p-6 bg-gray-50 border-t border-gray-200 flex justify-between items-center gap-4 flex-wrap">
+      <div className="p-6 bg-gray-50 border-divider-top flex justify-between items-center gap-4 flex-wrap">
         <div className="flex flex-col gap-1 text-xs text-gray-500">
           <span className="whitespace-nowrap">Created: {formatDate(character.created_at)}</span>
           <span className="whitespace-nowrap">Modified: {formatDate(character.last_modified)}</span>

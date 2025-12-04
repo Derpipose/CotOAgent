@@ -48,7 +48,7 @@ const SideNavBar = () => {
       {/* Header/Hamburger (Mobile) */}
       <div className="lg:hidden w-full bg-slate-700 text-gray-100 shadow-lg z-50 flex items-center justify-between px-5 py-4">
         <Link to="/" className="text-2xl font-bold text-blue-400 no-underline transition-colors duration-300 hover:text-blue-300 whitespace-nowrap">
-          Chronicles
+          Chronicles of the Omuns
         </Link>
         <button
           className="lg:hidden flex flex-col bg-none border-none cursor-pointer p-2 gap-1"
