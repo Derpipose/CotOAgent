@@ -37,7 +37,7 @@ function App() {
                 Welcome, <span className="app-welcome-username">{keycloak.tokenParsed?.preferred_username || 'Adventurer'}</span>!
               </p>
               <a href="/about" className="no-underline">
-                <button className="btn-primary-gradient">How to get started</button>
+                <button className="btn-primary">How to get started</button>
               </a>
               <button className="app-logout-button" onClick={handleLogout}>
                 Logout

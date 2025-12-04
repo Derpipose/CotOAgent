@@ -477,7 +477,7 @@
 
   /* App Page Components */
   .app-container {
-    @apply flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100 w-full min-h-screen p-8 m-0 box-border overflow-auto;
+    @apply flex items-center justify-center bg-gradient-to-br from-blue-50 to-blue-100 w-full min-h-screen p-8 m-0 box-border overflow-auto;
   }
 
   .app-card {
@@ -486,11 +486,11 @@
   }
 
   .app-title {
-    @apply text-6xl font-bold text-indigo-600 m-0 mb-2 tracking-tighter;
+    @apply text-6xl font-bold text-slate-600 m-0 mb-2 tracking-tighter;
   }
 
   .app-subtitle {
-    @apply text-2xl text-violet-700 font-medium m-0 mb-8;
+    @apply text-2xl text-slate-600 font-medium m-0 mb-8;
   }
 
   .app-description {
@@ -510,15 +510,15 @@
   }
 
   .app-welcome-username {
-    @apply font-bold text-indigo-600;
+    @apply font-bold text-slate-600;
   }
 
   .app-logout-button {
-    @apply px-6 py-3 bg-gray-200 text-gray-800 font-bold rounded-lg cursor-pointer transition-all hover:translate-y-[-2px] active:translate-y-0;
+    @apply px-6 py-3 bg-slate-200 text-slate-600 font-bold rounded-lg cursor-pointer transition-all hover:bg-slate-300 hover:translate-y-[-2px] active:translate-y-0;
   }
 
   .app-logout-button:hover {
-    @apply bg-gray-300;
+    @apply bg-slate-300;
   }
 
   .app-unauthenticated-section {
@@ -530,7 +530,6 @@
   }
 
   .app-login-button {
-    @apply text-white font-bold text-lg px-8 py-4 rounded-lg cursor-pointer transition-all hover:shadow-lg hover:translate-y-[-2px] active:translate-y-0;
-    background: linear-gradient(135deg, #3b82f6, #7c3aed);
+    @apply text-slate-600 font-bold text-lg px-8 py-4 rounded-lg cursor-pointer transition-all hover:shadow-lg hover:translate-y-[-2px] active:translate-y-0 bg-blue-200 hover:bg-blue-300;
   }
 }

@@ -232,20 +232,26 @@ that will be coming soon. I hope.
 #### Estimates:
 
 Rubric items:
-- [ ] Professional, organized and smooth experience
-- [ ] Documentation completion
+- [\] Professional, organized and smooth experience
 
 Features:
-- [ ] AI agent has all tool calls
-- [ ] Final Discord integration
+- [x] AI agent has all tool calls
+- [x] Final Discord integration
 - [x] Mobile-optimized character creation flow
 
 #### Delivered
 
 Rubric Items:
-
+The layout is mostly there. I just have a few more things to do
+and the app is finished UI wise. 
 
 Features:
+The AI now has all the tool calls I need for now. I will polish
+them up over the rest of the week.
+The discord is fully integrated now, including approvals and 
+even revises
+The app is mobile responsive and should be mobile optimized 
+for a plesant mobile experience. 
 
 ---
 ### Final Checkpoint: `Dec. 6, 2025`

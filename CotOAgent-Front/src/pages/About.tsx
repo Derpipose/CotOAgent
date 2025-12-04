@@ -105,13 +105,13 @@ function About() {
           </div>
         </section>
 
-        <section className="bg-gradient-primary rounded-xl p-8 text-center text-white">
-          <h2 className="text-3xl font-bold mb-4">Ready to Begin?</h2>
-          <p className="text-lg mb-6">Start creating your unique character today and embark on an epic journey!</p>
+        <section className="bg-blue-200 rounded-xl p-8 text-center">
+          <h2 className="text-3xl font-bold mb-4 text-slate-600">Ready to Begin?</h2>
+          <p className="text-lg mb-6 text-slate-600">Start creating your unique character today and embark on an epic journey!</p>
           {isAuthenticated ? (
-            <Link to="/character-sheet" className="link-as-btn-white">Create Your Character</Link>
+            <Link to="/character-sheet" className="btn-primary">Create Your Character</Link>
           ) : (
-            <button onClick={handleLoginClick} className="link-as-btn-white">Login to Get Started</button>
+            <button onClick={handleLoginClick} className="btn-primary">Login to Get Started</button>
           )}
         </section>
       </ContentCard>
