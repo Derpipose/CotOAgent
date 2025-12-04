@@ -322,4 +322,58 @@
   .full-screen {
     @apply w-screen h-screen;
   }
+
+  /* App Page Components */
+  .app-container {
+    @apply flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100 w-full min-h-screen p-8 m-0 box-border overflow-auto;
+  }
+
+  .app-card {
+    @apply bg-white rounded-xl shadow-2xl p-6 border-2 border-gray-300 max-w-2xl text-center;
+    animation: slideUp 0.3s ease;
+  }
+
+  .app-title {
+    @apply text-6xl font-bold text-indigo-600 m-0 mb-2 tracking-tighter;
+  }
+
+  .app-subtitle {
+    @apply text-2xl text-violet-700 font-medium m-0 mb-8;
+  }
+
+  .app-description {
+    @apply text-base text-gray-600 leading-relaxed m-0 mb-10;
+  }
+
+  .app-button-container {
+    @apply mt-8;
+  }
+
+  .app-authenticated-section {
+    @apply flex flex-col gap-4 items-center;
+  }
+
+  .app-welcome-text {
+    @apply text-lg text-gray-800 m-0;
+  }
+
+  .app-welcome-username {
+    @apply font-bold text-indigo-600;
+  }
+
+  .app-logout-button {
+    @apply px-6 py-3 bg-gray-200 text-gray-800 font-bold rounded-lg cursor-pointer transition-all hover:bg-gray-300 hover:translate-y-[-2px] active:translate-y-0;
+  }
+
+  .app-unauthenticated-section {
+    @apply flex flex-col gap-6 items-center;
+  }
+
+  .app-signin-prompt {
+    @apply text-base text-gray-600 m-0;
+  }
+
+  .app-login-button {
+    @apply bg-gradient-to-br from-blue-500 to-purple-600 text-white font-bold text-lg px-8 py-4 rounded-lg cursor-pointer transition-all hover:shadow-lg hover:translate-y-[-2px] active:translate-y-0;
+  }
 }

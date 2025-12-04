@@ -20,33 +20,33 @@ function App() {
   }
 
   return (
-    <div className="flex-center bg-gradient-primary w-full min-h-screen p-8 m-0 box-border overflow-auto">
-      <div className="card-elevated max-w-2xl text-center animate-slideUp">
-        <h1 className="text-6xl font-bold text-indigo-600 m-0 mb-2 tracking-tighter">Chronicles of the Omuns</h1>
-        <p className="text-2xl text-violet-700 font-medium m-0 mb-8">Character Creation Assistant</p>
-        <p className="text-base text-gray-600 leading-relaxed m-0 mb-10">
+    <div className="app-container">
+      <div className="app-card">
+        <h1 className="app-title">Chronicles of the Omuns</h1>
+        <p className="app-subtitle">Character Creation Assistant</p>
+        <p className="app-description">
           Welcome to the Chronicles of the Omuns character creation tool. 
           Use our AI-powered assistant to build and develop your unique character 
           for your adventures in this immersive world.
         </p>
         
-        <div className="mt-8">
+        <div className="app-button-container">
           {authenticated ? (
-            <div className="flex flex-col gap-4 items-center">
-              <p className="text-lg text-gray-800 m-0">
-                Welcome, <span className="font-bold text-indigo-600">{keycloak.tokenParsed?.preferred_username || 'Adventurer'}</span>!
+            <div className="app-authenticated-section">
+              <p className="app-welcome-text">
+                Welcome, <span className="app-welcome-username">{keycloak.tokenParsed?.preferred_username || 'Adventurer'}</span>!
               </p>
               <a href="/about" className="no-underline">
                 <button className="btn-primary-gradient">How to get started</button>
               </a>
-              <button className="px-6 py-3 bg-gray-200 text-gray-800 font-bold rounded-lg cursor-pointer transition-all hover:bg-gray-300 hover:translate-y-[-2px] active:translate-y-0" onClick={handleLogout}>
+              <button className="app-logout-button" onClick={handleLogout}>
                 Logout
               </button>
             </div>
           ) : (
-            <div className="flex flex-col gap-6 items-center">
-              <p className="text-base text-gray-600 m-0">Sign in to begin your journey</p>
-              <button className="btn-primary-gradient text-lg px-8 py-4" onClick={handleLogin}>
+            <div className="app-unauthenticated-section">
+              <p className="app-signin-prompt">Sign in to begin your journey</p>
+              <button className="app-login-button" onClick={handleLogin}>
                 Login
               </button>
             </div>
