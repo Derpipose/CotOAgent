@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useQueryApi } from '../hooks/useQueryApi';
 import { SpellsContainer } from '../components/Spells';
 import { PageHeader } from '../components/PageHeader';
+import { ContentCard } from '../components/ContentCard';
 
 interface SpellData {
   SpellName: string;
@@ -57,15 +58,17 @@ export default function Spells() {
         title="Spells"
         subtitle="Explore the vast spellbooks of Chronicles of the Omuns"
       />
-      <SpellsContainer
-        branches={branches}
-        expandedBranch={expandedBranch}
-        onToggleBranch={toggleExpandBranch}
-        expandedBook={expandedBook}
-        onToggleBook={toggleExpandBook}
-        expandedSpell={expandedSpell}
-        onToggleSpell={toggleExpandSpell}
-      />
+      <ContentCard>
+        <SpellsContainer
+          branches={branches}
+          expandedBranch={expandedBranch}
+          onToggleBranch={toggleExpandBranch}
+          expandedBook={expandedBook}
+          onToggleBook={toggleExpandBook}
+          expandedSpell={expandedSpell}
+          onToggleSpell={toggleExpandSpell}
+        />
+      </ContentCard>
     </div>
   );
 }

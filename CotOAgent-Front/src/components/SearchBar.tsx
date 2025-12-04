@@ -33,7 +33,7 @@ export function SearchBar({
 
   return (
     <div className="mb-6">
-      <div className="bg-white rounded-lg shadow-md border border-gray-200 p-6">
+      <div className="bg-blue-200 rounded-lg shadow-md border border-gray-200 p-6">
         <div className="flex flex-col md:flex-row gap-3 mb-4">
           <input
             type="text"
@@ -41,20 +41,20 @@ export function SearchBar({
             onChange={(e) => onSearchQueryChange(e.target.value)}
             onKeyPress={handleKeyPress}
             placeholder={placeholder}
-            className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-colors"
+            className="flex-1 px-4 py-2 border border-gray-300 rounded-lg bg-blue-50 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-colors"
             disabled={isSearching}
           />
           <button
             onClick={onSearch}
             disabled={isSearching || !searchQuery.trim()}
-            className="btn-primary-gradient disabled:opacity-60 disabled:cursor-not-allowed"
+            className="btn-primary disabled:opacity-60 disabled:cursor-not-allowed"
           >
             {isSearching ? 'Searching...' : 'Search'}
           </button>
           {hasSearched && (
             <button
               onClick={onClearSearch}
-              className="btn-secondary-gradient"
+              className="btn-secondary"
             >
               Clear
             </button>

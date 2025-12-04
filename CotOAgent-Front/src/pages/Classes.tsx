@@ -3,6 +3,7 @@ import { useQueryApi, useMutationApi } from '../hooks/useQueryApi';
 import { ClassesList } from '../components/Classes';
 import { PageHeader } from '../components/PageHeader';
 import { SearchBar } from '../components/SearchBar';
+import { ContentCard } from '../components/ContentCard';
 
 interface ClassData {
   Classification: string;
@@ -93,11 +94,13 @@ export default function Classes() {
         resultsCount={displayedClasses.length}
         placeholder="Search classes..."
       />
-      <ClassesList
-        classes={displayedClasses}
-        expandedClass={expandedClass}
-        onToggleExpand={toggleExpand}
-      />
+      <ContentCard>
+        <ClassesList
+          classes={displayedClasses}
+          expandedClass={expandedClass}
+          onToggleExpand={toggleExpand}
+        />
+      </ContentCard>
     </div>
   );
 }

@@ -3,6 +3,7 @@ import { useQueryApi, useMutationApi } from '../hooks/useQueryApi';
 import { RacesList } from '../components/Races';
 import { PageHeader } from '../components/PageHeader';
 import { SearchBar } from '../components/SearchBar';
+import { ContentCard } from '../components/ContentCard';
 
 interface RaceData {
   id?: number;
@@ -98,11 +99,13 @@ export default function Races() {
         resultsCount={displayedRaces.length}
         placeholder="Search races..."
       />
-      <RacesList
-        races={displayedRaces}
-        expandedRaceKey={expandedRaceKey}
-        onToggleExpand={toggleExpand}
-      />
+      <ContentCard>
+        <RacesList
+          races={displayedRaces}
+          expandedRaceKey={expandedRaceKey}
+          onToggleExpand={toggleExpand}
+        />
+      </ContentCard>
     </div>
   );
 }
