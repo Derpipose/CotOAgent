@@ -6,10 +6,6 @@ export const pool = new Pool({
   connectionString: process.env.DATABASE_URL || process.env.DEFAULT_CONNECTION,
 });
 
-interface UserResult {
-  id: number;
-}
-
 interface ClassResult {
   classification: string;
   class_name: string;
