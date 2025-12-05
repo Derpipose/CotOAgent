@@ -7,9 +7,6 @@ export const pool = new Pool({
   connectionString: process.env.DATABASE_URL || process.env.DEFAULT_CONNECTION,
 });
 
-/**
- * Generic database fetcher with validation
- */
 export async function fetchAndValidate<T>(
   query: string,
   schema: z.ZodType<T[]>,

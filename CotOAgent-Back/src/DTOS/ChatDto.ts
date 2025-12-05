@@ -1,6 +1,5 @@
 import { z } from 'zod';
 
-// Request DTOs
 export const CreateConversationDtoSchema = z.object({
   conversationName: z.string().min(1, 'Conversation name is required').optional(),
 });
@@ -27,7 +26,6 @@ export const SendMessageDtoSchema = z
 
 export type SendMessageDto = z.infer<typeof SendMessageDtoSchema>;
 
-// Response DTOs
 export interface ChatMessageDto {
   id: number;
   sender: 'user' | 'assistant' | 'system';

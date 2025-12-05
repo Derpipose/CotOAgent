@@ -85,7 +85,6 @@ async function callAI(messages: AIMessage[], tools?: Tool[]): Promise<{ text: st
     }));
   }
 
-  // Choose endpoint
   const endpoint = AI_CONFIG.BASE_URL;
   const isUsingToolsEndpoint = (tools && tools.length > 0);
 
@@ -102,7 +101,6 @@ async function callAI(messages: AIMessage[], tools?: Tool[]): Promise<{ text: st
       'Content-Type': 'application/json',
     };
 
-    // Add authorization header if token is available
     if (AI_CONFIG.TOKEN) {
       headers['Authorization'] = `Bearer ${AI_CONFIG.TOKEN}`;
       console.log('[ChatService] Authorization header added');
@@ -157,13 +155,11 @@ async function callAI(messages: AIMessage[], tools?: Tool[]): Promise<{ text: st
 
     const aiMessage = choice.message.content?.trim() || '';
 
-    // Check if AI made a proper tool call
     if (choice.message.tool_calls && choice.message.tool_calls.length > 0) {
       const toolCall = choice.message.tool_calls[0];
       if (toolCall && toolCall.function) {
         console.log('[ChatService] Tool call detected:', toolCall.function.name);
 
-        // Parse the arguments string into an object
         let parsedArguments: Record<string, unknown> = {};
         try {
           parsedArguments = JSON.parse(toolCall.function.arguments);
@@ -172,7 +168,7 @@ async function callAI(messages: AIMessage[], tools?: Tool[]): Promise<{ text: st
         }
 
         return {
-          text: aiMessage || '', // Don't include a default message, let the frontend handle the tool call
+          text: aiMessage || '',
           toolCall: [
             {
               name: toolCall.function.name,
@@ -181,14 +177,13 @@ async function callAI(messages: AIMessage[], tools?: Tool[]): Promise<{ text: st
                 type: 'object',
                 properties: parsedArguments,
               },
-              id: toolCall.id, // Tool call ID from the AI response
+              id: toolCall.id, 
             },
           ],
         };
       }
     }
 
-    // Fallback: Check if tool calls are embedded in the message content as JSON
     if (aiMessage) {
       const toolCallPattern = /\{\s*"tool"\s*:\s*"([^"]+)"\s*,\s*"arguments"\s*:\s*({[^}]*})\s*\}/g;
       const matches = Array.from(aiMessage.matchAll(toolCallPattern));
@@ -203,7 +198,6 @@ async function callAI(messages: AIMessage[], tools?: Tool[]): Promise<{ text: st
           let parsedArguments: Record<string, unknown> = {};
           parsedArguments = JSON.parse(argumentsStr);
 
-          // Generate a tool ID
           const generatedToolId = `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
 
           return {
@@ -224,7 +218,6 @@ async function callAI(messages: AIMessage[], tools?: Tool[]): Promise<{ text: st
       }
     }
 
-    // Return even if message is empty (AI might not have anything to say after tool execution)
     return { text: aiMessage };
   } catch (error) {
     clearTimeout(timeoutId);
@@ -240,33 +233,24 @@ async function callAI(messages: AIMessage[], tools?: Tool[]): Promise<{ text: st
   }
 }
 
-/**
- * Send a message and get AI response
- * Handles the complete agentic loop on the backend - frontend gets final response only
- */
 export async function sendMessageAndGetResponse(
   conversationId: string,
   userMessage: string,
   tools?: Tool[],
   toolResult?: unknown
 ): Promise<SendMessageResponseDto> {
-  // Validate that either a user message or tool result is provided
   if ((!userMessage || userMessage.trim().length === 0) && !toolResult) {
     throw new Error('Either a message or toolResult must be provided');
   }
 
-  // Get conversation history (includes system prompt from initialization)
   const history = await chatDatabase.getConversationHistory(conversationId);
 
-  // Build message context for AI from history
   const messages: AIMessage[] = history.map((msg) => ({
     role: msg.sender as 'system' | 'user' | 'assistant',
     content: msg.message,
   }));
 
-  // If this is a tool result response, add it as a user message
   if (toolResult) {
-    // Handle both single result and array of results
     const resultContent = Array.isArray(toolResult)
       ? toolResult.map(r => `Tool result: ${JSON.stringify(r)}`).join('\n')
       : `Tool result: ${JSON.stringify(toolResult)}`;
@@ -277,7 +261,6 @@ export async function sendMessageAndGetResponse(
     });
   }
 
-  // Add the new user message only if there's actual message content (not a tool continuation)
   if (userMessage.trim()) {
     messages.push({
       role: 'user',
@@ -285,15 +268,11 @@ export async function sendMessageAndGetResponse(
     });
   }
 
-  // Call AI and get response
-  // Always pass tools so the AI can make tool calls or follow-up tool calls
   const aiResponse = await callAI(messages, tools);
  
-  // Save AI response to database (including tool calls in the message)
   let savedAIResponse: ChatMessageDto | null = null;
   let aiResponseContent = aiResponse.text;
   
-  // If AI made a tool call, include the full tool call data in the saved message for context
   if (aiResponse.toolCall && aiResponse.toolCall.length > 0) {
     const toolCallData = aiResponse.toolCall.map(tc => 
       JSON.stringify({ tool: tc.name, arguments: tc.parameters.properties })
@@ -303,7 +282,6 @@ export async function sendMessageAndGetResponse(
       : toolCallData;
   }
   
-  // Always save the AI response (even if empty) when it contains tool calls
   if (aiResponseContent) {
     savedAIResponse = await chatDatabase.addMessageToConversation(
       conversationId,
@@ -312,11 +290,9 @@ export async function sendMessageAndGetResponse(
     );
   }
 
-  // Build response - during tool continuations, omit the user message from response
   const response: SendMessageResponseDto & { toolCall?: Tool[] } = {
     userMessage: toolResult
       ? {
-          // During tool continuation, return empty user message (will be hidden by frontend)
           id: 0,
           sender: 'user',
           message: '',
@@ -337,7 +313,6 @@ export async function sendMessageAndGetResponse(
     conversationId,
   };
 
-  // Include tool call if present
   if (aiResponse.toolCall) {
     response.toolCall = aiResponse.toolCall;
   }
@@ -345,23 +320,18 @@ export async function sendMessageAndGetResponse(
   return response;
 }
 
-/**
- * Initialize a new chat conversation with system prompt and prefab greeting
- */
 export async function initializeChat(
   conversationId: string,
   conversationName: string
 ): Promise<CreateConversationResponseDto> {
   const initialGreeting = "Hello, I am the Chronicler AI Agent! How can I help you set up your new character?";
 
-  // Save system prompt to database once on initialization
   await chatDatabase.addMessageToConversation(
     conversationId,
     'system',
     SYSTEM_PROMPT
   );
 
-  // Add a 1 second delay to make it look like the AI is thinking
   await new Promise(resolve => setTimeout(resolve, 1000));
 
   return {

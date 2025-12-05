@@ -17,10 +17,6 @@ function generateRandomNumbers(max: number, count: number): number[] {
   return Array.from({ length: count }, () => generateRandomNumber(max));
 }
 
-/**
- * GET /api/random/:max - Generate single random number
- * GET /api/random/:max/:count - Generate multiple random numbers
- */
 randomNumberRouter.get(['/:max', '/:max/:count'], asyncHandler(async (req: Request, res: Response) => {
   const max = parseInt(req.params.max || '0', 10);
   const count = req.params.count ? parseInt(req.params.count || '0', 10) : 1;

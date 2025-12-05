@@ -7,10 +7,6 @@ import { searchRacesByEmbedding } from '../embeddings/embeddedSearch.js';
 
 const router: ExpressRouter = Router();
 
-/**
- * GET /api/races/names
- * Returns all race names from the database as a simple array of strings
- */
 router.get('/names', asyncHandler(async (req: Request, res: Response) => {
   const pool = (await import('../utils/database.js')).pool;
   const dbClient = await pool.connect();
@@ -20,10 +16,6 @@ router.get('/names', asyncHandler(async (req: Request, res: Response) => {
   res.json(raceNames);
 }));
 
-/**
- * GET /api/races
- * Returns all races from the database as an array of RaceDTOs
- */
 router.get('/', asyncHandler(async (req: Request, res: Response) => {
   const data = await fetchAndValidate(
     `SELECT campaign, name, description FROM races ORDER BY campaign, name`,
@@ -38,12 +30,6 @@ router.get('/', asyncHandler(async (req: Request, res: Response) => {
   res.json(data);
 }));
 
-/**
- * POST /api/races/search
- * Searches for races similar to the provided query using embeddings
- * Request body: { query: string }
- * Returns top 10 matching races with their similarity distances
- */
 router.post('/search', asyncHandler(async (req: Request, res: Response) => {
   const { query } = req.body as { query?: string };
 

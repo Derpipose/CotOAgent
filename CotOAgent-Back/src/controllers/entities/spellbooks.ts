@@ -5,11 +5,6 @@ import { pool } from '../utils/database.js';
 
 const router: ExpressRouter = Router();
 
-/**
- * GET /api/spellbooks
- * Returns all spellbooks from the database grouped by SpellBranch and SpellBook,
- * as an array of objects with branch info and nested spellbooks
- */
 router.get('/', asyncHandler(async (req: Request, res: Response) => {
   const client = await pool.connect();
   try {
@@ -28,7 +23,6 @@ router.get('/', asyncHandler(async (req: Request, res: Response) => {
       const branch = row.spell_branch ?? '';
       const bookData = row.book_level ?? '';
       
-      // Parse "BookName|BookLevel" format
       const [spellBook, bookLevel] = bookData.includes('|') 
         ? bookData.split('|', 2) 
         : [bookData, bookData];
@@ -42,7 +36,6 @@ router.get('/', asyncHandler(async (req: Request, res: Response) => {
         branchBooks.set(bookData, { spells: [], bookLevel, spellBook });
       }
 
-      // Only add spell if it exists
       if (row.spell_name) {
         branchBooks.get(bookData)!.spells.push({
           SpellName: row.spell_name ?? '',
@@ -53,7 +46,6 @@ router.get('/', asyncHandler(async (req: Request, res: Response) => {
       }
     }
 
-    // Convert to array of branches with nested spellbooks
     const response = Array.from(branchMap.entries()).map(([branch, books]) => ({
       SpellBranch: branch,
       spellbooks: Array.from(books.entries()).map(([, data]) => ({

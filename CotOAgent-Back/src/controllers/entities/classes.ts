@@ -7,10 +7,6 @@ import { searchClassesByEmbedding } from '../embeddings/embeddedSearch.js';
 
 const router: ExpressRouter = Router();
 
-/**
- * GET /api/classes/names
- * Returns all class names from the database as a simple array of strings
- */
 router.get('/names', asyncHandler(async (req: Request, res: Response) => {
   const pool = (await import('../utils/database.js')).pool;
   const dbClient = await pool.connect();
@@ -20,10 +16,6 @@ router.get('/names', asyncHandler(async (req: Request, res: Response) => {
   res.json(classNames);
 }));
 
-/**
- * GET /api/classes
- * Returns all classes from the database as an array of BasicClassDTOs
- */
 router.get('/', asyncHandler(async (req: Request, res: Response) => {
   const data = await fetchAndValidate(
     `SELECT classification, class_name, description FROM classes ORDER BY classification, class_name`,
@@ -38,12 +30,6 @@ router.get('/', asyncHandler(async (req: Request, res: Response) => {
   res.json(data);
 }));
 
-/**
- * POST /api/classes/search
- * Searches for classes similar to the provided query using embeddings
- * Request body: { query: string }
- * Returns top 10 matching classes with their similarity distances
- */
 router.post('/search', asyncHandler(async (req: Request, res: Response) => {
   const { query } = req.body as { query?: string };
 
@@ -61,10 +47,6 @@ router.post('/search', asyncHandler(async (req: Request, res: Response) => {
   res.json(mappedResults);
 }));
 
-/**
- * GET /api/classes/how-to-play
- * Returns information on how to play the classes in the game
- */
 router.get('/how-to-play', asyncHandler(async (req: Request, res: Response) => {
   const mdUrl = 'https://derpipose.github.io/HowToPlayTheClasses.md';
   
