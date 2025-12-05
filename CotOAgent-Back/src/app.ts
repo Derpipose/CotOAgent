@@ -7,13 +7,11 @@ import dotenv from 'dotenv';
 import { setupRoutes } from './routes/index.js';
 import { errorHandler } from './middleware/errorHandler.js';
 
-// Load environment variables
 dotenv.config();
 
 const app: express.Application = express();
 const PORT = process.env.PORT || 3000;
 
-// CORS configuration that works with Docker and Kubernetes
 const corsOptions = {
   origin: process.env.CORS_ORIGIN || [
     'http://localhost:5173',
@@ -27,14 +25,12 @@ const corsOptions = {
   allowedHeaders: ['Content-Type', 'Authorization', 'x-user-email'],
 };
 
-// Middleware
 app.use(helmet());
 app.use(cors(corsOptions));
 app.use(morgan('combined'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Basic health check route
 app.get('/health', (req, res) => {
   res.status(200).json({ 
     status: 'ok', 
@@ -43,15 +39,12 @@ app.get('/health', (req, res) => {
   });
 });
 
-// API routes
 app.get('/api', (req, res) => {
   res.json({ message: 'Welcome to CotOAgent API' });
 });
 
-// Setup additional routes
 setupRoutes(app);
 
-// 404 handler - must be before error handler
 app.use((req: Request, res: Response) => {
   res.status(404).json({ 
     error: {
@@ -62,7 +55,6 @@ app.use((req: Request, res: Response) => {
   });
 });
 
-// Global error handler - must be last
 app.use(errorHandler);
 
 app.listen(PORT, () => {

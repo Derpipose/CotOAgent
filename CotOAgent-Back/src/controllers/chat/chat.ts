@@ -7,7 +7,7 @@ import {
   type SendMessageDto,
 } from '../../DTOS/ChatDto.js';
 import * as chatDatabase from '../database/chatDatabase.js';
-import * as chatService from '../../services/chatService.js';
+import * as chatService from '../../services/chatService/index.js';
 
 interface Tool {
   name: string;
