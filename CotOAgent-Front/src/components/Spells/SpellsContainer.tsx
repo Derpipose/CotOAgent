@@ -39,7 +39,7 @@ export default function SpellsContainer({
   onToggleSpell,
 }: SpellsContainerProps) {
   return (
-    <div className="mt-5 ml-auto mr-auto w-11/12 px-4 box-border">
+    <div className="spells-container">
       {branches.map((branch) => (
         <BranchItem
           key={branch.SpellBranch}

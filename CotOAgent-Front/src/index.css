@@ -420,6 +420,243 @@
     @apply flex flex-col gap-2;
   }
 
+  /* ClassesList Components */
+  .classes-list-container {
+    @apply flex flex-col gap-0 mt-5 w-11/12 mx-auto px-4 box-border;
+  }
+
+  /* ClassItem Components */
+  .class-item-container {
+    @apply mb-2;
+  }
+
+  .class-item-button {
+    @apply flex items-center justify-between w-full px-5 py-4 bg-blue-50 border-none cursor-pointer transition-colors duration-200 text-lg text-left hover:bg-blue-100 active:bg-blue-200;
+  }
+
+  .class-item-name {
+    @apply flex-1 font-semibold text-indigo-600 min-w-36;
+  }
+
+  .class-item-classification {
+    @apply flex-0 flex-shrink-0 text-slate-600 text-sm text-center px-5 w-30;
+  }
+
+  .class-item-chevron {
+    @apply flex-0 w-7 h-7 flex items-center justify-center text-indigo-500 transition-transform duration-200;
+  }
+
+  .class-item-chevron-expanded {
+    @apply rotate-180;
+  }
+
+  .class-item-description {
+    @apply px-5 py-5 bg-blue-50 text-slate-700 leading-relaxed text-sm;
+    animation: slideDown 0.2s ease;
+  }
+
+  /* SearchSection Components */
+  .search-section-container {
+    @apply mb-5 p-4 bg-gray-100 rounded-lg;
+  }
+
+  .search-section-input-group {
+    @apply flex gap-2.5 mb-2.5;
+  }
+
+  .search-section-input {
+    @apply flex-1 px-2.5 py-2.5 rounded border border-gray-300 text-sm bg-white text-gray-800;
+  }
+
+  .search-section-button {
+    @apply px-5 py-2.5 bg-blue-600 text-white border-none rounded cursor-pointer text-sm font-medium transition-opacity;
+  }
+
+  .search-section-button:disabled {
+    @apply opacity-60 cursor-not-allowed;
+  }
+
+  .search-section-clear-button {
+    @apply px-5 py-2.5 bg-gray-500 text-white border-none rounded cursor-pointer text-sm font-medium;
+  }
+
+  .search-section-error {
+    @apply text-red-600 m-0 mt-2.5 text-sm;
+  }
+
+  .search-section-results {
+    @apply text-gray-600 m-0 mt-2.5 text-sm;
+  }
+
+  /* RacesList Components */
+  .races-list-container {
+    @apply flex flex-col gap-0 mt-5 w-11/12 mx-auto px-4 box-border;
+  }
+
+  /* RaceItem Components */
+  .race-item-container {
+    @apply mb-2;
+  }
+
+  .race-item-button {
+    @apply flex items-center justify-between w-full px-5 py-4 bg-blue-50 border-none cursor-pointer transition-colors duration-200 text-lg text-left hover:bg-blue-100 active:bg-blue-200;
+  }
+
+  .race-item-name {
+    @apply flex-1 font-semibold text-indigo-600 min-w-36;
+  }
+
+  .race-item-campaign {
+    @apply flex-0 flex-shrink-0 text-slate-600 text-sm text-center px-5 w-30;
+  }
+
+  .race-item-chevron {
+    @apply flex-0 w-7 h-7 flex items-center justify-center text-indigo-500 transition-transform duration-200;
+  }
+
+  .race-item-chevron-expanded {
+    @apply rotate-180;
+  }
+
+  .race-item-description {
+    @apply px-5 py-5 bg-blue-50 text-slate-700 leading-relaxed text-sm;
+    animation: slideDown 0.2s ease;
+  }
+
+  /* RaceSearchSection Components */
+  .race-search-section-container {
+    @apply mb-5 p-4 bg-gray-100 rounded-lg;
+  }
+
+  .race-search-section-input-group {
+    @apply flex gap-2.5 mb-2.5;
+  }
+
+  .race-search-section-input {
+    @apply flex-1 px-2.5 py-2.5 rounded border border-gray-300 text-sm bg-white text-gray-800;
+  }
+
+  .race-search-section-button {
+    @apply px-5 py-2.5 bg-blue-600 text-white border-none rounded cursor-pointer text-sm font-medium transition-opacity;
+  }
+
+  .race-search-section-button:disabled {
+    @apply opacity-60 cursor-not-allowed;
+  }
+
+  .race-search-section-clear-button {
+    @apply px-5 py-2.5 bg-gray-500 text-white border-none rounded cursor-pointer text-sm font-medium;
+  }
+
+  .race-search-section-error {
+    @apply text-red-600 m-0 mt-2.5 text-sm;
+  }
+
+  .race-search-section-results {
+    @apply text-gray-600 m-0 mt-2.5 text-sm;
+  }
+
+  /* SpellsContainer Components */
+  .spells-container {
+    @apply mt-5 ml-auto mr-auto w-11/12 px-4 box-border;
+  }
+
+  /* BranchItem Components */
+  .branch-item-container {
+    @apply mb-4 border-2 border-blue-200;
+  }
+
+  .branch-item-button {
+    @apply flex items-center justify-between w-full px-5 py-4 bg-blue-50 border-none cursor-pointer transition-colors duration-200 text-lg text-left hover:bg-blue-100 active:bg-blue-200;
+  }
+
+  .branch-item-title {
+    @apply font-bold text-indigo-600 flex-1;
+  }
+
+  .branch-item-chevron {
+    @apply flex-0 w-7 h-7 flex items-center justify-center text-indigo-500 transition-transform duration-200;
+  }
+
+  .branch-item-chevron-expanded {
+    @apply rotate-180;
+  }
+
+  .branch-item-content {
+    @apply py-3 bg-blue-50;
+  }
+
+  /* SpellbookItem Components */
+  .spellbook-item-container {
+    @apply mb-3 px-3;
+  }
+
+  .spellbook-item-button {
+    @apply flex items-center justify-between w-full px-3.5 py-3 bg-blue-100 border border-blue-200 cursor-pointer transition-colors duration-200 text-sm text-left hover:bg-blue-100 active:bg-blue-200;
+  }
+
+  .spellbook-item-title {
+    @apply font-semibold text-indigo-600 flex-1;
+  }
+
+  .spellbook-item-level {
+    @apply flex-0 flex-shrink-0 text-slate-600 text-xs text-center w-20 px-3;
+  }
+
+  .spellbook-item-chevron {
+    @apply flex-0 w-7 h-7 flex items-center justify-center text-indigo-500 transition-transform duration-200;
+  }
+
+  .spellbook-item-chevron-expanded {
+    @apply rotate-180;
+  }
+
+  .spellbook-item-content {
+    @apply py-2.5 bg-blue-100;
+  }
+
+  .spellbook-item-spells {
+    @apply flex flex-col gap-0;
+  }
+
+  /* SpellItem Components */
+  .spell-item-container {
+    @apply px-3 mb-2;
+  }
+
+  .spell-item-button {
+    @apply flex items-center justify-between w-full px-4 py-3.5 bg-blue-50 border-none cursor-pointer transition-colors duration-200 text-lg text-left hover:bg-blue-100 active:bg-blue-200;
+  }
+
+  .spell-item-name {
+    @apply flex-1 font-semibold text-indigo-600 min-w-36;
+  }
+
+  .spell-item-mana {
+    @apply flex-0 flex-shrink-0 text-slate-600 text-sm text-center w-24;
+  }
+
+  .spell-item-chevron {
+    @apply flex-0 w-7 h-7 flex items-center justify-center text-indigo-500 transition-transform duration-200;
+  }
+
+  .spell-item-chevron-expanded {
+    @apply rotate-180;
+  }
+
+  .spell-item-content {
+    @apply px-5 py-5 bg-blue-50 text-slate-700 leading-relaxed text-sm;
+    animation: slideDown 0.2s ease;
+  }
+
+  .spell-item-hit-die {
+    @apply mb-3;
+  }
+
+  .spell-item-description {
+    @apply mt-4 italic;
+  }
+
   .input-group {
     @apply flex flex-col gap-2;
   }

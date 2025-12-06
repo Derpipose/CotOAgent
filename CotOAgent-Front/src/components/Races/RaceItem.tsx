@@ -20,19 +20,19 @@ export default function RaceItem({ race, isExpanded, onToggleExpand }: RaceItemP
   const { Name, Campaign, Description } = race;
 
   return (
-    <div className="mb-2">
+    <div className="race-item-container">
       <button
-        className="flex items-center justify-between w-full px-5 py-4 bg-blue-50 border-none cursor-pointer transition-colors duration-200 text-lg text-left hover:bg-blue-100 active:bg-blue-150"
+        className="race-item-button"
         onClick={onToggleExpand}
       >
-        <span className="flex-1 font-semibold text-indigo-600 min-w-36">{Name}</span>
-        <span className="flex-0 flex-shrink-0 text-slate-600 text-sm text-center px-5 w-30">{Campaign}</span>
-        <span className={`flex-0 w-7 h-7 flex items-center justify-center text-indigo-500 transition-transform duration-200 ${isExpanded ? 'rotate-180' : ''}`}>
+        <span className="race-item-name">{Name}</span>
+        <span className="race-item-campaign">{Campaign}</span>
+        <span className={`race-item-chevron ${isExpanded ? 'race-item-chevron-expanded' : ''}`}>
           ▼
         </span>
       </button>
       {isExpanded && (
-        <div className="px-5 py-5 bg-blue-50 text-slate-700 leading-relaxed text-sm animate-slideDown">
+        <div className="race-item-description">
           {Description}
         </div>
       )}

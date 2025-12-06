@@ -32,20 +32,20 @@ export default function SpellbookItem({
   onToggleSpell,
 }: SpellbookItemProps) {
   return (
-    <div className="mb-3 px-3">
+    <div className="spellbook-item-container">
       <button
-        className="flex items-center justify-between w-full px-3.5 py-3 bg-blue-100 border border-blue-200 cursor-pointer transition-colors duration-200 text-sm text-left hover:bg-blue-150 active:bg-blue-200"
+        className="spellbook-item-button"
         onClick={() => onToggleExpand(bookId)}
       >
-        <span className="font-semibold text-indigo-600 flex-1">{book.SpellBook}</span>
-        <span className="flex-0 flex-shrink-0 text-slate-600 text-xs text-center w-20 px-3">{book.BookLevel}</span>
-        <span className={`flex-0 w-7 h-7 flex items-center justify-center text-indigo-500 transition-transform duration-200 ${isExpanded ? 'rotate-180' : ''}`}>
+        <span className="spellbook-item-title">{book.SpellBook}</span>
+        <span className="spellbook-item-level">{book.BookLevel}</span>
+        <span className={`spellbook-item-chevron ${isExpanded ? 'spellbook-item-chevron-expanded' : ''}`}>
           ▼
         </span>
       </button>
       {isExpanded && (
-        <div className="py-2.5 bg-blue-100">
-          <div className="flex flex-col gap-0">
+        <div className="spellbook-item-content">
+          <div className="spellbook-item-spells">
             {book.SpellDtos.map((spell) => {
               const spellId = `${bookId}-${spell.SpellName}`;
               return (

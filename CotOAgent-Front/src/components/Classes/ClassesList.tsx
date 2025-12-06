@@ -15,7 +15,7 @@ interface ClassesListProps {
 
 export default function ClassesList({ classes, expandedClass, onToggleExpand }: ClassesListProps) {
   return (
-    <div className="flex flex-col gap-0 mt-5 w-11/12 mx-auto px-4 box-border">
+    <div className="classes-list-container">
       {classes.map((cls) => (
         <ClassItem
           key={`${cls.ClassName}-${cls.Classification}`}

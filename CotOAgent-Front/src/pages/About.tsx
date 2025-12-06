@@ -61,6 +61,17 @@ function About() {
               </p>
               <Link to="/spells" className="feature-link">Browse Spells →</Link>
             </div>
+
+            <div className="feature-card">
+              <div className="feature-icon">⚔️</div>
+              <h3 className="feature-title">Characters</h3>
+              <p className="feature-description">
+                Chat with our AI companion to shape your character's destiny. Get personalized suggestions 
+                and guidance for every decision—from class selection to spell choices. Let our intelligent 
+                system help you create the hero you envision.
+              </p>
+              <Link to="/characters" className="feature-link">Build Your Character →</Link>
+            </div>
           </div>
         </section>
 
@@ -106,10 +117,10 @@ function About() {
         </section>
 
         <section className="bg-blue-200 rounded-xl p-8 text-center">
-          <h2 className="text-3xl font-bold mb-4 text-slate-600">Ready to Begin?</h2>
+          <h2 className="text-3xl font-bold mb-4 text-slate-600">Know what you want to do?</h2>
           <p className="text-lg mb-6 text-slate-600">Start creating your unique character today and embark on an epic journey!</p>
           {isAuthenticated ? (
-            <Link to="/character-sheet" className="btn-primary">Create Your Character</Link>
+            <Link to="/character-sheet" className="btn-primary">Create Your Character Yourself</Link>
           ) : (
             <button onClick={handleLoginClick} className="btn-primary">Login to Get Started</button>
           )}
