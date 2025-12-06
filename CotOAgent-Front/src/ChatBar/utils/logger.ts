@@ -1,8 +1,4 @@
-/**
- * Create a logger instance with a specific context
- * Provides consistent logging format across the chat bar
- * @param context - The context name (e.g., 'ChatBar', 'ToolCalls', 'ChatAPI')
- */
+
 export const createLogger = (context: string) => ({
   log: (message: string, data?: unknown): void => {
     if (data !== undefined) {

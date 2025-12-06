@@ -9,3 +9,5 @@
 - zod parse
 
 - Filter to only fantasy and not vet
+
+- If folder only has one file, get rid of the folder and move the file up

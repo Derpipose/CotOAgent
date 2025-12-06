@@ -1,8 +1,3 @@
-/**
- * Chat Bar Configuration Constants
- * Centralized configuration for easy adjustment and maintenance
- */
-
 export const LOADING_CONFIG = {
   DOTS: ['.', '..', '...', '....'] as const,
   INTERVAL_MS: 500,
