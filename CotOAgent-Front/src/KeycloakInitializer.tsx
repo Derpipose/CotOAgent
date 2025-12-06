@@ -8,7 +8,6 @@ function KeycloakInitializer({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     console.log('[KeycloakInitializer] Effect running, initStarted.current:', initStarted.current)
     
-    // If already initialized, don't try again
     if (initStarted.current) {
       console.log('[KeycloakInitializer] Initialization already started, skipping')
       return
@@ -17,7 +16,6 @@ function KeycloakInitializer({ children }: { children: React.ReactNode }) {
     initStarted.current = true
     console.log('[KeycloakInitializer] Starting Keycloak initialization...')
 
-    // Set a timeout to force loading to false if initialization takes too long
     const initTimeout = setTimeout(() => {
       console.warn('[KeycloakInitializer] Keycloak initialization timeout - forcing load to complete')
       setLoading(false)
@@ -35,7 +33,6 @@ function KeycloakInitializer({ children }: { children: React.ReactNode }) {
         console.log('[KeycloakInitializer] Keycloak initialization successful, authenticated:', auth)
         clearTimeout(initTimeout)
 
-        // Set up token refresh handler
         keycloak.onTokenExpired = () => {
           console.log('[KeycloakInitializer] Token expired, refreshing...')
           keycloak.updateToken(5)
