@@ -34,18 +34,18 @@ export default function SpellbookItem({
   return (
     <div className="mb-3 px-3">
       <button
-        className="flex items-center justify-between w-full px-3.5 py-3 bg-gray-100 border border-gray-300 cursor-pointer transition-colors duration-200 text-sm text-left hover:bg-gray-200 active:bg-gray-300"
+        className="flex items-center justify-between w-full px-3.5 py-3 bg-blue-100 border border-blue-200 cursor-pointer transition-colors duration-200 text-sm text-left hover:bg-blue-150 active:bg-blue-200"
         onClick={() => onToggleExpand(bookId)}
       >
-        <span className="font-semibold text-gray-800 flex-1">{book.SpellBook}</span>
-        <span className="flex-0 flex-shrink-0 text-gray-600 text-xs text-center w-20 px-3">{book.BookLevel}</span>
-        <span className={`flex-0 w-7 h-7 flex items-center justify-center text-gray-600 transition-transform duration-200 ${isExpanded ? 'rotate-180' : ''}`}>
+        <span className="font-semibold text-indigo-600 flex-1">{book.SpellBook}</span>
+        <span className="flex-0 flex-shrink-0 text-slate-600 text-xs text-center w-20 px-3">{book.BookLevel}</span>
+        <span className={`flex-0 w-7 h-7 flex items-center justify-center text-indigo-500 transition-transform duration-200 ${isExpanded ? 'rotate-180' : ''}`}>
           ▼
         </span>
       </button>
       {isExpanded && (
-        <div className="py-2.5 bg-gray-50">
-          <div className="flex flex-col gap-0 border border-gray-300 border-t-0">
+        <div className="py-2.5 bg-blue-100">
+          <div className="flex flex-col gap-0">
             {book.SpellDtos.map((spell) => {
               const spellId = `${bookId}-${spell.SpellName}`;
               return (
