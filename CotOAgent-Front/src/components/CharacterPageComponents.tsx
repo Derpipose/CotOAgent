@@ -12,8 +12,8 @@ interface CharacterPageHeaderProps {
 
 export const CharacterPageHeader: React.FC<CharacterPageHeaderProps> = ({ characterCount }) => (
   <div className="container-max-width mb-12 text-center">
-    <h1 className="text-4xl font-bold text-gray-900 mb-2 -tracking-0.5">My Characters</h1>
-    <p className="text-lg text-gray-600">
+    <h1 className="text-4xl font-bold text-indigo-600 mb-2 -tracking-0.5">My Characters</h1>
+    <p className="text-lg text-slate-600">
       {characterCount > 0
         ? `You have ${characterCount} character${characterCount !== 1 ? 's' : ''}`
         : 'No characters yet'}

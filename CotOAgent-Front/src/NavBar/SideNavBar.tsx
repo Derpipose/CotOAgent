@@ -46,8 +46,8 @@ const SideNavBar = () => {
   return (
     <div className="flex flex-col lg:flex-row w-full lg:w-64 lg:h-screen">
       {/* Header/Hamburger (Mobile) */}
-      <div className="lg:hidden w-full bg-slate-700 text-gray-100 shadow-lg z-50 flex items-center justify-between px-5 py-4">
-        <Link to="/" className="text-2xl font-bold text-blue-400 no-underline transition-colors duration-300 hover:text-blue-300 whitespace-nowrap">
+      <div className="lg:hidden w-full bg-blue-100 text-slate-600 shadow-lg z-50 flex items-center justify-between px-5 py-4">
+        <Link to="/" className="text-2xl font-bold text-indigo-500 no-underline transition-colors duration-300 hover:text-indigo-600 whitespace-nowrap">
           Chronicles of the Omuns
         </Link>
         <button
@@ -55,18 +55,18 @@ const SideNavBar = () => {
           onClick={() => setIsMenuOpen(!isMenuOpen)}
           aria-label="Toggle navigation menu"
         >
-          <span className="w-6 h-0.5 bg-gray-100 transition-all duration-300"></span>
-          <span className="w-6 h-0.5 bg-gray-100 transition-all duration-300"></span>
-          <span className="w-6 h-0.5 bg-gray-100 transition-all duration-300"></span>
+          <span className="w-6 h-0.5 bg-slate-600 transition-all duration-300"></span>
+          <span className="w-6 h-0.5 bg-slate-600 transition-all duration-300"></span>
+          <span className="w-6 h-0.5 bg-slate-600 transition-all duration-300"></span>
         </button>
       </div>
 
       {/* Sidebar (Desktop) and Menu (Mobile when open) */}
-      <nav className={`w-full lg:w-64 lg:h-screen bg-slate-700 text-gray-100 shadow-lg z-50 flex flex-col overflow-hidden ${isMenuOpen ? 'block' : 'hidden'} lg:block lg:flex`}>
+      <nav className={`w-full lg:w-64 lg:h-screen bg-blue-100 text-slate-600 shadow-lg z-50 flex flex-col overflow-hidden ${isMenuOpen ? 'block' : 'hidden'} lg:block lg:flex`}>
         <div className="w-full h-full flex flex-col items-stretch p-0 relative box-border overflow-hidden">
           {/* Logo (Desktop only) */}
           <div className="hidden lg:flex items-center w-full px-5 mb-7">
-            <Link to="/" className="text-2xl font-bold text-blue-400 no-underline transition-colors duration-300 hover:text-blue-300 whitespace-nowrap">
+            <Link to="/" className="text-2xl font-bold text-indigo-500 no-underline transition-colors duration-300 hover:text-indigo-600 whitespace-nowrap">
               Chronicles
             </Link>
           </div>
@@ -76,10 +76,10 @@ const SideNavBar = () => {
               <li key={link.path} className="m-0 box-border">
                 <Link
                   to={link.path}
-                  className={`block px-5 py-3 text-gray-300 no-underline rounded-none transition-all duration-300 text-sm font-medium w-full border-l-4 border-l-transparent box-border ${
+                  className={`block px-5 py-3 text-slate-600 no-underline rounded-none transition-all duration-300 text-sm font-medium w-full border-l-4 border-l-transparent box-border ${
                     isActive(link.path)
-                      ? 'bg-blue-500 text-white font-semibold border-l-blue-900'
-                      : 'hover:bg-slate-800 hover:text-gray-100 hover:border-l-blue-400'
+                      ? 'bg-blue-200 text-slate-700 font-semibold border-l-indigo-400'
+                      : 'hover:bg-blue-50 hover:text-slate-700 hover:border-l-indigo-300'
                   }`}
                   onClick={handleLinkClick}
                 >
