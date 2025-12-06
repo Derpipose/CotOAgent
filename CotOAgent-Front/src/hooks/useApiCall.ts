@@ -67,9 +67,7 @@ export const useApiCall = () => {
   return { call };
 };
 
-/**
- * Hook for async operations with toast notifications
- */
+
 export const useAsync = () => {
   const { addToast, addPersistentToast } = useToast();
 

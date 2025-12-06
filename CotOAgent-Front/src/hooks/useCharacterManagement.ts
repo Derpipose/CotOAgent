@@ -1,7 +1,3 @@
-/**
- * Custom hook for managing character data and API interactions
- */
-
 import { useState, useRef, useEffect } from 'react'
 import keycloak from '../keycloak'
 import { useQueryApi } from './useQueryApi'
@@ -25,7 +21,6 @@ export const useCharacters = (): UseCharactersReturn => {
   const userEmail = keycloak.tokenParsed?.email?.toLowerCase()
   const isAuthenticated = keycloak.authenticated
 
-  // Fetch races and classes with TanStack Query
   const { data: races = [] } = useQueryApi<string[]>(
     '/races/names',
     { showError: false }
@@ -36,7 +31,6 @@ export const useCharacters = (): UseCharactersReturn => {
     { showError: false }
   )
 
-  // Fetch characters with custom logic due to header requirement
   const { data: characterData = { characters: [] }, isLoading, refetch: queryRefetch } = useQueryApi<{ characters: Character[] }>(
     '/characters',
     {
@@ -49,12 +43,9 @@ export const useCharacters = (): UseCharactersReturn => {
     }
   )
 
-  // Sync fetched data to local state for mutations
   useEffect(() => {
-    // Only sync if authenticated and have character data
     if (isAuthenticated && characterData?.characters && Array.isArray(characterData.characters)) {
       setCharacters((prevCharacters) => {
-        // Only update if the data actually changed
         if (JSON.stringify(prevCharacters) !== JSON.stringify(characterData.characters)) {
           return characterData.characters
         }

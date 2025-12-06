@@ -2,7 +2,7 @@ import { useLocation } from "react-router-dom";
 import type { ReactNode } from "react";
 import { useState } from "react";
 import ChatBar from "../ChatBar/ChatBar";
-import SideNavBar from "../NavBar/SideNavBar";
+import SideNavBar from "../pages/SideNavBar";
 
 interface LayoutProps {
   children: ReactNode;

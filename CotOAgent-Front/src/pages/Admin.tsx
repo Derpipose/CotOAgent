@@ -2,7 +2,12 @@ import { useState } from 'react'
 import { useToast } from '../context/ToastContext'
 import { useMutationApi } from '../hooks/useQueryApi'
 import { PageHeader } from '../components/PageHeader'
-import { ContentCard } from '../components/ContentCard'
+import {
+  ImportDataSection,
+  EmbeddingsSection,
+  ErrorTestingSection,
+  ImportInformationSection,
+} from '../components/Admin'
 
 interface EmbeddingProgress {
   completed: number
@@ -181,142 +186,29 @@ export default function Admin() {
         subtitle="Manage game data and generate AI embeddings"
       />
       
-      {/* Import Section */}
-      <ContentCard className="mb-8">
-        <h2 className="section-header">📥 Import Game Data</h2>
-        <p className="text-section-description">Import races, classes, and spells to the database</p>
-        
-        <div className="flex gap-4 justify-center flex-wrap">
-          <div className="btn-container-col-flex">
-            <button
-              className="btn-primary w-full"
-              onClick={() => handleImport('races')}
-              disabled={importRacesMutation.isPending || importClassesMutation.isPending || importSpellsMutation.isPending}
-            >
-              {importRacesMutation.isPending ? '⏳ Importing...' : '🐉 Import Races'}
-            </button>
-          </div>
+      <ImportDataSection
+        onImport={handleImport}
+        importRacesMutation={importRacesMutation}
+        importClassesMutation={importClassesMutation}
+        importSpellsMutation={importSpellsMutation}
+      />
 
-          <div className="btn-container-col-flex">
-            <button
-              className="btn-primary w-full"
-              onClick={() => handleImport('classes')}
-              disabled={importRacesMutation.isPending || importClassesMutation.isPending || importSpellsMutation.isPending}
-            >
-              {importClassesMutation.isPending ? '⏳ Importing...' : '⚔️ Import Classes'}
-            </button>
-          </div>
+      <EmbeddingsSection
+        onEmbed={handleEmbed}
+        embeddingLoading={embeddingLoading}
+        embeddingProgress={embeddingProgress}
+      />
 
-          <div className="btn-container-col-flex">
-            <button
-              className="btn-primary w-full"
-              onClick={() => handleImport('spells')}
-              disabled={importRacesMutation.isPending || importClassesMutation.isPending || importSpellsMutation.isPending}
-            >
-              {importSpellsMutation.isPending ? '⏳ Importing...' : '✨ Import Spells'}
-            </button>
-          </div>
-        </div>
-      </ContentCard>
+      <ErrorTestingSection
+        onTestSuccessToast={testSuccessToast}
+        onTestErrorToast={testErrorToast}
+        onTestWarningToast={testWarningToast}
+        onTestInfoToast={testInfoToast}
+        onTestPersistentToast={testPersistentToast}
+        onTestThrowError={testThrowError}
+      />
 
-      {/* Embeddings Section */}
-      <ContentCard className="mb-8">
-        <h2 className="section-header">🧠 Generate Embeddings</h2>
-        <p className="text-section-description">Generate AI embeddings for semantic search</p>
-        
-        <div className="flex gap-4 justify-center flex-wrap">
-          <div className="btn-container-col-flex">
-            <button
-              className="btn-primary w-full"
-              onClick={() => handleEmbed('races')}
-              disabled={embeddingLoading.races}
-            >
-              {embeddingLoading.races ? '🧠 Generating...' : '🧠 Embed Races'}
-            </button>
-            {embeddingProgress.races && (
-              <div className="btn-container-col-full">
-                <div className="progress-bar">
-                  <div className="progress-fill bg-blue-500" style={{ width: `${embeddingProgress.races.percentageComplete}%` }}></div>
-                </div>
-                <div className="progress-text">{embeddingProgress.races.message}</div>
-              </div>
-            )}
-          </div>
-
-          <div className="btn-container-col-flex">
-            <button
-              className="btn-primary w-full"
-              onClick={() => handleEmbed('classes')}
-              disabled={embeddingLoading.classes}
-            >
-              {embeddingLoading.classes ? '🧠 Generating...' : '🧠 Embed Classes'}
-            </button>
-            {embeddingProgress.classes && (
-              <div className="btn-container-col-full">
-                <div className="progress-bar">
-                  <div className="progress-fill bg-blue-500" style={{ width: `${embeddingProgress.classes.percentageComplete}%` }}></div>
-                </div>
-                <div className="progress-text">{embeddingProgress.classes.message}</div>
-              </div>
-            )}
-          </div>
-
-          <div className="btn-container-col-flex">
-            <button
-              className="btn-primary w-full"
-              onClick={() => handleEmbed('spells')}
-              disabled={embeddingLoading.spells}
-            >
-              {embeddingLoading.spells ? '🧠 Generating...' : '🧠 Embed Spells'}
-            </button>
-            {embeddingProgress.spells && (
-              <div className="btn-container-col-full">
-                <div className="progress-bar">
-                  <div className="progress-fill bg-blue-500" style={{ width: `${embeddingProgress.spells.percentageComplete}%` }}></div>
-                </div>
-                <div className="progress-text">{embeddingProgress.spells.message}</div>
-              </div>
-            )}
-          </div>
-        </div>
-      </ContentCard>
-
-      {/* Testing Section */}
-      <ContentCard className="mb-8">
-        <h2 className="section-header">🧪 Error Handling Tests</h2>
-        <p className="text-section-description">Test the error handling and toast notification system</p>
-        
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-          <button className="btn-small-light-green" onClick={testSuccessToast}>
-            ✅ Test Success Toast
-          </button>
-          <button className="btn-small-light-red" onClick={testErrorToast}>
-            ❌ Test Error Toast
-          </button>
-          <button className="btn-small-light-amber" onClick={testWarningToast}>
-            ⚠️ Test Warning Toast
-          </button>
-          <button className="btn-small-light-blue" onClick={testInfoToast}>
-            ℹ️ Test Info Toast
-          </button>
-          <button className="btn-small-light-indigo" onClick={testPersistentToast}>
-            📌 Test Persistent Toast
-          </button>
-          <button className="btn-small-light-pink" onClick={testThrowError}>
-            💥 Test Error Boundary
-          </button>
-        </div>
-      </ContentCard>
-
-      {/* Information Section */}
-      <ContentCard>
-        <h3 className="section-header">ℹ️ Import Information</h3>
-        <ul className="list-none p-0 space-y-3">
-          <li className="text-gray-600 leading-relaxed"><strong className="text-gray-800">Races:</strong> Import fantasy races with descriptions and stats</li>
-          <li className="text-gray-600 leading-relaxed"><strong className="text-gray-800">Classes:</strong> Import character classes and their properties</li>
-          <li className="text-gray-600 leading-relaxed"><strong className="text-gray-800">Spells:</strong> Import spells with mana costs and descriptions</li>
-        </ul>
-      </ContentCard>
+      <ImportInformationSection />
     </div>
   )
 }

@@ -15,7 +15,6 @@ import type { Character } from '../types/Character'
 function Characters() {
   const { addToast } = useToast()
 
-  // Data and UI state management
   const {
     characters,
     setCharacters,
@@ -42,17 +41,14 @@ function Characters() {
     handleEditChange,
   } = useCharacterDetails()
 
-  // Create API handlers with toast notifications
   const { handleSaveRevision, handleSubmitRevision, handleDeleteCharacter } =
     createCharacterApiHandlers({ addToast })
 
     
-    // Handler for viewing character details
     const handleViewDetails = (character: Character) => {
       openDetailsModal(character)
     }
     
-    // Handler for saving character revisions
     const handleSaveClick = async () => {
       await handleSaveRevision(
         selectedCharacter,
@@ -66,7 +62,6 @@ function Characters() {
       )
     }
     
-    // Handler for submitting character revisions
     const handleSubmitClick = async () => {
       await handleSubmitRevision(
         selectedCharacter,
@@ -79,7 +74,6 @@ function Characters() {
       )
     }
     
-    // Handler for deleting characters
     const handleDeleteClick = async () => {
       await handleDeleteCharacter(
         selectedCharacter,
@@ -94,10 +88,8 @@ function Characters() {
       )
     }
     
-    // Refresh data on component mount and after modal closes
     useEffect(() => {
       if (!showDetailsModal && selectedCharacter) {
-        // Refresh character data to get updated status
         refetch().catch((error) => {
           console.error('Failed to refetch characters:', error)
         })

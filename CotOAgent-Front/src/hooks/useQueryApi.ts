@@ -3,9 +3,6 @@ import type { QueryOptions, UseMutationOptions } from '@tanstack/react-query';
 import { useToast } from '../context/ToastContext';
 import { ApiError, apiCall, buildApiUrl } from '../utils/api';
 
-/**
- * Hook for fetching data using TanStack Query with integrated error handling and toast notifications
- */
 export const useQueryApi = <T,>(
   endpoint: string,
   options?: {
@@ -58,9 +55,6 @@ export const useQueryApi = <T,>(
   return query;
 };
 
-/**
- * Hook for mutations (POST, PUT, DELETE) with integrated error handling and toast notifications
- */
 export const useMutationApi = <TData, TVariables = unknown>(
   config?: {
     mutationOptions?: Partial<UseMutationOptions<TData, Error, TVariables>>;
@@ -76,7 +70,6 @@ export const useMutationApi = <TData, TVariables = unknown>(
   const queryClient = useQueryClient();
 
   const mutation = useMutation<TData, Error, TVariables>({
-    // Provide a default mutationFn if none is provided
     mutationFn: config?.mutationOptions?.mutationFn || (async () => {
       throw new Error('No mutationFn provided');
     }),
@@ -90,7 +83,6 @@ export const useMutationApi = <TData, TVariables = unknown>(
         }
       }
 
-      // Invalidate specified keys to trigger refetch
       if (config?.invalidateKeys && config.invalidateKeys.length > 0) {
         config.invalidateKeys.forEach((key) => {
           queryClient.invalidateQueries({ queryKey: [key] });

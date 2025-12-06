@@ -47,7 +47,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       setUserEmail(email || null)
       console.log('[AuthContext] User email:', email)
 
-      // Check admin status if authenticated
       if (authenticated && email) {
         await checkAdminStatus(email)
       } else {
@@ -63,7 +62,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   }, [checkAdminStatus])
 
   useEffect(() => {
-    // Set up a listener for when Keycloak is ready
     let checkInterval: ReturnType<typeof setInterval>
     let fallbackTimer: ReturnType<typeof setTimeout>
     let isMounted = true
@@ -71,7 +69,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     const startChecking = () => {
       checkInterval = setInterval(() => {
         console.log('[AuthContext] Checking if Keycloak is ready... keycloak.token:', keycloak.token ? 'exists' : 'undefined')
-        // Check if Keycloak has a token (meaning it's been initialized)
         if (keycloak.token !== undefined || keycloak.authenticated) {
           clearInterval(checkInterval)
           clearTimeout(fallbackTimer)
@@ -82,7 +79,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         }
       }, 100)
 
-      // Fallback: if Keycloak doesn't report ready within 5 seconds, update anyway
       fallbackTimer = setTimeout(() => {
         clearInterval(checkInterval)
         console.log('[AuthContext] Keycloak fallback timer triggered after 5 seconds')
@@ -102,19 +98,14 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   }, [updateAuthState])
 
   useEffect(() => {
-    // Set up periodic check to refresh auth state when token is about to expire
-    // This ensures the auth state stays in sync with Keycloak token status
     const tokenRefreshInterval = setInterval(() => {
       try {
         if (keycloak.authenticated && keycloak.isTokenExpired && keycloak.isTokenExpired(5)) {
-          // Token is expiring soon, try to refresh it
           keycloak.updateToken(5)
             .then(() => {
-              console.log('[AuthContext] Token refreshed, updating auth state')
               updateAuthState()
             })
             .catch((err) => {
-              console.log('[AuthContext] Token refresh failed:', err)
               setIsAuthenticated(false)
               setIsAdmin(false)
               setUserEmail(null)
