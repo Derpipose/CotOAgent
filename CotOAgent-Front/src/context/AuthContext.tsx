@@ -105,7 +105,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
             .then(() => {
               updateAuthState()
             })
-            .catch((err) => {
+            .catch(() => {
               setIsAuthenticated(false)
               setIsAdmin(false)
               setUserEmail(null)

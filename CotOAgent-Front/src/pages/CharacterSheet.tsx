@@ -1,11 +1,18 @@
-import { useState } from 'react';
-import type { CharacterDto } from '../DTOS/Character.Dto';
-import { useAuth } from '../context/useAuth';
-import { useQueryApi } from '../hooks/useQueryApi';
-import { useToast } from '../context/ToastContext';
-import { apiCall, buildApiUrl } from '../utils/api';
-import { PageHeader } from '../components/PageHeader';
-import { ContentCard } from '../components/ContentCard';
+import { useState } from 'react'
+import type { CharacterDto } from '../DTOS/Character.Dto'
+import { useAuth } from '../context/useAuth'
+import { useQueryApi } from '../hooks/useQueryApi'
+import { useToast } from '../context/ToastContext'
+import { apiCall, buildApiUrl } from '../utils/api'
+import { PageHeader } from '../components/PageHeader'
+import { ContentCard } from '../components/ContentCard'
+import {
+  BasicInfoSection,
+  AbilitiesSection,
+  ActionButtonsSection,
+} from '../components/CharacterSheet'
+
+type StatKey = keyof CharacterDto['Stats']
 
 export default function CharacterSheet() {
   const { userEmail } = useAuth();
@@ -40,27 +47,27 @@ export default function CharacterSheet() {
 
   const loading = classesLoading || racesLoading;
 
-  const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setCharacter({ ...character, Name: e.target.value });
-  };
+  const handleNameChange = (name: string) => {
+    setCharacter({ ...character, Name: name })
+  }
 
-  const handleClassChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    setCharacter({ ...character, Class: e.target.value });
-  };
+  const handleClassChange = (cls: string) => {
+    setCharacter({ ...character, Class: cls })
+  }
 
-  const handleRaceChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    setCharacter({ ...character, Race: e.target.value });
-  };
+  const handleRaceChange = (race: string) => {
+    setCharacter({ ...character, Race: race })
+  }
 
-  const handleStatChange = (statName: keyof typeof character.Stats, value: number) => {
+  const handleStatChange = (statName: StatKey, value: number) => {
     setCharacter({
       ...character,
       Stats: {
         ...character.Stats,
         [statName]: value,
       },
-    });
-  };
+    })
+  }
 
   const generateRandomStat = async (statName: keyof typeof character.Stats) => {
     try {
@@ -181,180 +188,27 @@ export default function CharacterSheet() {
       <ContentCard variant="elevated">
         <h2 className="hidden">Character Details</h2>
         
-        {/* Basic Character Info */}
-        <div className="mb-8">
-          <h3 className="section-header">Basic Information</h3>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div className="input-group">
-              <label className="block text-sm font-semibold text-gray-700 mb-2">Character Name</label>
-              <input
-                type="text"
-                value={character.Name}
-                onChange={handleNameChange}
-                placeholder="Enter character name"
-                className="input-large"
-              />
-            </div>
-            <div className="input-group">
-              <label className="block text-sm font-semibold text-gray-700 mb-2">Class</label>
-              <select
-                value={character.Class}
-                onChange={handleClassChange}
-                className="select-base"
-                disabled={loading}
-              >
-                <option value="">Select a class</option>
-                {classes.map((cls) => (
-                  <option key={cls} value={cls}>
-                    {cls}
-                  </option>
-                ))}
-              </select>
-            </div>
-            <div className="input-group">
-              <label className="block text-sm font-semibold text-gray-700 mb-2">Race</label>
-              <select
-                value={character.Race}
-                onChange={handleRaceChange}
-                className="select-base"
-                disabled={loading}
-              >
-                <option value="">Select a race</option>
-                {races.map((race) => (
-                  <option key={race} value={race}>
-                    {race}
-                  </option>
-                ))}
-              </select>
-            </div>
-          </div>
-        </div>
+        <BasicInfoSection
+          character={character}
+          loading={loading}
+          classes={classes}
+          races={races}
+          onNameChange={handleNameChange}
+          onClassChange={handleClassChange}
+          onRaceChange={handleRaceChange}
+        />
 
-        {/* Character Stats */}
-        <div className="mb-8">
-          <h3 className="section-header">Abilities</h3>
-          <div className="grid-stats">
-            <div className="stat-box-modern">
-              <label className="stat-label-modern">Strength</label>
-              <input
-                type="number"
-                min="10"
-                max="18"
-                value={character.Stats.Strength}
-                onChange={(e) => handleStatChange('Strength', parseInt(e.target.value) || 10)}
-                className="stat-input"
-              />
-              <button 
-                onClick={() => generateRandomStat('Strength')}
-                className="stat-button-modern"
-              >
-                Random
-              </button>
-            </div>
-            <div className="stat-box-modern">
-              <label className="stat-label-modern">Dexterity</label>
-              <input
-                type="number"
-                min="10"
-                max="18"
-                value={character.Stats.Dexterity}
-                onChange={(e) => handleStatChange('Dexterity', parseInt(e.target.value) || 10)}
-                className="stat-input"
-              />
-              <button 
-                onClick={() => generateRandomStat('Dexterity')}
-                className="stat-button-modern"
-              >
-                Random
-              </button>
-            </div>
-            <div className="stat-box-modern">
-              <label className="stat-label-modern">Constitution</label>
-              <input
-                type="number"
-                min="10"
-                max="18"
-                value={character.Stats.Constitution}
-                onChange={(e) => handleStatChange('Constitution', parseInt(e.target.value) || 10)}
-                className="stat-input"
-              />
-              <button 
-                onClick={() => generateRandomStat('Constitution')}
-                className="stat-button-modern"
-              >
-                Random
-              </button>
-            </div>
-            <div className="stat-box-modern">
-              <label className="stat-label-modern">Intelligence</label>
-              <input
-                type="number"
-                min="10"
-                max="18"
-                value={character.Stats.Intelligence}
-                onChange={(e) => handleStatChange('Intelligence', parseInt(e.target.value) || 10)}
-                className="stat-input"
-              />
-              <button 
-                onClick={() => generateRandomStat('Intelligence')}
-                className="stat-button-modern"
-              >
-                Random
-              </button>
-            </div>
-            <div className="stat-box-modern">
-              <label className="stat-label-modern">Wisdom</label>
-              <input
-                type="number"
-                min="10"
-                max="18"
-                value={character.Stats.Wisdom}
-                onChange={(e) => handleStatChange('Wisdom', parseInt(e.target.value) || 10)}
-                className="stat-input"
-              />
-              <button 
-                onClick={() => generateRandomStat('Wisdom')}
-                className="stat-button-modern"
-              >
-                Random
-              </button>
-            </div>
-            <div className="stat-box-modern">
-              <label className="stat-label-modern">Charisma</label>
-              <input
-                type="number"
-                min="10"
-                max="18"
-                value={character.Stats.Charisma}
-                onChange={(e) => handleStatChange('Charisma', parseInt(e.target.value) || 10)}
-                className="stat-input"
-              />
-              <button 
-                onClick={() => generateRandomStat('Charisma')}
-                className="stat-button-modern"
-              >
-                Random
-              </button>
-            </div>
-          </div>
-        </div>
+        <AbilitiesSection
+          character={character}
+          onStatChange={handleStatChange}
+          onGenerateRandomStat={generateRandomStat}
+        />
 
-        {/* Action Buttons */}
-        <div className="btn-container-row">
-          <button 
-            onClick={saveCharacterToLocalStorage}
-            className="flex-1 btn-primary"
-          >
-            Save Character Locally
-          </button>
-          <button 
-            onClick={submitCharacterForApproval}
-            className="flex-1 btn-primary disabled:opacity-60 disabled:cursor-not-allowed"
-            disabled={submitting}
-          >
-            {submitting ? 'Submitting...' : 'Submit for Approval'}
-          </button>
-        </div>
+        <ActionButtonsSection
+          submitting={submitting}
+          onSaveLocally={saveCharacterToLocalStorage}
+          onSubmitForApproval={submitCharacterForApproval}
+        />
       </ContentCard>
     </div>
   )
