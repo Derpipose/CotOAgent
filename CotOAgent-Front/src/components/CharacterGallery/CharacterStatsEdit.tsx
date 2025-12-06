@@ -19,7 +19,7 @@ export default function CharacterStatsEdit({
 }: CharacterStatsEditProps) {
   return (
     <div className="grid-stats">
-      <div className="flex flex-col gap-2">
+      <div className="character-stats-edit-field">
         <label className="stat-label">STR</label>
         <input
           type="number"
@@ -30,7 +30,7 @@ export default function CharacterStatsEdit({
           max="20"
         />
       </div>
-      <div className="flex flex-col gap-2">
+      <div className="character-stats-edit-field">
         <label className="stat-label">DEX</label>
         <input
           type="number"
@@ -41,7 +41,7 @@ export default function CharacterStatsEdit({
           max="20"
         />
       </div>
-      <div className="flex flex-col gap-2">
+      <div className="character-stats-edit-field">
         <label className="stat-label">CON</label>
         <input
           type="number"
@@ -52,7 +52,7 @@ export default function CharacterStatsEdit({
           max="20"
         />
       </div>
-      <div className="flex flex-col gap-2">
+      <div className="character-stats-edit-field">
         <label className="stat-label">INT</label>
         <input
           type="number"
@@ -63,7 +63,7 @@ export default function CharacterStatsEdit({
           max="20"
         />
       </div>
-      <div className="flex flex-col gap-2">
+      <div className="character-stats-edit-field">
         <label className="stat-label">WIS</label>
         <input
           type="number"
@@ -74,7 +74,7 @@ export default function CharacterStatsEdit({
           max="20"
         />
       </div>
-      <div className="flex flex-col gap-2">
+      <div className="character-stats-edit-field">
         <label className="stat-label">CHA</label>
         <input
           type="number"
