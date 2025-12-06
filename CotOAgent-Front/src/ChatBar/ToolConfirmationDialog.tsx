@@ -34,7 +34,7 @@ export const ToolConfirmationDialog: React.FC<ToolConfirmationDialogProps> = ({
 
   const renderContent = () => {
     const toolName = pendingTool.name as string
-    const params = (pendingTool?.parameters as any)?.properties
+    const params = ((pendingTool?.parameters as unknown) as { properties?: Record<string, unknown> })?.properties as Record<string, unknown> | undefined
     
     // Debug logging
     console.log('[ToolConfirmationDialog] Tool:', toolName)
@@ -47,7 +47,7 @@ export const ToolConfirmationDialog: React.FC<ToolConfirmationDialogProps> = ({
           <p>
             The AI is suggesting to assign the race{' '}
             <span className="font-semibold text-blue-400">
-              {params?.race_name || 'unknown'}
+              {(params?.race_name as string) || 'unknown'}
             </span>{' '}
             to your character. Do you approve?
           </p>
@@ -58,7 +58,7 @@ export const ToolConfirmationDialog: React.FC<ToolConfirmationDialogProps> = ({
           <p>
             The AI is suggesting to assign the class{' '}
             <span className="font-semibold text-blue-400">
-              {params?.class_name || 'unknown'}
+              {(params?.class_name as string) || 'unknown'}
             </span>{' '}
             to your character. Do you approve?
           </p>
@@ -70,7 +70,7 @@ export const ToolConfirmationDialog: React.FC<ToolConfirmationDialogProps> = ({
             <p className="mb-3">The AI is suggesting the following stats for your character:</p>
             <div className="bg-gray-900 rounded p-3 font-mono text-sm text-gray-300">
               {(() => {
-                const stats = params?.stats
+                const stats = params?.stats as Record<string, number> | undefined
                 if (stats) {
                   return (
                     <div className="space-y-1">

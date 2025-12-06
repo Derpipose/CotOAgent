@@ -8,6 +8,7 @@ export const handleApiError = async (response: Response, context: string): Promi
   try {
     errorData = await response.json()
   } catch {
+    // Continue with empty errorData if parsing fails
   }
 
   const errorMessage =
