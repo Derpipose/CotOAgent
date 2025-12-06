@@ -81,7 +81,26 @@ export async function callAI(
         '[ChatService] Parse error:',
         parseError instanceof Error ? parseError.message : String(parseError)
       );
-      throw new Error(`AI service returned invalid JSON: ${response.status}`);
+      
+      // Try to fix truncated JSON by closing any open structures
+      try {
+        const fixedText = responseText.trim();
+        // Count open and close braces
+        const openBraces = (fixedText.match(/{/g) || []).length;
+        const closeBraces = (fixedText.match(/}/g) || []).length;
+        
+        if (openBraces > closeBraces) {
+          // Try to close the JSON
+          const fixedResponse = fixedText + '}'.repeat(openBraces - closeBraces);
+          console.log('[ChatService] Attempting to fix truncated JSON');
+          data = JSON.parse(fixedResponse) as AIResponse;
+          console.log('[ChatService] Successfully recovered from truncated response');
+        } else {
+          throw parseError;
+        }
+      } catch {
+        throw new Error(`AI service returned invalid JSON: ${response.status}`);
+      }
     }
 
     if (!data.choices || data.choices.length === 0) {

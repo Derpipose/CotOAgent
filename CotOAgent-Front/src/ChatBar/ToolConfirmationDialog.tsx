@@ -35,11 +35,6 @@ export const ToolConfirmationDialog: React.FC<ToolConfirmationDialogProps> = ({
   const renderContent = () => {
     const toolName = pendingTool.name as string
     const params = ((pendingTool?.parameters as unknown) as { properties?: Record<string, unknown> })?.properties as Record<string, unknown> | undefined
-    
-    // Debug logging
-    console.log('[ToolConfirmationDialog] Tool:', toolName)
-    console.log('[ToolConfirmationDialog] Params:', params)
-    console.log('[ToolConfirmationDialog] Full tool:', pendingTool)
 
     switch (toolName) {
       case 'assign_character_race':
@@ -68,31 +63,31 @@ export const ToolConfirmationDialog: React.FC<ToolConfirmationDialogProps> = ({
         return (
           <div>
             <p className="mb-3">The AI is suggesting the following stats for your character:</p>
-            <div className="bg-gray-900 rounded p-3 font-mono text-sm text-gray-300">
+            <div className="tool-confirmation-stats-display">
               {(() => {
                 const stats = params?.stats as Record<string, number> | undefined
                 if (stats) {
                   return (
-                    <div className="space-y-1">
+                    <div className="tool-confirmation-stats-row">
                       <div>
-                        Strength: <span className="text-blue-400">{stats.Strength || 'N/A'}</span>
+                        Strength: <span className="tool-confirmation-stat-label">{stats.Strength || 'N/A'}</span>
                       </div>
                       <div>
-                        Dexterity: <span className="text-blue-400">{stats.Dexterity || 'N/A'}</span>
+                        Dexterity: <span className="tool-confirmation-stat-label">{stats.Dexterity || 'N/A'}</span>
                       </div>
                       <div>
                         Constitution:{' '}
-                        <span className="text-blue-400">{stats.Constitution || 'N/A'}</span>
+                        <span className="tool-confirmation-stat-label">{stats.Constitution || 'N/A'}</span>
                       </div>
                       <div>
                         Intelligence:{' '}
-                        <span className="text-blue-400">{stats.Intelligence || 'N/A'}</span>
+                        <span className="tool-confirmation-stat-label">{stats.Intelligence || 'N/A'}</span>
                       </div>
                       <div>
-                        Wisdom: <span className="text-blue-400">{stats.Wisdom || 'N/A'}</span>
+                        Wisdom: <span className="tool-confirmation-stat-label">{stats.Wisdom || 'N/A'}</span>
                       </div>
                       <div>
-                        Charisma: <span className="text-blue-400">{stats.Charisma || 'N/A'}</span>
+                        Charisma: <span className="tool-confirmation-stat-label">{stats.Charisma || 'N/A'}</span>
                       </div>
                     </div>
                   )
@@ -119,22 +114,22 @@ export const ToolConfirmationDialog: React.FC<ToolConfirmationDialogProps> = ({
   }
 
   return (
-    <div className="fixed inset-0 bg-opacity-50 flex items-center justify-center z-50">
-      <div className="bg-gray-800 rounded-lg p-6 max-w-md mx-4 border border-gray-700">
-        <h3 className="text-xl font-semibold text-gray-100 mb-4">{getTitle()}</h3>
+    <div className="tool-confirmation-overlay">
+      <div className="tool-confirmation-dialog">
+        <h3 className="tool-confirmation-title">{getTitle()}</h3>
 
-        <div className="mb-6 text-gray-300">{renderContent()}</div>
+        <div className="tool-confirmation-content">{renderContent()}</div>
 
-        <div className="flex gap-3 justify-end">
+        <div className="tool-confirmation-button-group">
           <button
             onClick={onDeny}
-            className="px-4 py-2 rounded bg-gray-700 hover:bg-gray-600 text-gray-100 font-medium transition-colors"
+            className="tool-confirmation-button-deny"
           >
             Deny
           </button>
           <button
             onClick={onConfirm}
-            className="px-4 py-2 rounded bg-blue-600 hover:bg-blue-500 text-white font-medium transition-colors"
+            className="tool-confirmation-button-confirm"
           >
             Confirm
           </button>

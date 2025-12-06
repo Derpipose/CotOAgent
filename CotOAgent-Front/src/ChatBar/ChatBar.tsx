@@ -59,22 +59,21 @@ const ChatBar = () => {
   }, [chatState.messages])
 
   // Monitor for pending tool confirmations
-  // The `showConfirmation` dependency is safe here because the `!showConfirmation` check
-  // prevents multiple dialogs and the interval continues running regardless
   useEffect(() => {
-    const checkForPendingConfirmation = () => {
-      const pending = (window as unknown as Record<string, unknown>).__pendingToolConfirmation
-      if (pending && !showConfirmation) {
-        setPendingTool(pending as Record<string, unknown>)
+    const handlePendingConfirmation = (event: CustomEvent) => {
+      const pending = event.detail
+      if (pending) {
+        setPendingTool(pending)
         setShowConfirmation(true)
-        ;(window as unknown as Record<string, unknown>).__pendingToolConfirmation = null
       }
     }
 
-    const interval = setInterval(checkForPendingConfirmation, 100)
+    window.addEventListener('pendingToolConfirmation', handlePendingConfirmation as EventListener)
 
-    return () => clearInterval(interval)
-  }, [showConfirmation])
+    return () => {
+      window.removeEventListener('pendingToolConfirmation', handlePendingConfirmation as EventListener)
+    }
+  }, [])
 
   useEffect(() => {
     if (!userEmail) {

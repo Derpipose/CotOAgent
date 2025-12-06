@@ -35,9 +35,9 @@ export default function CharacterCard({
     <div className="card-base hover:translate-y-[-8px] hover:shadow-2xl flex flex-col">
       <div className="p-6 bg-blue-200 text-slate-700 flex justify-between items-start gap-4">
         <h2 className="text-2xl font-bold m-0 flex-1 break-words">{character.name}</h2>
-        <div className="flex gap-2 flex-wrap justify-end">
+        <div className="flex gap-2 flex-shrink-0">
           {character.approval_status && (
-            <span className={`px-3 py-1 rounded-full text-xs font-bold uppercase whitespace-nowrap ${
+            <span className={`w-32 px-1 py-1 rounded-full text-xs font-bold whitespace-normal text-center flex-shrink-0 ${
               character.approval_status.toLowerCase() === 'approved' ? 'bg-green-100 text-green-700' :
               character.approval_status.toLowerCase() === 'pending' ? 'bg-amber-100 text-amber-700' :
               'bg-red-100 text-red-700'

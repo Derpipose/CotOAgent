@@ -1,7 +1,7 @@
 export class CharacterDto {
   Name!: string;
-  Class!: string;
-  Race!: string;
+  Class?: string;
+  Race?: string;
   Stats!: {
     Strength: number;
     Dexterity: number;

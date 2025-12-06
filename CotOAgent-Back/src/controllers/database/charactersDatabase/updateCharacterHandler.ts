@@ -23,8 +23,10 @@ export async function updateCharacterHandler(req: Request, res: Response): Promi
 
   validateRequest(userEmail, 'Missing user email in header', 400);
   validateRequest(!isNaN(characterId), 'Invalid character ID', 400);
-  validateRequest(name && className && race, 'Missing required fields: name, class, race', 400);
-  validateRequest(stats && typeof stats.Strength === 'number', 'Invalid stats format', 400);
+  validateRequest(name, 'Character name is required', 400);
+  if (stats) {
+    validateRequest(typeof stats.Strength === 'number', 'Invalid stats format', 400);
+  }
 
   const client = await pool.connect();
 
@@ -48,47 +50,71 @@ export async function updateCharacterHandler(req: Request, res: Response): Promi
       404
     );
 
-    const { classification: classClassification, classNameValue } =
-      await getClassDetails(className);
+    let classClassification: string | null | undefined;
+    let classNameValue: string | null | undefined;
+    let raceCampaign: string | null | undefined;
+    let raceNameValue: string | null | undefined;
 
-    const { campaign: raceCampaign, raceNameValue } = await getRaceDetails(race);
+    if (className) {
+      const classDetails = await getClassDetails(className);
+      classClassification = classDetails.classification;
+      classNameValue = classDetails.classNameValue;
+    }
+
+    if (race) {
+      const raceDetails = await getRaceDetails(race);
+      raceCampaign = raceDetails.campaign;
+      raceNameValue = raceDetails.raceNameValue;
+    }
+
+    // Build dynamic update query
+    const updates: string[] = ['name = $1'];
+    const params: unknown[] = [name];
+    let paramIndex = 2;
+
+    if (classNameValue !== undefined) {
+      updates.push(`class_classification = $${paramIndex++}`);
+      updates.push(`class_name = $${paramIndex++}`);
+      params.push(classClassification, classNameValue);
+    }
+
+    if (raceNameValue !== undefined) {
+      updates.push(`race_campaign = $${paramIndex++}`);
+      updates.push(`race_name = $${paramIndex++}`);
+      params.push(raceCampaign, raceNameValue);
+    }
+
+    if (stats) {
+      updates.push(`strength = $${paramIndex++}`);
+      updates.push(`dexterity = $${paramIndex++}`);
+      updates.push(`constitution = $${paramIndex++}`);
+      updates.push(`intelligence = $${paramIndex++}`);
+      updates.push(`wisdom = $${paramIndex++}`);
+      updates.push(`charisma = $${paramIndex++}`);
+      params.push(
+        stats.Strength,
+        stats.Dexterity,
+        stats.Constitution,
+        stats.Intelligence,
+        stats.Wisdom,
+        stats.Charisma
+      );
+    }
+
+    updates.push(`revised = true`);
+    updates.push(`last_modified = CURRENT_TIMESTAMP`);
+    updates.push(`approval_status = 'Revised'`);
+
+    params.push(characterId, userId);
 
     const updateCharacterQuery = `
       UPDATE characters
-      SET 
-        name = $1,
-        class_classification = $2,
-        class_name = $3,
-        race_campaign = $4,
-        race_name = $5,
-        strength = $6,
-        dexterity = $7,
-        constitution = $8,
-        intelligence = $9,
-        wisdom = $10,
-        charisma = $11,
-        revised = true,
-        last_modified = CURRENT_TIMESTAMP,
-        approval_status = 'Revised'
-      WHERE id = $12 AND user_id = $13
+      SET ${updates.join(', ')}
+      WHERE id = $${paramIndex++} AND user_id = $${paramIndex++}
       RETURNING id
     `;
 
-    const updateResult = await client.query(updateCharacterQuery, [
-      name,
-      classClassification,
-      classNameValue,
-      raceCampaign,
-      raceNameValue,
-      stats.Strength,
-      stats.Dexterity,
-      stats.Constitution,
-      stats.Intelligence,
-      stats.Wisdom,
-      stats.Charisma,
-      characterId,
-      userId,
-    ]);
+    const updateResult = await client.query(updateCharacterQuery, params);
 
     validateRequest(updateResult.rows.length > 0, 'Failed to update character', 500);
 

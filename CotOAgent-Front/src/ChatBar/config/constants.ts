@@ -26,7 +26,7 @@ export const MESSAGES_CONFIG = {
 } as const
 
 export const CHAT_CONFIG = {
-  SEND_BUTTON_IDLE: '→',
-  SEND_BUTTON_LOADING: '...',
+  SEND_BUTTON_IDLE: 'Send',
+  SEND_BUTTON_LOADING: 'Sent',
   PLACEHOLDER: 'Type your message...',
 } as const

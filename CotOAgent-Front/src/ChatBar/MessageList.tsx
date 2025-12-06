@@ -16,13 +16,13 @@ export const MessageList: React.FC<MessageListProps> = ({
   messagesEndRef,
 }) => {
   return (
-    <div className="flex-1 overflow-y-auto flex flex-col gap-3 pr-2 mb-2.5 min-h-0">
+    <div className="message-list-container">
       {messages.map((msg) => (
         <div
           key={`${msg.sender}-${msg.id}-${msg.createdAt}`}
-          className={`flex flex-col gap-1 ${msg.sender === 'user' ? 'items-end' : 'items-start'}`}
+          className={`message-item-container ${msg.sender === 'user' ? 'items-end' : 'items-start'}`}
         >
-          <div className="text-xs font-semibold text-slate-200 uppercase tracking-widest">
+          <div className="message-sender-label">
             {msg.sender === 'user'
               ? 'You'
               : msg.sender === 'system'
@@ -30,10 +30,10 @@ export const MessageList: React.FC<MessageListProps> = ({
                 : 'Chronicler'}
           </div>
           {msg.sender === 'user' ? (
-            <div className="max-w-[90%] p-2.5 rounded-lg bg-indigo-200 text-slate-700 text-sm break-words">{msg.message}</div>
+            <div className="message-bubble-user">{msg.message}</div>
           ) : (
             <div
-              className="max-w-[90%] p-2.5 rounded-lg bg-white text-slate-700 text-sm prose prose-sm border border-gray-200"
+              className="message-bubble-ai"
               dangerouslySetInnerHTML={{
                 __html: renderMarkdown(msg.message),
               }}
@@ -42,9 +42,9 @@ export const MessageList: React.FC<MessageListProps> = ({
         </div>
       ))}
       {isLoading && (
-        <div className="flex flex-col gap-1 items-start">
-          <div className="text-xs font-semibold text-slate-300 uppercase tracking-widest">Chronicler</div>
-          <div className="max-w-[90%] p-2.5 rounded-lg bg-slate-300 text-slate-700 text-sm">{loadingDots}</div>
+        <div className="message-item-container items-start">
+          <div className="message-sender-label">Chronicler</div>
+          <div className="message-bubble-loading">{loadingDots}</div>
         </div>
       )}
       <div ref={messagesEndRef} />

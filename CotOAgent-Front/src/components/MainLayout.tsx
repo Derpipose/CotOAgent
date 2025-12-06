@@ -59,7 +59,7 @@ const MainLayout = ({ children }: LayoutProps) => {
             <div className="modal-content rounded-t-lg h-[80vh] flex flex-col relative">
               <button
                 onClick={() => setIsChatOpen(false)}
-                className="absolute top-4 right-4 z-50 text-white hover:text-gray-300 transition-colors"
+                className="absolute top-20 right-4 z-50 bg-blue-100 text-slate-500 hover:bg-blue-200 transition-colors rounded-lg p-2"
                 aria-label="Close chat"
               >
                 ✕

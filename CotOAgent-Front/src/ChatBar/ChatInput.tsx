@@ -17,10 +17,10 @@ export const ChatInput: React.FC<ChatInputProps> = ({
   onKeyDown,
 }) => {
   return (
-    <div className="flex flex-col gap-2 flex-shrink-0">
-      <div className="flex gap-2 items-end">
+    <div className="chat-input-container">
+      <div className="chat-input-wrapper">
         <textarea
-          className="flex-1 p-3 rounded-lg bg-white text-slate-700 placeholder-gray-400 border border-gray-300 focus:border-gray-400 focus:outline-none resize-none min-h-24"
+          className="chat-input-textarea"
           placeholder={CHAT_CONFIG.PLACEHOLDER}
           value={inputValue}
           onChange={(e) => onInputChange(e.target.value)}
@@ -29,7 +29,7 @@ export const ChatInput: React.FC<ChatInputProps> = ({
           rows={3}
         />
         <button
-          className="px-4 py-3 rounded-lg bg-indigo-200 hover:bg-indigo-300 text-slate-600 font-semibold border border-indigo-300 cursor-pointer transition-colors disabled:opacity-50 disabled:cursor-not-allowed self-end"
+          className="chat-input-send-button"
           onClick={onSend}
           disabled={!inputValue.trim() || isLoading}
           title="Send message (Enter + Shift for new line)"

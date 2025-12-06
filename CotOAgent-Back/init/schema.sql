@@ -65,7 +65,7 @@ CREATE TABLE IF NOT EXISTS characters (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     last_modified TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     feedback TEXT,
-    approval_status VARCHAR(50) DEFAULT 'pending',
+    approval_status VARCHAR(50) DEFAULT 'Pending',
     revised BOOLEAN DEFAULT FALSE
 );
 

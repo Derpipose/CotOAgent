@@ -1,5 +1,5 @@
 import type { ConversationResponse, MessageResponse } from './types'
-import { executeTool, tools } from './ToolCalls'
+import { executeTool, tools } from './tools'
 import { handleApiError } from './utils/apiErrorHandler'
 import { API_CONFIG } from './config/constants'
 
@@ -184,8 +184,10 @@ export const requestUserConfirmation = async (
 ): Promise<boolean> => {
   return new Promise((resolve) => {
     ;(window as unknown as Record<string, (val: boolean) => void>).__toolConfirmationResolver = resolve
-    ;(window as unknown as Record<string, Record<string, unknown>>).__pendingToolConfirmation = tool
-    ;(window as unknown as Record<string, null>).__deniedToolName = null
+    
+    // Dispatch custom event for tool confirmation
+    const event = new CustomEvent('pendingToolConfirmation', { detail: tool })
+    window.dispatchEvent(event)
   })
 }
 
