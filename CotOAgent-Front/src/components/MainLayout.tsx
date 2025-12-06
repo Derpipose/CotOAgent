@@ -14,11 +14,11 @@ const MainLayout = ({ children }: LayoutProps) => {
   const [isChatOpen, setIsChatOpen] = useState(false);
 
   return (  
-    <div className="flex flex-col h-screen w-screen lg:flex-row">
+    <div className="main-layout-container">
       <SideNavBar />
-      <div className="flex-1 flex flex-col lg:flex-row overflow-hidden">
-        <div className="flex-1 overflow-auto">
-          <div className="page-container bg-gradient-to-br from-blue-50 to-blue-100 min-h-full">
+      <div className="main-layout-content">
+        <div className="main-layout-page">
+          <div className="main-layout-page-inner">
             <div className="container-max-width">
               {children}
             </div>
@@ -27,7 +27,7 @@ const MainLayout = ({ children }: LayoutProps) => {
         
         {/* Desktop ChatBar */}
         {showChatBar && (
-          <div className="hidden lg:flex w-[400px] h-full border-l border-gray-700 bg-slate-800 flex-col overflow-hidden">
+          <div className="main-layout-chatbar-desktop">
             <ChatBar />
           </div>
         )}
@@ -39,7 +39,7 @@ const MainLayout = ({ children }: LayoutProps) => {
           {/* Chat Toggle Button */}
           <button
             onClick={() => setIsChatOpen(!isChatOpen)}
-            className="lg:hidden fixed bottom-6 right-6 z-40 btn-primary-gradient w-14 h-14 flex-center rounded-full shadow-lg"
+            className="main-layout-chat-toggle"
             aria-label="Toggle chat"
           >
             💬
@@ -47,24 +47,24 @@ const MainLayout = ({ children }: LayoutProps) => {
 
           {/* Chat Modal Overlay */}
           {isChatOpen && (
-            <div className="lg:hidden modal-overlay" />
+            <div className="main-layout-modal-overlay" />
           )}
 
           {/* Chat Modal - Always mounted, visibility controlled by opacity */}
           <div
-            className={`lg:hidden fixed inset-0 z-50 flex flex-col justify-end transition-opacity duration-300 ${
+            className={`main-layout-modal ${
               isChatOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
             }`}
           >
-            <div className="modal-content rounded-t-lg h-[80vh] flex flex-col relative">
+            <div className="main-layout-modal-content">
               <button
                 onClick={() => setIsChatOpen(false)}
-                className="absolute top-20 right-4 z-50 bg-blue-100 text-slate-500 hover:bg-blue-200 transition-colors rounded-lg p-2"
+                className="main-layout-modal-close-button"
                 aria-label="Close chat"
               >
                 ✕
               </button>
-              <div className="flex-1 overflow-hidden flex flex-col">
+              <div className="main-layout-modal-inner">
                 <ChatBar />
               </div>
             </div>

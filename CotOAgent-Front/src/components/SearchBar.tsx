@@ -32,43 +32,45 @@ export function SearchBar({
   };
 
   return (
-    <div className="mb-6">
-      <div className="bg-blue-200 rounded-lg shadow-md border border-gray-200 p-6">
-        <div className="flex flex-col md:flex-row gap-3 mb-4">
+    <div className="search-bar-container">
+      <div className="search-bar-box">
+        <div className="search-bar-inputs">
           <input
             type="text"
             value={searchQuery}
             onChange={(e) => onSearchQueryChange(e.target.value)}
             onKeyPress={handleKeyPress}
             placeholder={placeholder}
-            className="flex-1 px-4 py-2 border border-gray-300 rounded-lg bg-blue-50 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-colors"
+            className="search-bar-input"
             disabled={isSearching}
           />
-          <button
-            onClick={onSearch}
-            disabled={isSearching || !searchQuery.trim()}
-            className="btn-primary disabled:opacity-60 disabled:cursor-not-allowed"
-          >
-            {isSearching ? 'Searching...' : 'Search'}
-          </button>
-          {hasSearched && (
+          <div className="search-bar-button-group">
             <button
-              onClick={onClearSearch}
-              className="btn-secondary"
+              onClick={onSearch}
+              disabled={isSearching || !searchQuery.trim()}
+              className="btn-primary disabled:opacity-60 disabled:cursor-not-allowed"
             >
-              Clear
+              {isSearching ? 'Searching...' : 'Search'}
             </button>
-          )}
+            {hasSearched && (
+              <button
+                onClick={onClearSearch}
+                className="btn-secondary"
+              >
+                Clear
+              </button>
+            )}
+          </div>
         </div>
 
         {searchError && (
-          <div className="mb-3 p-3 bg-red-50 border border-red-200 rounded text-red-700 text-sm">
+          <div className="search-bar-error">
             {searchError}
           </div>
         )}
 
         {hasSearched && (
-          <div className="text-muted-sm">
+          <div className="search-bar-results">
             Found {resultsCount} result{resultsCount !== 1 ? 's' : ''}
           </div>
         )}

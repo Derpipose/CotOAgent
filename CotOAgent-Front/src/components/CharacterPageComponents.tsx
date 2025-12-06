@@ -11,9 +11,9 @@ interface CharacterPageHeaderProps {
 }
 
 export const CharacterPageHeader: React.FC<CharacterPageHeaderProps> = ({ characterCount }) => (
-  <div className="container-max-width mb-12 text-center">
-    <h1 className="text-4xl font-bold text-indigo-600 mb-2 -tracking-0.5">My Characters</h1>
-    <p className="text-lg text-slate-600">
+  <div className="character-page-header-container">
+    <h1 className="character-page-header-title">My Characters</h1>
+    <p className="character-page-header-subtitle">
       {characterCount > 0
         ? `You have ${characterCount} character${characterCount !== 1 ? 's' : ''}`
         : 'No characters yet'}
@@ -22,9 +22,9 @@ export const CharacterPageHeader: React.FC<CharacterPageHeaderProps> = ({ charac
 )
 
 export const CharacterPageLoading: React.FC = () => (
-  <div className="flex flex-col items-center justify-center min-h-96 gap-6">
-    <div className="w-12 h-12 border-4 border-gray-300 border-t-blue-500 rounded-full animate-spin"></div>
-    <p className="text-lg text-gray-600">Loading your characters...</p>
+  <div className="character-page-loading">
+    <div className="character-page-loading-spinner"></div>
+    <p className="character-page-loading-text">Loading your characters...</p>
   </div>
 )
 
