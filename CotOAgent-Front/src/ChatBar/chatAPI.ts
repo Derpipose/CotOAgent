@@ -170,8 +170,11 @@ export async function sendAiMessageWithLoop(
 
   // Handle tool calls if present in the response
   if (data.toolCall && Array.isArray(data.toolCall) && data.toolCall.length > 0) {
+    console.log('[ChatAPI] Processing tool calls:', data.toolCall.map((t: any) => ({ name: t.name, id: t.id })))
+    
     // Collect all tool results from this batch
     const results: unknown[] = []
+    const confirmationTools = ['assign_character_race', 'assign_character_class', 'assign_character_stats', 'submit_character_for_approval']
     
     // Save tool calls and execute them
     for (const tool of data.toolCall) {
@@ -181,6 +184,26 @@ export async function sendAiMessageWithLoop(
       // Save tool call to database
       await saveToolCall(conversationId, userEmail, toolId, tool)
       
+      // Check if this is a tool that requires user confirmation
+      console.log('[ChatAPI] Checking tool:', tool.name, 'Needs confirmation?', confirmationTools.includes(tool.name))
+      
+      if (confirmationTools.includes(tool.name)) {
+        // Request user confirmation and pause the agentic loop
+        console.log('[ChatAPI] Requesting confirmation for:', tool.name)
+        const userConfirmed = await requestUserConfirmation(tool)
+        console.log('[ChatAPI] Confirmation result:', userConfirmed)
+        
+        if (!userConfirmed) {
+          // User denied the assignment - save the denial and return immediately
+          // Don't execute the tool, just return to trigger resumeAfterDenial in the component
+          return {
+            userMessage: { id: 0, sender: 'user', message: '', createdAt: new Date().toISOString() },
+            aiResponse: { id: 0, sender: 'system', message: 'CONFIRMATION_DENIED', createdAt: new Date().toISOString() }
+          }
+        }
+        // If confirmed, continue with execution below
+      }
+
       // Execute the tool with the toolId
       const result = await executeTool(
         tool.name,
@@ -204,4 +227,53 @@ export async function sendAiMessageWithLoop(
 
   // No tool call, return the final response
   return data
+}
+
+/**
+ * Hold the conversation and request user confirmation for a tool call
+ * @param tool - The tool call object containing name and parameters
+ * @returns Promise with user's confirmation decision
+ */
+export const requestUserConfirmation = async (
+  tool: Record<string, unknown>
+): Promise<boolean> => {
+  return new Promise((resolve) => {
+    // This will be called by the component that uses chatAPI
+    // The component will handle showing the UI and resolving this promise
+    // Store the resolver and tool for later use
+    ;(window as any).__toolConfirmationResolver = resolve
+    ;(window as any).__pendingToolConfirmation = tool
+    ;(window as any).__deniedToolName = null // Reset when requesting new confirmation
+  })
+}
+
+/**
+ * Resume the agentic loop after user denies a tool call
+ * @param conversationId - The conversation ID
+ * @param userEmail - The email of the user
+ * @param deniedToolName - The name of the tool that was denied
+ * @returns Promise with the AI's response
+ */
+export const resumeAfterDenial = async (
+  conversationId: string,
+  userEmail: string,
+  deniedToolName: string = 'assignment'
+): Promise<MessageResponse> => {
+  // Create a dynamic message based on which tool was denied
+  const denialMessages: Record<string, string> = {
+    'assign_character_race': 'User denied the race assignment. Ask what they would like to do instead.',
+    'assign_character_class': 'User denied the class assignment. Ask what they would like to do instead.',
+    'assign_character_stats': 'User denied the stats assignment. Ask what they would like to do instead.',
+    'submit_character_for_approval': 'User denied submitting the character for approval. Ask what they would like to do instead.'
+  }
+  
+  const message = denialMessages[deniedToolName] || `User denied the ${deniedToolName}. Ask what they would like to do instead.`
+  
+  // Send a message back to the AI indicating the user denied the tool call
+  return await sendAiMessageWithLoop(
+    conversationId,
+    userEmail,
+    message,
+    []
+  )
 }

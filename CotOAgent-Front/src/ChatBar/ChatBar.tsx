@@ -1,11 +1,12 @@
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useAuth } from '../context/useAuth'
 import type { ChatMessage } from './types'
-import { initializeConversation, sendAiMessageWithLoop, saveUserMessage, isValidMessage } from './chatAPI'
+import { initializeConversation, sendAiMessageWithLoop, saveUserMessage, isValidMessage, resumeAfterDenial } from './chatAPI'
 import { useLoadingDots } from './useLoadingDots'
 import { useChatState } from './hooks/useChatState'
 import { MessageList } from './MessageList'
 import { ChatInput } from './ChatInput'
+import { ToolConfirmationDialog } from './ToolConfirmationDialog'
 import { MESSAGES_CONFIG, UI_CONFIG } from './config/constants'
 import { createLogger } from './utils/logger'
 
@@ -55,11 +56,32 @@ const ChatBar = () => {
   const chatState = useChatState()
   const loadingDots = useLoadingDots(chatState.isLoading)
   const messagesEndRef = useRef<HTMLDivElement>(null)
+  
+  // State for confirmation dialog
+  const [pendingTool, setPendingTool] = useState<Record<string, unknown> | null>(null)
+  const [showConfirmation, setShowConfirmation] = useState(false)
 
   // Auto-scroll to bottom when messages change
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
   }, [chatState.messages])
+
+  // Monitor for pending tool confirmations
+  useEffect(() => {
+    const checkForPendingConfirmation = () => {
+      const pending = (window as any).__pendingToolConfirmation
+      if (pending && !showConfirmation) {
+        setPendingTool(pending)
+        setShowConfirmation(true)
+        // Clear the window variable after we've captured it
+        ;(window as any).__pendingToolConfirmation = null
+      }
+    }
+
+    const interval = setInterval(checkForPendingConfirmation, 100)
+
+    return () => clearInterval(interval)
+  }, [])
 
   // Initialize chat on component mount
   // We intentionally only depend on userEmail and not chatState
@@ -118,7 +140,46 @@ const ChatBar = () => {
       // Get AI response (handles agentic loop with tool calls)
       const data = await sendAiMessageWithLoop(chatState.conversationId, userEmail || '', userMessage)
 
+      // Check if confirmation was denied
+      if (data.aiResponse.message === 'CONFIRMATION_DENIED') {
+        // Don't add the denial message to chat, just handle the dialog close
+        setShowConfirmation(false)
+        setPendingTool(null)
+        return
+      }
+
       // Update messages with AI response
+      chatState.setMessages((prev) => updateMessagesWithResponse(prev, data))
+    } finally {
+      chatState.setIsLoading(false)
+    }
+  }
+
+  const handleConfirmToolCall = () => {
+    // User approved the tool call
+    setShowConfirmation(false)
+    setPendingTool(null)
+    // Clean up window state
+    ;(window as any).__pendingToolConfirmation = null
+    ;(window as any).__toolConfirmationResolver?.(true)
+  }
+
+  const handleDenyToolCall = async () => {
+    // User denied the tool call
+    setShowConfirmation(false)
+    
+    // Get the tool name before clearing
+    const deniedToolName = pendingTool?.name as string || 'assignment'
+    
+    setPendingTool(null)
+    // Clean up window state
+    ;(window as any).__pendingToolConfirmation = null
+    ;(window as any).__toolConfirmationResolver?.(false)
+    
+    // Resume the conversation after denial
+    try {
+      chatState.setIsLoading(true)
+      const data = await resumeAfterDenial(chatState.conversationId || '', userEmail || '', deniedToolName)
       chatState.setMessages((prev) => updateMessagesWithResponse(prev, data))
     } finally {
       chatState.setIsLoading(false)
@@ -169,6 +230,13 @@ const ChatBar = () => {
           </>
         )}
       </div>
+
+      <ToolConfirmationDialog
+        isOpen={showConfirmation}
+        pendingTool={pendingTool}
+        onConfirm={handleConfirmToolCall}
+        onDeny={handleDenyToolCall}
+      />
     </aside>
   )
 }

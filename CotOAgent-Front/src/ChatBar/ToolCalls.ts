@@ -617,7 +617,7 @@ const executeAssignCharacterClass = async (
 
 const executeGetStatNumbers = async (toolId?: string) => {
   try {
-    const response = await fetch('/api/random/18/6', {
+    const response = await fetch('/api/random/8/6', {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
