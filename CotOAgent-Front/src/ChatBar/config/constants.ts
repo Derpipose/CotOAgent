@@ -13,9 +13,9 @@ export const UI_CONFIG = {
   SIDEBAR_WIDTH: '400px',
   HEADER_HEIGHT: 'auto',
   PADDING: 'p-5',
-  BORDER_COLOR: 'border-slate-700',
-  BG_COLOR: 'bg-slate-800',
-  TEXT_COLOR: 'text-gray-200',
+  BORDER_COLOR: 'border-slate-500',
+  BG_COLOR: 'bg-slate-500',
+  TEXT_COLOR: 'text-white',
 } as const
 
 export const MESSAGES_CONFIG = {

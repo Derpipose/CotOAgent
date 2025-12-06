@@ -26,6 +26,8 @@
     --color-text-secondary: theme('colors.slate.600');
     
     --color-bg-primary: theme('colors.white');
+    --color-bg-secondary: theme('colors.slate.400');
+    --color-bg-secondary-dark: theme('colors.slate.500');
     
     /* Typography */
     font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;

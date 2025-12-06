@@ -22,7 +22,7 @@ export const MessageList: React.FC<MessageListProps> = ({
           key={`${msg.sender}-${msg.id}-${msg.createdAt}`}
           className={`flex flex-col gap-1 ${msg.sender === 'user' ? 'items-end' : 'items-start'}`}
         >
-          <div className="text-xs font-semibold text-gray-400 uppercase tracking-widest">
+          <div className="text-xs font-semibold text-slate-200 uppercase tracking-widest">
             {msg.sender === 'user'
               ? 'You'
               : msg.sender === 'system'
@@ -30,10 +30,10 @@ export const MessageList: React.FC<MessageListProps> = ({
                 : 'Chronicler'}
           </div>
           {msg.sender === 'user' ? (
-            <div className="max-w-[90%] p-2.5 rounded-lg bg-blue-600 text-white text-sm break-words">{msg.message}</div>
+            <div className="max-w-[90%] p-2.5 rounded-lg bg-indigo-200 text-slate-700 text-sm break-words">{msg.message}</div>
           ) : (
             <div
-              className="max-w-[90%] p-2.5 rounded-lg bg-slate-700 text-gray-100 text-sm prose prose-sm prose-invert"
+              className="max-w-[90%] p-2.5 rounded-lg bg-white text-slate-700 text-sm prose prose-sm border border-gray-200"
               dangerouslySetInnerHTML={{
                 __html: renderMarkdown(msg.message),
               }}
@@ -43,8 +43,8 @@ export const MessageList: React.FC<MessageListProps> = ({
       ))}
       {isLoading && (
         <div className="flex flex-col gap-1 items-start">
-          <div className="text-xs font-semibold text-gray-400 uppercase tracking-widest">Chronicler</div>
-          <div className="max-w-[90%] p-2.5 rounded-lg bg-slate-700 text-gray-100 text-sm">{loadingDots}</div>
+          <div className="text-xs font-semibold text-slate-300 uppercase tracking-widest">Chronicler</div>
+          <div className="max-w-[90%] p-2.5 rounded-lg bg-slate-300 text-slate-700 text-sm">{loadingDots}</div>
         </div>
       )}
       <div ref={messagesEndRef} />
