@@ -23,7 +23,6 @@ export default function Races() {
   const [hasSearched, setHasSearched] = useState(false);
   const [searchError, setSearchError] = useState<string | null>(null);
 
-  // Fetch all races on mount
   const { data: allRaces = [], isLoading } = useQueryApi<RaceData[]>(
     '/races',
     {
@@ -32,7 +31,6 @@ export default function Races() {
     }
   );
 
-  // Search mutation
   const searchMutation = useMutationApi<RaceData[], { query: string }>({
     mutationOptions: {
       mutationFn: async (variables) => {
@@ -49,7 +47,6 @@ export default function Races() {
     errorMessage: 'Failed to search races',
   });
 
-  // Determine which races to display
   const displayedRaces = hasSearched ? searchMutation.data || [] : allRaces;
 
   const handleSearch = async () => {

@@ -18,7 +18,6 @@ export default function Classes() {
   const [hasSearched, setHasSearched] = useState(false);
   const [searchError, setSearchError] = useState<string | null>(null);
 
-  // Fetch all classes on mount
   const { data: allClasses = [], isLoading } = useQueryApi<ClassData[]>(
     '/classes',
     {
@@ -27,7 +26,6 @@ export default function Classes() {
     }
   );
 
-  // Search mutation
   const searchMutation = useMutationApi<ClassData[], { query: string }>({
     mutationOptions: {
       mutationFn: async (variables) => {
@@ -44,7 +42,6 @@ export default function Classes() {
     errorMessage: 'Failed to search classes',
   });
 
-  // Determine which classes to display
   const displayedClasses = hasSearched ? searchMutation.data || [] : allClasses;
 
   const handleSearch = async () => {

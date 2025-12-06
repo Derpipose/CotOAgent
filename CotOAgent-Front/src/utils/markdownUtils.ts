@@ -28,11 +28,6 @@ const ALLOWED_TAGS = [
   'td',
 ]
 
-/**
- * Renders markdown to sanitized HTML
- * @param markdown - The markdown string to render
- * @returns Sanitized HTML string
- */
 export const renderMarkdown = (markdown: string): string => {
   const html = marked(markdown) as string
   return DOMPurify.sanitize(html, { ALLOWED_TAGS })

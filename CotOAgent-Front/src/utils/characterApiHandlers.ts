@@ -1,6 +1,3 @@
-/**
- * Character API operations and handlers
- */
 
 import keycloak from '../keycloak'
 import { apiCall, buildApiUrl } from '../utils/api'
@@ -29,7 +26,6 @@ export const createCharacterApiHandlers = ({ addToast }: CharacterApiHandlersPro
   ): Promise<boolean> => {
     if (!selectedCharacter || !editedData) return false
 
-    // Prevent double submission
     if (submissionInProgressRef.current) return false
     submissionInProgressRef.current = true
     setIsSubmitting(true)
@@ -69,11 +65,8 @@ export const createCharacterApiHandlers = ({ addToast }: CharacterApiHandlersPro
 
       if (result) {
         addToast('Character saved successfully', 'success')
-        
-        // Update the character in the list
         setCharacters(updateCharacterInList(characters, selectedCharacter.id, editedData))
 
-        // Update selected character for display
         setSelectedCharacter(updateCharacter(selectedCharacter, editedData))
 
         await closeDetailsModal()
@@ -101,12 +94,10 @@ export const createCharacterApiHandlers = ({ addToast }: CharacterApiHandlersPro
   ): Promise<boolean> => {
     if (!selectedCharacter || !editedData) return false
 
-    // Prevent double submission
     if (submissionInProgressRef.current) return false
     submissionInProgressRef.current = true
     setIsSubmitting(true)
 
-    // Check if any changes were made since last submission
     if (!hasCharacterChanges(editedData, lastSubmittedData)) {
       addToast('No changes were made since the last submission. Please edit the character before submitting again.', 'warning')
       submissionInProgressRef.current = false
@@ -136,10 +127,8 @@ export const createCharacterApiHandlers = ({ addToast }: CharacterApiHandlersPro
 
       if (result) {
         addToast('Character revision submitted successfully', 'success')
-        // Update lastSubmittedData to the current editedData so user needs to make changes before next submit
         setLastSubmittedData(editedData)
 
-        // Close modal and refresh character data
         await closeDetailsModal()
         return true
       }
@@ -197,10 +186,8 @@ export const createCharacterApiHandlers = ({ addToast }: CharacterApiHandlersPro
 
       if (result) {
         addToast('Character deleted successfully', 'success')
-        // Remove the character from the list
         setCharacters(characters.filter((char) => char.id !== selectedCharacter.id))
 
-        // Close modal
         setShowDetailsModal(false)
         setSelectedCharacter(null)
         setEditedData(null)

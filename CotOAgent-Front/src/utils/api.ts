@@ -1,6 +1,4 @@
-/**
- * API error class
- */
+
 export class ApiError extends Error {
   statusCode: number;
   data?: unknown;
@@ -13,9 +11,6 @@ export class ApiError extends Error {
   }
 }
 
-/**
- * Parse error response from API
- */
 const parseErrorResponse = async (response: Response): Promise<string> => {
   try {
     const data = await response.json();
@@ -31,9 +26,6 @@ const parseErrorResponse = async (response: Response): Promise<string> => {
   }
 };
 
-/**
- * Enhanced fetch wrapper with error handling
- */
 export const apiCall = async <T = Record<string, unknown>>(
   url: string,
   options: RequestInit = {}
@@ -47,21 +39,17 @@ export const apiCall = async <T = Record<string, unknown>>(
       },
     });
 
-    // Handle non-OK responses
     if (!response.ok) {
       const errorMessage = await parseErrorResponse(response);
       throw new ApiError(response.status, errorMessage);
     }
 
-    // Parse and return JSON data
     return await response.json();
   } catch (error) {
-    // Re-throw ApiError as-is
     if (error instanceof ApiError) {
       throw error;
     }
 
-    // Handle network errors
     if (error instanceof TypeError) {
       throw new ApiError(
         0,
@@ -69,7 +57,6 @@ export const apiCall = async <T = Record<string, unknown>>(
       );
     }
 
-    // Handle unknown errors
     throw new ApiError(
       500,
       error instanceof Error ? error.message : 'An unknown error occurred'
@@ -77,31 +64,22 @@ export const apiCall = async <T = Record<string, unknown>>(
   }
 };
 
-/**
- * Get the base API URL
- */
 export const getApiBaseUrl = (): string => {
   if (typeof window === 'undefined') {
     return 'http://localhost:3000/api';
   }
 
-  // In Docker dev, use the backend service name
   if (window.location.hostname === 'frontend' || window.location.hostname === 'cotoagent-frontend') {
     return 'http://backend:3000/api'
   }
 
-  // In production, use HTTPS with the same hostname
   if (window.location.protocol === 'https:') {
     return `https://${window.location.hostname}/api`
   }
 
-  // Local development: use relative paths to leverage Vite proxy
   return '/api';
 };
 
-/**
- * Build a full API URL
- */
 export const buildApiUrl = (endpoint: string): string => {
   const baseUrl = getApiBaseUrl();
   const cleanEndpoint = endpoint.startsWith('/') ? endpoint : `/${endpoint}`;

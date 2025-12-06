@@ -1,6 +1,3 @@
-/**
- * Character data types and interfaces
- */
 
 export interface Character {
   id: number
@@ -31,9 +28,6 @@ export interface CharacterEditData {
   charisma: number
 }
 
-/**
- * Initialize character edit data from a character object
- */
 export const initializeCharacterEditData = (character: Character): CharacterEditData => ({
   class_name: character.class_name || '',
   race_name: character.race_name || '',
@@ -45,9 +39,6 @@ export const initializeCharacterEditData = (character: Character): CharacterEdit
   charisma: character.charisma,
 })
 
-/**
- * Check if character edit data has changes compared to last submitted data
- */
 export const hasCharacterChanges = (
   editedData: CharacterEditData,
   lastSubmittedData: CharacterEditData | null
@@ -66,9 +57,6 @@ export const hasCharacterChanges = (
   )
 }
 
-/**
- * Update a character in a list with new edit data
- */
 export const updateCharacterInList = (
   characters: Character[],
   characterId: number,
@@ -91,9 +79,6 @@ export const updateCharacterInList = (
   )
 }
 
-/**
- * Update a character object with new edit data
- */
 export const updateCharacter = (
   character: Character,
   editedData: CharacterEditData

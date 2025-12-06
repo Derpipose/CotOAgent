@@ -34,7 +34,6 @@ export default function CharacterSheet() {
 
   const [submitting, setSubmitting] = useState(false);
 
-  // Fetch classes and races
   const { data: classes = [], isLoading: classesLoading } = useQueryApi<string[]>(
     '/classes/names',
     { showError: false }
@@ -86,7 +85,6 @@ export default function CharacterSheet() {
   };
 
   const saveCharacterToLocalStorage = () => {
-    // Validate that required fields are filled in
     if (!character.Name || character.Name.trim() === '') {
       addToast('Please enter a character name', 'warning');
       return;
@@ -107,7 +105,6 @@ export default function CharacterSheet() {
   };
 
   const submitCharacterForApproval = async () => {
-    // Validate required fields
     if (!character.Name || character.Name.trim() === '') {
       addToast('Please enter a character name', 'warning');
       return;
@@ -131,7 +128,6 @@ export default function CharacterSheet() {
     setSubmitting(true);
 
     try {
-      // Step 1: Save character to database
       const createData = await apiCall<{ characterId: number }>(
         buildApiUrl('/characters/create'),
         {
@@ -154,7 +150,6 @@ export default function CharacterSheet() {
         return;
       }
 
-      // Step 2: Submit for approval
       await apiCall(
         buildApiUrl('/discord/submit-character'),
         {
