@@ -177,18 +177,21 @@
   }
 
   /* Button Components */
-  .btn-primary-gradient {
+  .btn-primary-gradient,
+  .btn-secondary-gradient,
+  .btn-cyan-gradient {
     @apply text-white font-bold py-3 px-8 rounded-lg cursor-pointer transition-all hover:shadow-lg hover:translate-y-[-2px] active:translate-y-0;
+  }
+
+  .btn-primary-gradient {
     background: linear-gradient(135deg, var(--color-primary), var(--color-accent));
   }
 
   .btn-secondary-gradient {
-    @apply text-white font-bold py-3 px-8 rounded-lg cursor-pointer transition-all hover:shadow-lg hover:translate-y-[-2px] active:translate-y-0;
     background: linear-gradient(135deg, var(--color-secondary), var(--color-secondary-dark));
   }
 
   .btn-cyan-gradient {
-    @apply text-white font-bold py-3 px-8 rounded-lg cursor-pointer transition-all hover:shadow-lg hover:translate-y-[-2px] active:translate-y-0;
     background: linear-gradient(135deg, var(--color-primary-light), var(--color-primary));
   }
 
@@ -218,11 +221,18 @@
   }
 
   .btn-small-light-blue { @apply px-3 py-2 text-sm font-bold rounded-lg cursor-pointer transition-all hover:translate-y-[-1px] hover:shadow-md active:translate-y-0 text-slate-600 border-2 bg-blue-200 border-blue-300 hover:bg-blue-300; }
-  .btn-small-light-green { @apply px-3 py-2 text-sm font-bold rounded-lg cursor-pointer transition-all hover:translate-y-[-1px] hover:shadow-md active:translate-y-0 text-slate-600 border-2 bg-emerald-200 border-emerald-300 hover:bg-emerald-300; }
-  .btn-small-light-red { @apply px-3 py-2 text-sm font-bold rounded-lg cursor-pointer transition-all hover:translate-y-[-1px] hover:shadow-md active:translate-y-0 text-slate-600 border-2 bg-red-200 border-red-300 hover:bg-red-300; }
-  .btn-small-light-amber { @apply px-3 py-2 text-sm font-bold rounded-lg cursor-pointer transition-all hover:translate-y-[-1px] hover:shadow-md active:translate-y-0 text-slate-600 border-2 bg-amber-200 border-amber-300 hover:bg-amber-300; }
-  .btn-small-light-indigo { @apply px-3 py-2 text-sm font-bold rounded-lg cursor-pointer transition-all hover:translate-y-[-1px] hover:shadow-md active:translate-y-0 text-slate-600 border-2 bg-indigo-200 border-indigo-300 hover:bg-indigo-300; }
-  .btn-small-light-pink { @apply px-3 py-2 text-sm font-bold rounded-lg cursor-pointer transition-all hover:translate-y-[-1px] hover:shadow-md active:translate-y-0 text-slate-600 border-2 bg-pink-200 border-pink-300 hover:bg-pink-300; }
+  .btn-small-light-green,
+  .btn-small-light-red,
+  .btn-small-light-amber,
+  .btn-small-light-indigo,
+  .btn-small-light-pink {
+    @apply px-3 py-2 text-sm font-bold rounded-lg cursor-pointer transition-all hover:translate-y-[-1px] hover:shadow-md active:translate-y-0 text-slate-600 border-2;
+  }
+  .btn-small-light-green { @apply bg-emerald-200 border-emerald-300 hover:bg-emerald-300; }
+  .btn-small-light-red { @apply bg-red-200 border-red-300 hover:bg-red-300; }
+  .btn-small-light-amber { @apply bg-amber-200 border-amber-300 hover:bg-amber-300; }
+  .btn-small-light-indigo { @apply bg-indigo-200 border-indigo-300 hover:bg-indigo-300; }
+  .btn-small-light-pink { @apply bg-pink-200 border-pink-300 hover:bg-pink-300; }
 
   /* Button Wrapper Classes */
   .btn-wrapper {
@@ -442,11 +452,19 @@
     @apply flex-0 flex-shrink-0 text-slate-600 text-sm text-center px-5 w-30;
   }
 
-  .class-item-chevron {
+  .class-item-chevron,
+  .race-item-chevron,
+  .branch-item-chevron,
+  .spellbook-item-chevron,
+  .spell-item-chevron {
     @apply flex-0 w-7 h-7 flex items-center justify-center text-indigo-500 transition-transform duration-200;
   }
 
-  .class-item-chevron-expanded {
+  .class-item-chevron-expanded,
+  .race-item-chevron-expanded,
+  .branch-item-chevron-expanded,
+  .spellbook-item-chevron-expanded,
+  .spell-item-chevron-expanded {
     @apply rotate-180;
   }
 
@@ -456,35 +474,43 @@
   }
 
   /* SearchSection Components */
-  .search-section-container {
+  .search-section-container,
+  .race-search-section-container {
     @apply mb-5 p-4 bg-gray-100 rounded-lg;
   }
 
-  .search-section-input-group {
+  .search-section-input-group,
+  .race-search-section-input-group {
     @apply flex gap-2.5 mb-2.5;
   }
 
-  .search-section-input {
+  .search-section-input,
+  .race-search-section-input {
     @apply flex-1 px-2.5 py-2.5 rounded border border-gray-300 text-sm bg-white text-gray-800;
   }
 
-  .search-section-button {
+  .search-section-button,
+  .race-search-section-button {
     @apply px-5 py-2.5 bg-blue-600 text-white border-none rounded cursor-pointer text-sm font-medium transition-opacity;
   }
 
-  .search-section-button:disabled {
+  .search-section-button:disabled,
+  .race-search-section-button:disabled {
     @apply opacity-60 cursor-not-allowed;
   }
 
-  .search-section-clear-button {
+  .search-section-clear-button,
+  .race-search-section-clear-button {
     @apply px-5 py-2.5 bg-gray-500 text-white border-none rounded cursor-pointer text-sm font-medium;
   }
 
-  .search-section-error {
+  .search-section-error,
+  .race-search-section-error {
     @apply text-red-600 m-0 mt-2.5 text-sm;
   }
 
-  .search-section-results {
+  .search-section-results,
+  .race-search-section-results {
     @apply text-gray-600 m-0 mt-2.5 text-sm;
   }
 
@@ -510,50 +536,9 @@
     @apply flex-0 flex-shrink-0 text-slate-600 text-sm text-center px-5 w-30;
   }
 
-  .race-item-chevron {
-    @apply flex-0 w-7 h-7 flex items-center justify-center text-indigo-500 transition-transform duration-200;
-  }
-
-  .race-item-chevron-expanded {
-    @apply rotate-180;
-  }
-
   .race-item-description {
     @apply px-5 py-5 bg-blue-50 text-slate-700 leading-relaxed text-sm;
     animation: slideDown 0.2s ease;
-  }
-
-  /* RaceSearchSection Components */
-  .race-search-section-container {
-    @apply mb-5 p-4 bg-gray-100 rounded-lg;
-  }
-
-  .race-search-section-input-group {
-    @apply flex gap-2.5 mb-2.5;
-  }
-
-  .race-search-section-input {
-    @apply flex-1 px-2.5 py-2.5 rounded border border-gray-300 text-sm bg-white text-gray-800;
-  }
-
-  .race-search-section-button {
-    @apply px-5 py-2.5 bg-blue-600 text-white border-none rounded cursor-pointer text-sm font-medium transition-opacity;
-  }
-
-  .race-search-section-button:disabled {
-    @apply opacity-60 cursor-not-allowed;
-  }
-
-  .race-search-section-clear-button {
-    @apply px-5 py-2.5 bg-gray-500 text-white border-none rounded cursor-pointer text-sm font-medium;
-  }
-
-  .race-search-section-error {
-    @apply text-red-600 m-0 mt-2.5 text-sm;
-  }
-
-  .race-search-section-results {
-    @apply text-gray-600 m-0 mt-2.5 text-sm;
   }
 
   /* SpellsContainer Components */
@@ -572,14 +557,6 @@
 
   .branch-item-title {
     @apply font-bold text-indigo-600 flex-1;
-  }
-
-  .branch-item-chevron {
-    @apply flex-0 w-7 h-7 flex items-center justify-center text-indigo-500 transition-transform duration-200;
-  }
-
-  .branch-item-chevron-expanded {
-    @apply rotate-180;
   }
 
   .branch-item-content {
@@ -601,14 +578,6 @@
 
   .spellbook-item-level {
     @apply flex-0 flex-shrink-0 text-slate-600 text-xs text-center w-20 px-3;
-  }
-
-  .spellbook-item-chevron {
-    @apply flex-0 w-7 h-7 flex items-center justify-center text-indigo-500 transition-transform duration-200;
-  }
-
-  .spellbook-item-chevron-expanded {
-    @apply rotate-180;
   }
 
   .spellbook-item-content {
@@ -634,14 +603,6 @@
 
   .spell-item-mana {
     @apply flex-0 flex-shrink-0 text-slate-600 text-sm text-center w-24;
-  }
-
-  .spell-item-chevron {
-    @apply flex-0 w-7 h-7 flex items-center justify-center text-indigo-500 transition-transform duration-200;
-  }
-
-  .spell-item-chevron-expanded {
-    @apply rotate-180;
   }
 
   .spell-item-content {
@@ -711,21 +672,6 @@
   .progress-text {
     @apply text-sm text-gray-600 text-center font-medium;
   }
-
-  /* Toast/Notification Components */
-  .toast-container {
-    @apply fixed bottom-6 right-6 flex flex-col gap-3 pointer-events-none z-50;
-  }
-
-  .toast-item {
-    @apply max-w-sm px-6 py-4 rounded-lg shadow-lg pointer-events-auto border-l-4;
-    animation: slideIn 0.3s ease;
-  }
-
-  .toast-success { @apply bg-green-100 border-green-500 text-green-700; }
-  .toast-error { @apply bg-red-100 border-red-500 text-red-700; }
-  .toast-warning { @apply bg-yellow-100 border-yellow-500 text-yellow-700; }
-  .toast-info { @apply bg-blue-100 border-blue-500 text-blue-700; }
 
   /* Modal/Overlay Components */
   .modal-overlay {
