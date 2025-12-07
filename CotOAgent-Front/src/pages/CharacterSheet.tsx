@@ -104,6 +104,22 @@ export default function CharacterSheet() {
     addToast('Character saved successfully!', 'success');
   };
 
+  const loadCharacterFromLocalStorage = () => {
+    try {
+      const savedCharacter = localStorage.getItem('character');
+      if (!savedCharacter) {
+        addToast('No character found in local storage', 'warning');
+        return;
+      }
+
+      const loadedCharacter = JSON.parse(savedCharacter) as CharacterDto;
+      setCharacter(loadedCharacter);
+      addToast(`Character "${loadedCharacter.Name}" loaded successfully!`, 'success');
+    } catch (error) {
+      addToast('Failed to load character from local storage', 'error');
+    }
+  };
+
   const submitCharacterForApproval = async () => {
     if (!character.Name || character.Name.trim() === '') {
       addToast('Please enter a character name', 'warning');
@@ -201,6 +217,7 @@ export default function CharacterSheet() {
 
         <ActionButtonsSection
           submitting={submitting}
+          onLoadLocally={loadCharacterFromLocalStorage}
           onSaveLocally={saveCharacterToLocalStorage}
           onSubmitForApproval={submitCharacterForApproval}
         />
