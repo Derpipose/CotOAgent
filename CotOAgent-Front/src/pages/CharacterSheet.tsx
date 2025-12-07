@@ -76,7 +76,7 @@ export default function CharacterSheet() {
 
       if (data) {
         const randomNumber = data.numbers;
-        const newStatValue = 10 + randomNumber;
+        const newStatValue = randomNumber;
         handleStatChange(statName, newStatValue);
       }
     } catch {
