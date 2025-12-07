@@ -4,7 +4,6 @@ import { useToast } from '../context/ToastContext';
 export const ToastContainer: React.FC = () => {
   const { toasts, removeToast } = useToast();
 
-  // Helper to get toast type styles
   const getToastStyles = (type: string, isPersistent: boolean | undefined) => {
     const baseClasses = 'toast-item';
     

@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { useAuth } from '../context/useAuth'
+import { useToast } from '../context/ToastContext'
 import type { ChatMessage } from './types'
 import { initializeConversation, sendAiMessageWithLoop, saveUserMessage, isValidMessage, resumeAfterDenial } from './chatAPI'
 import { useLoadingDots } from './useLoadingDots'
@@ -47,6 +48,7 @@ const updateMessagesWithResponse = (
 
 const ChatBar = () => {
   const { userEmail } = useAuth()
+  const { addToast } = useToast()
   const chatState = useChatState()
   const loadingDots = useLoadingDots(chatState.isLoading)
   const messagesEndRef = useRef<HTMLDivElement>(null)
@@ -95,6 +97,8 @@ const ChatBar = () => {
         logger.error('Error initializing chat', error)
         if (isMounted) {
           chatState.setMessages([ERROR_MESSAGE])
+          const errorMsg = error instanceof Error ? error.message : 'Failed to initialize chat'
+          addToast(errorMsg, 'error')
         }
       } finally {
         if (isMounted) {
@@ -133,6 +137,10 @@ const ChatBar = () => {
       }
 
       chatState.setMessages((prev) => updateMessagesWithResponse(prev, data))
+    } catch (error) {
+      const errorMsg = error instanceof Error ? error.message : 'Failed to send message'
+      addToast(errorMsg, 'error')
+      logger.error('Error sending message', error)
     } finally {
       chatState.setIsLoading(false)
     }
@@ -158,6 +166,10 @@ const ChatBar = () => {
       chatState.setIsLoading(true)
       const data = await resumeAfterDenial(chatState.conversationId || '', userEmail || '', deniedToolName)
       chatState.setMessages((prev) => updateMessagesWithResponse(prev, data))
+    } catch (error) {
+      const errorMsg = error instanceof Error ? error.message : 'Failed to process denial'
+      addToast(errorMsg, 'error')
+      logger.error('Error processing tool denial', error)
     } finally {
       chatState.setIsLoading(false)
     }

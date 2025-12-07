@@ -30,7 +30,6 @@ createRoot(document.getElementById('root')!).render(
           <ToastProvider>
             <BrowserRouter>
               <AuthProvider>
-          
               <ToastContainer />
               <MainLayout>
                 <Routes>
