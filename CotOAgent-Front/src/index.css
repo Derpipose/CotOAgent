@@ -871,7 +871,7 @@
   }
 
   .app-card {
-    @apply bg-white rounded-xl shadow-2xl p-6 border-2 border-gray-300 max-w-2xl text-center;
+    @apply bg-blue-100 rounded-xl shadow-2xl p-6 border-2 border-blue-300 max-w-2xl text-center;
     animation: slideUp 0.3s ease;
   }
 
@@ -904,11 +904,11 @@
   }
 
   .app-logout-button {
-    @apply px-6 py-3 bg-slate-200 text-slate-600 font-bold rounded-lg cursor-pointer transition-all hover:bg-slate-300 hover:translate-y-[-2px] active:translate-y-0;
+    @apply text-slate-600 font-bold py-3 px-8 rounded-lg cursor-pointer transition-all hover:shadow-lg hover:translate-y-[-2px] active:translate-y-0 bg-red-200 hover:bg-red-300 border-2 border-red-300;
   }
 
   .app-logout-button:hover {
-    @apply bg-slate-300;
+    @apply bg-red-300;
   }
 
   .app-unauthenticated-section {
@@ -920,7 +920,7 @@
   }
 
   .app-login-button {
-    @apply text-slate-600 font-bold text-lg px-8 py-4 rounded-lg cursor-pointer transition-all hover:shadow-lg hover:translate-y-[-2px] active:translate-y-0 bg-indigo-200 hover:bg-indigo-300 border-2 border-indigo-300;
+    @apply text-white font-bold text-lg px-8 py-4 rounded-lg cursor-pointer transition-all hover:shadow-lg hover:translate-y-[-2px] active:translate-y-0 bg-blue-500 hover:bg-blue-600 border-2 border-blue-600;
   }
 
   /* ChatInput Components */

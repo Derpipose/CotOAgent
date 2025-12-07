@@ -115,7 +115,7 @@ export default function CharacterSheet() {
       const loadedCharacter = JSON.parse(savedCharacter) as CharacterDto;
       setCharacter(loadedCharacter);
       addToast(`Character "${loadedCharacter.Name}" loaded successfully!`, 'success');
-    } catch (error) {
+    } catch {
       addToast('Failed to load character from local storage', 'error');
     }
   };
